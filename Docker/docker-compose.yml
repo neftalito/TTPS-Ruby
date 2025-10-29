@@ -1,0 +1,20 @@
+
+name: ttps-ruby
+
+services:
+  web:
+    build:
+      context: ../src
+      dockerfile: ../Docker/Dockerfile
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+    volumes:
+      - ../src:/app
+      - bundle_cache:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    user: "1000:1000"
+
+volumes:
+  bundle_cache:
