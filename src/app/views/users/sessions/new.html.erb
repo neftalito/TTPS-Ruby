@@ -1,8 +1,8 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+<div class="min-h-screen flex items-center justify-center bg-proyecto-bg px-4">
 
-  <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
+  <div class="w-full max-w-md bg-proyecto-secondary p-8 rounded-xl shadow-md">
 
-    <h2 class="text-2xl font-bold text-center mb-6">
+    <h2 class="text-2xl font-bold text-center mb-6 text-proyecto-primary">
       <i class="fa-solid fa-right-to-bracket mr-2"></i>
       <%= t("devise.sessions.new.sign_in") %>
     </h2>
@@ -11,45 +11,45 @@
 
       <!-- Email -->
       <div class="mb-4">
-        <label class="block font-medium mb-1">
+        <label class="block font-medium mb-1 text-proyecto-text">
           <i class="fa-solid fa-envelope mr-1"></i>
           <%= f.label :email %>
         </label>
         <%= f.email_field :email,
                           autofocus: true,
                           autocomplete: "email",
-                          class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" %>
+                          class: "w-full px-3 py-2 border border-proyecto-secondary rounded-lg focus:ring-proyecto-primary focus:border-proyecto-primary text-proyecto-text bg-proyecto-bg" %>
       </div>
 
       <!-- Password -->
       <div class="mb-4">
-        <label class="block font-medium mb-1">
+        <label class="block font-medium mb-1 text-proyecto-text">
           <i class="fa-solid fa-lock mr-1"></i>
           <%= f.label :password %>
         </label>
         <%= f.password_field :password,
                              autocomplete: "current-password",
-                             class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" %>
+                             class: "w-full px-3 py-2 border border-proyecto-secondary rounded-lg focus:ring-proyecto-primary focus:border-proyecto-primary text-proyecto-text bg-proyecto-bg" %>
       </div>
 
       <!-- Remember me -->
       <% if devise_mapping.rememberable? %>
         <div class="flex items-center mb-4">
           <%= f.check_box :remember_me, class: "mr-2" %>
-          <%= f.label :remember_me, class: "text-sm text-gray-700" %>
+          <%= f.label :remember_me, class: "text-sm text-proyecto-text" %>
         </div>
       <% end %>
 
       <!-- Submit button -->
       <div class="mt-6">
         <%= f.submit t("devise.sessions.new.sign_in"),
-                     class: "w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2" %>
+                     class: "w-full bg-proyecto-primary hover:bg-proyecto-accent text-proyecto-bg py-2 rounded-lg font-semibold flex items-center justify-center gap-2" %>
       </div>
 
     <% end %>
 
     <!-- Links -->
-    <div class="mt-6 text-center text-sm text-gray-600">
+    <div class="mt-6 text-center text-sm text-proyecto-text/80">
       <%= render "users/shared/links" %>
     </div>
 
