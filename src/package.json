@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",
+    "@hotwired/turbo-rails": "^8.0.20",
     "flowbite": "^4.0.0"
   }
 }

@@ -26,7 +26,7 @@ module App
 
     #
     config.i18n.default_locale = :es
-    config.i18n.available_locales = [:en, :es]
+    config.i18n.available_locales = %i[es en]
 
   end
 end

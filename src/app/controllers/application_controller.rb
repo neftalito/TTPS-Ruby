@@ -7,6 +7,9 @@ class ApplicationController < ActionController::Base
   # Solo pedimos login en el backstore
   before_action :authenticate_user!, unless: :public_controller?
 
+  # Necesario para permitir parámetros adicionales de Devise
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
       format.html { redirect_to root_path, alert: exception.message }
@@ -14,12 +17,20 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def after_sign_in_path_for(resource)
+    backstore_root_path
+  end
+
+  def after_sign_out_path_for(resource_or_scope)
+    new_user_session_path
+  end
+
   protected
 
-  # No dejar que Devise permita editar/crear roles
+  # Parámetros permitidos para Devise
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name]) # TODO: Evaluar qué puede cambiar un usuario de sí mismo
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
   end
 
   private

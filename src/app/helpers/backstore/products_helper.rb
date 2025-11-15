@@ -1,0 +1,2 @@
+module Backstore::ProductsHelper
+end
