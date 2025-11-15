@@ -1,0 +1,105 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+
+  <div class="w-full max-w-lg bg-white p-8 rounded-xl shadow-md">
+
+    <h2 class="text-2xl font-bold text-center mb-6">
+      <i class="fa-solid fa-user-gear mr-2"></i>
+      Editar mi cuenta
+    </h2>
+
+    <!-- Errores -->
+    <% if resource.errors.any? %>
+      <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-4">
+        <ul class="list-disc list-inside">
+          <% resource.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_for(resource, as: resource_name,
+                 url: registration_path(resource_name),
+                 html: { method: :put, class: "space-y-5" }) do |f| %>
+
+      <!-- Email -->
+      <div>
+        <label class="block font-semibold mb-1">
+          <i class="fa-solid fa-envelope mr-1"></i>
+          Email
+        </label>
+        <%= f.email_field :email,
+                          autofocus: true,
+                          autocomplete: "email",
+                          class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+
+      <!-- Confirmable (solo si está activado en Devise) -->
+      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+        <div class="text-yellow-600 text-sm mb-2">
+          <i class="fa-solid fa-clock"></i>
+          Esperando confirmación para: <%= resource.unconfirmed_email %>
+        </div>
+      <% end %>
+
+      <!-- Nueva password -->
+      <div>
+        <label class="block font-semibold mb-1">
+          <i class="fa-solid fa-lock mr-1"></i>
+          Nueva contraseña
+          <span class="text-gray-500 text-sm">(opcional)</span>
+        </label>
+
+        <%= f.password_field :password,
+                             autocomplete: "new-password",
+                             placeholder: "Dejar en blanco si no querés cambiarla",
+                             class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500" %>
+
+        <% if @minimum_password_length %>
+          <p class="text-sm text-gray-500 mt-1">
+            Mínimo <%= @minimum_password_length %> caracteres
+          </p>
+        <% end %>
+      </div>
+
+      <!-- Confirmación -->
+      <div>
+        <label class="block font-semibold mb-1">
+          <i class="fa-solid fa-lock mr-1"></i>
+          Confirmar nueva contraseña
+        </label>
+        <%= f.password_field :password_confirmation,
+                             autocomplete: "new-password",
+                             class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+
+      <!-- Contraseña actual -->
+      <div>
+        <label class="block font-semibold mb-1">
+          <i class="fa-solid fa-key mr-1"></i>
+          Contraseña actual
+          <span class="text-gray-500 text-sm">(obligatoria para guardar cambios)</span>
+        </label>
+        <%= f.password_field :current_password,
+                             autocomplete: "current-password",
+                             class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex justify-between items-center mt-6">
+        <%= link_to "Cancelar",
+                    backstore_root_path,
+                    class: "px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-gray-800" %>
+
+        <%= f.submit "Guardar cambios",
+                     class: "px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" %>
+      </div>
+
+    <% end %>
+
+  </div>
+</div>

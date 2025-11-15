@@ -1,0 +1,78 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+
+  <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
+
+    <h2 class="text-2xl font-bold text-center mb-6">
+      <i class="fa-solid fa-unlock-keyhole mr-2"></i>
+      Restablecer contraseña
+    </h2>
+
+    <!-- Mostrar errores -->
+    <% if resource.errors.any? %>
+      <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-4">
+        <ul class="list-disc list-inside">
+          <% resource.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_for(resource,
+                 as: resource_name,
+                 url: password_path(resource_name),
+                 html: { method: :put, class: "space-y-5" }) do |f| %>
+
+      <%= f.hidden_field :reset_password_token %>
+
+      <!-- Nueva contraseña -->
+      <div>
+        <label class="block font-semibold mb-1">
+          <i class="fa-solid fa-lock mr-1"></i>
+          Nueva contraseña
+        </label>
+        <%= f.password_field :password,
+                             autofocus: true,
+                             autocomplete: "new-password",
+                             class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500" %>
+
+        <% if @minimum_password_length %>
+          <p class="text-sm text-gray-500 mt-1">
+            Mínimo <%= @minimum_password_length %> caracteres
+          </p>
+        <% end %>
+      </div>
+
+      <!-- Confirmación -->
+      <div>
+        <label class="block font-semibold mb-1">
+          <i class="fa-solid fa-lock mr-1"></i>
+          Confirmar nueva contraseña
+        </label>
+        <%= f.password_field :password_confirmation,
+                             autocomplete: "new-password",
+                             class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                      focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+
+      <!-- Botón guardar -->
+      <div class="mt-6">
+        <%= f.submit "Guardar nueva contraseña",
+                     class: "w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2" %>
+      </div>
+
+      <!-- Link volver al login -->
+      <div class="text-center mt-4">
+        <%= link_to new_session_path(resource_name),
+                    class: "text-blue-600 hover:underline" do %>
+          <i class="fa-solid fa-arrow-left mr-1"></i>
+          Volver al inicio de sesión
+        <% end %>
+      </div>
+
+    <% end %>
+
+  </div>
+
+</div>

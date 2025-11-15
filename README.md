@@ -1,36 +1,48 @@
-# Crear el Gemfile inicial
-echo "source 'https://rubygems.org'" > Gemfile
-echo "gem 'rails', '~> 7.1'" >> Gemfile
-touch Gemfile.lock
+# Instalación de dependencias del Gemfile
+```bash
+bundle install
+```
 
-# Construir las imágenes
-docker-compose build
+# Instalacion de dependencias del package.json
+```bash
+npm install
+```
 
-# Crear la aplicación Rails (SQLite es el default)
-docker-compose run --rm web rails new . --force --skip-bundle
+# Agregar una gema
+- Editar el `Gemfile` y luego ejecutar
+```bash
+bundle install
+```
 
-# Instalar las dependencias
-docker-compose run --rm web bundle install
+# Agregar un packete de JavaScript
+```bash
+npm install nombre-del-paquete
+````
 
-# Crear la base de datos
-docker-compose run --rm web rails db:create
+# Ejecutar la aplicación con Foreman
+- Desde /src
+```bash
+foreman start -f Procfile.dev
+```
 
-# Levantar el servidor
-docker-compose up
+# Linteo y formateo
+## Verificar problemas
+```bash
+bundle exec rubocop
+```
 
-# Correr migraciones
-docker-compose run --rm web rails db:migrate
+## Autoformatear todo el código
+**ADVERTENCIA**: Usar `-a` y no `-A`, dado que `-A` puede provocar correcciones que son inseguras y pueden romper código 
+```bash
+bundle exec rubocop -a
+```
 
-# Instalar una nueva gema
-# 1. Agrégala a tu Gemfile
-# 2. Ejecuta:
-docker-compose run --rm web bundle install
-
-# Generar un scaffold
-docker-compose run --rm web rails generate scaffold Post title:string body:text
-
-# Consola de Rails
-docker-compose run --rm web rails console
-
-# Acceder al bash del contenedor
-docker-compose exec web bash
+# Inicializar base de datos
+- Crear, migrar y cargar seeds
+```bash
+bin/rails db:create db:migrate db:seed
+```
+- Reiniciar desde cero
+```bash
+bin/rails db:drop db:create db:migrate db:seed
+```

@@ -1,0 +1,2 @@
+module Storefront::CartHelper
+end

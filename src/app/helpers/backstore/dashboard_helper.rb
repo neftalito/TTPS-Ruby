@@ -1,0 +1,2 @@
+module Backstore::DashboardHelper
+end
