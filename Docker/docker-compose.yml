@@ -6,12 +6,13 @@ services:
     build:
       context: ../src
       dockerfile: ../Docker/Dockerfile
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+    command: foreman start -f Procfile.dev
     volumes:
       - ../src:/app
       - bundle_cache:/usr/local/bundle
     ports:
       - "3000:3000"
+      - "5173:5173"
     stdin_open: true
     tty: true
     user: "1000:1000"

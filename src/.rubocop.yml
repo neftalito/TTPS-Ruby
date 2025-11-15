@@ -1,8 +1,81 @@
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+plugins:
+  - rubocop-rails
+  - rubocop-performance
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+inherit_from:
+  - .rubocop_todo.yml
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.4
+  Exclude:
+    - "bin/*"
+    - "node_modules/**/*"
+    - "vendor/**/*"
+    - "tmp/**/*"
+    - "db/schema.rb"
+    - "db/seeds.rb"
+    - "db/migrate/**/*"
+    - "config/environments/**/*"
+    - "config/initializers/**/*"
+    - "config/puma.rb"
+    - "lib/tasks/**/*"
+  SuggestExtensions: false
+Layout/LineLength:
+  Max: 150
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "db/**/*"
+    - "config/**/*"
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - "db/**/*.rb"
+
+Metrics/ClassLength:
+  Max: 200
+  Exclude:
+    - "db/**/*.rb"
+
+Metrics/ModuleLength:
+  Max: 200
+  Exclude:
+    - "db/**/*.rb"
+
+Rails:
+  Enabled: true
+
+Rails/OutputSafety:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Rails/EnumHash:
+  Enabled: false
+
+Rails/InverseOf:
+  Enabled: false
+
+Rails/UnknownEnv:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/NotNullColumn:
+  Enabled: false
+
+Performance:
+  Enabled: true
