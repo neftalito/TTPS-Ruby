@@ -1,0 +1,14 @@
+<h1 class="text-xl font-semibold text-proyecto-primary">
+  Panel Administrativo
+</h1>
+
+<p class="text-gray-700 mb-6">
+  Bienvenido/a al Backstore, <%= current_user.email %>.
+</p>
+
+<ul class="list-disc pl-6">
+  <li><%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete %></li>
+  <li><%= link_to "Administrar productos", "#" %></li>
+  <li><%= link_to "Administrar ventas", "#" %></li>
+  <li><%= link_to "Administrar usuarios", "#" %></li>
+</ul>

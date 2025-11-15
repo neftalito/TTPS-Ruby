@@ -1,0 +1,11 @@
+<% content_for :title, "New pickup point" %>
+
+<h1>New pickup point</h1>
+
+<%= render "form", pickup_point: @pickup_point %>
+
+<br>
+
+<div>
+  <%= link_to "Back to pickup points", pickup_points_path %>
+</div>

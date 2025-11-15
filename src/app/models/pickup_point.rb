@@ -1,0 +1,2 @@
+class PickupPoint < ApplicationRecord
+end

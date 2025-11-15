@@ -1,0 +1,72 @@
+<%= form_with(model: [:backstore, @user], local: true, class: "space-y-5") do |f| %>
+
+  <% if @user.errors.any? %>
+    <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded">
+      <ul class="list-disc list-inside">
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- EMAIL -->
+  <div>
+    <label class="block font-semibold mb-1">
+      <i class="fa-solid fa-envelope mr-1"></i>
+      Email
+    </label>
+    <%= f.email_field :email,
+                      class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                  focus:ring-blue-500 focus:border-blue-500" %>
+  </div>
+
+  <!-- PASSWORD -->
+  <div>
+    <label class="block font-semibold mb-1">
+      <i class="fa-solid fa-lock mr-1"></i>
+      Contraseña
+    </label>
+    <%= f.password_field :password,
+                         class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                  focus:ring-blue-500 focus:border-blue-500" %>
+  </div>
+
+  <!-- PASSWORD CONFIRMATION -->
+  <div>
+    <label class="block font-semibold mb-1">
+      <i class="fa-solid fa-lock mr-1"></i>
+      Confirmar Contraseña
+    </label>
+    <%= f.password_field :password_confirmation,
+                         class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                  focus:ring-blue-500 focus:border-blue-500" %>
+  </div>
+
+  <!-- ROLE (solo admins y gerentes) -->
+  <% if can? :manage, User %>
+    <div>
+      <label class="block font-semibold mb-1">
+        <i class="fa-solid fa-user-tag mr-1"></i>
+        Rol
+      </label>
+
+      <%= f.select :role,
+                   User.roles.keys.map { |r| [translated_role(r), r] },
+                   {},
+                   class: "w-full px-3 py-2 border border-gray-300 rounded-lg
+                  focus:ring-blue-500 focus:border-blue-500" %>
+    </div>
+  <% end %>
+
+  <!-- BUTTONS -->
+  <div class="flex justify-end space-x-3 pt-4">
+    <%= link_to "Cancelar",
+                backstore_users_path,
+                class: "px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg" %>
+
+    <%= f.submit @user.new_record? ? "Crear Usuario" : "Guardar Cambios",
+                 class: "px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg" %>
+  </div>
+
+<% end %>

@@ -77,6 +77,13 @@ group :test do
   gem "selenium-webdriver"
 end
 
+# Localizaciones
 gem "rails-i18n", "~> 8.0"
+gem 'devise-i18n'
+gem 'devise-i18n-views'
 
+# Para generar datos falsos
+gem "faker"
+
+# Para usar vite
 gem "vite_rails", "~> 3.0"
