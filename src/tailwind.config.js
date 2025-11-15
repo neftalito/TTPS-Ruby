@@ -12,7 +12,11 @@ module.exports = {
                 'proyecto-bg': '#faf6f5',
                 'proyecto-primary': '#1a4d70',
                 'proyecto-secondary': '#e9dcc9',
-                'proyecto-accent': '#c46d45'
+                'proyecto-accent': '#c46d45',
+                'proyecto-success': '#4CAF50',
+                'proyecto-error':   '#E53935',
+                'proyecto-warning': '#FB8C00',
+                'proyecto-info':    '#1E88E5',
             }
         },
     },

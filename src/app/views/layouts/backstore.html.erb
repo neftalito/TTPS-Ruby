@@ -16,7 +16,10 @@
   <%= vite_javascript_tag 'application' %>
 </head>
 
-<body class="bg-gray-100 min-h-screen flex">
+<body class="bg-proyecto-bg text-proyecto-text min-h-screen flex">
+
+<!-- FLASH MODAL -->
+<%= flash_modal %>
 
 <!-- DESKTOP SIDEBAR -->
 <aside class="hidden md:flex">
@@ -25,7 +28,7 @@
 
 <!-- MOBILE MENU BUTTON -->
 <button
-  class="md:hidden fixed top-4 left-4 z-50 bg-gray-900 text-white p-2 rounded"
+  class="md:hidden fixed top-4 left-4 z-50 bg-proyecto-primary text-proyecto-bg p-2 rounded shadow"
   onclick="document.getElementById('mobileSidebar').classList.remove('hidden')">
   <i class="fa-solid fa-bars"></i>
 </button>
@@ -35,7 +38,7 @@
      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
      onclick="this.classList.add('hidden')">
 
-  <aside class="w-64 bg-gray-900 text-white min-h-full py-6 px-4"
+  <aside class="w-64 bg-proyecto-primary text-proyecto-bg min-h-full py-6 px-4"
          onclick="event.stopPropagation()">
 
     <%= render "backstore/shared/sidebar" %>
@@ -47,33 +50,33 @@
 <div class="flex-1 flex flex-col">
 
   <!-- TOP NAVBAR -->
-  <header class="w-full bg-white shadow px-6 py-4 flex justify-between items-center">
+  <header class="w-full bg-proyecto-secondary shadow px-6 py-4 flex justify-between items-center">
     <h1 class="text-xl font-semibold text-proyecto-primary">Panel Administrativo</h1>
 
     <div class="flex items-center gap-4">
 
       <% if user_signed_in? %>
-            <span class="text-gray-700 flex items-center gap-2">
+            <span class="flex items-center gap-2 text-proyecto-text">
               <i class="fa-solid fa-user"></i>
               <%= current_user.email %>
             </span>
 
         <%= link_to edit_backstore_user_path(current_user),
-                    class: "px-3 py-1 rounded bg-proyecto-secondary hover:bg-proyecto-accent text-proyecto-text flex items-center gap-2" do %>
+                    class: "px-3 py-1 rounded bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg flex items-center gap-2" do %>
           <i class="fa-solid fa-id-badge"></i>
           <span>Perfil</span>
         <% end %>
 
         <%= button_to destroy_user_session_path,
                       method: :delete,
-                      class: "px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2" do %>
+                      class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg rounded hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2" do %>
           <i class="fa-solid fa-right-from-bracket"></i>
           Salir
         <% end %>
 
       <% else %>
         <%= link_to new_user_session_path,
-                    class: "px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2" do %>
+                    class: "px-3 py-1 bg-proyecto-primary text-proyecto-bg rounded hover:bg-proyecto-accent flex items-center gap-2" do %>
           <i class="fa-solid fa-right-to-bracket"></i>
           Ingresar
         <% end %>
@@ -88,34 +91,5 @@
   </main>
 
 </div>
-
-<%= render "shared/modal" %>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const modal = document.getElementById("flashModal");
-        const content = document.getElementById("flashModalContent");
-
-        <% if flash[:notice] %>
-        content.innerHTML = `
-        <h2 class="text-xl font-bold text-green-600 mb-2">
-          <i class="fa-solid fa-circle-check"></i>
-          Éxito
-        </h2>
-        <p class="text-gray-700"><%= flash[:notice] %></p>
-      `;
-        modal.classList.remove("hidden");
-        <% elsif flash[:alert] || flash[:error] %>
-        content.innerHTML = `
-        <h2 class="text-xl font-bold text-red-600 mb-2">
-          <i class="fa-solid fa-circle-exclamation"></i>
-          Error
-        </h2>
-        <p class="text-gray-700"><%= flash[:alert] || flash[:error] %></p>
-      `;
-        modal.classList.remove("hidden");
-        <% end %>
-    });
-</script>
-
 </body>
 </html>
