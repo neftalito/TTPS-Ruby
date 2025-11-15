@@ -1,0 +1,62 @@
+<div id="flashModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4 hidden">
+  <div class="bg-proyecto-bg rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-modal-in">
+
+    <!-- Header con ícono -->
+    <div class="<%= flash_color(flash_type) %> p-6 text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm mb-3">
+        <i class="fa-solid <%= flash_icon(flash_type) %> text-4xl text-white"></i>
+      </div>
+      <h3 class="text-xl font-bold text-white">
+        <%= flash_title(flash_type) %>
+      </h3>
+    </div>
+
+    <!-- Contenido -->
+    <div class="p-8 bg-proyecto-bg">
+      <div id="flashModalContent" class="text-center text-proyecto-text text-lg leading-relaxed font-medium">
+        <%= message %>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 pb-6 bg-proyecto-bg">
+      <button id="flashModalClose"
+              class="w-full px-6 py-3 <%= flash_color(flash_type) %> hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg">
+        Entendido
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+    .animate-modal-in {
+        animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modalIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    #flashModal.closing .animate-modal-in {
+        animation: modalOut 0.2s ease-out forwards;
+    }
+
+    @keyframes modalOut {
+        from {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+        }
+    }
+</style>
