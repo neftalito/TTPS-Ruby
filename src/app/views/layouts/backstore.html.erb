@@ -18,6 +18,9 @@
 
 <body class="bg-proyecto-bg text-proyecto-text min-h-screen flex">
 
+<!-- FLASH MODAL -->
+<%= flash_modal %>
+
 <!-- DESKTOP SIDEBAR -->
 <aside class="hidden md:flex">
   <%= render "backstore/shared/sidebar" %>
@@ -88,34 +91,5 @@
   </main>
 
 </div>
-
-<%= render "shared/modal" %>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const modal = document.getElementById("flashModal");
-        const content = document.getElementById("flashModalContent");
-
-        <% if flash[:notice] %>
-        content.innerHTML = `
-        <h2 class="text-xl font-bold text-proyecto-primary mb-2">
-          <i class="fa-solid fa-circle-check"></i>
-          Éxito
-        </h2>
-        <p class="text-proyecto-text"><%= flash[:notice] %></p>
-      `;
-        modal.classList.remove("hidden");
-        <% elsif flash[:alert] || flash[:error] %>
-        content.innerHTML = `
-        <h2 class="text-xl font-bold text-proyecto-accent mb-2">
-          <i class="fa-solid fa-circle-exclamation"></i>
-          Error
-        </h2>
-        <p class="text-proyecto-text"><%= flash[:alert] || flash[:error] %></p>
-      `;
-        modal.classList.remove("hidden");
-        <% end %>
-    });
-</script>
-
 </body>
 </html>
