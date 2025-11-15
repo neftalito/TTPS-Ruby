@@ -1,10 +1,10 @@
-<nav class="w-64 min-h-screen bg-gray-900 text-gray-100 p-4 space-y-4">
+<nav class="w-64 min-h-screen bg-proyecto-primary text-proyecto-bg p-4 space-y-4">
 
-  <h2 class="text-xl font-semibold text-proyecto-primary">Panel Administrativo</h2>
+  <h2 class="text-xl font-semibold text-proyecto-secondary">Panel Administrativo</h2>
 
   <!-- Dashboard -->
   <%= link_to backstore_root_path,
-              class: "block px-4 py-2 rounded flex items-center gap-3 #{active_link?(backstore_root_path)}" do %>
+              class: "block px-4 py-2 rounded flex items-center gap-3 transition-colors #{active_link?(backstore_root_path)}" do %>
     <i class="fa-solid fa-gauge"></i>
     <span>Dashboard</span>
   <% end %>
@@ -12,7 +12,7 @@
   <!-- Productos -->
   <% if can? :read, Product %>
     <%= link_to backstore_products_path,
-                class: "block px-4 py-2 rounded flex items-center gap-3 #{active_link?(backstore_products_path)}" do %>
+                class: "block px-4 py-2 rounded flex items-center gap-3 transition-colors #{active_link?(backstore_products_path)}" do %>
       <i class="fa-solid fa-compact-disc"></i>
       <span>Productos</span>
     <% end %>
@@ -21,7 +21,7 @@
   <!-- Ventas -->
   <% if can? :read, Sale %>
     <%= link_to backstore_sales_path,
-                class: "block px-4 py-2 rounded flex items-center gap-3 #{active_link?(backstore_sales_path)}" do %>
+                class: "block px-4 py-2 rounded flex items-center gap-3 transition-colors #{active_link?(backstore_sales_path)}" do %>
       <i class="fa-solid fa-cart-shopping"></i>
       <span>Ventas</span>
     <% end %>
@@ -30,12 +30,12 @@
   <!-- Usuarios -->
   <% if can? :read, User %>
     <%= link_to backstore_users_path,
-                class: "block px-4 py-2 rounded flex items-center gap-3 #{active_link?(backstore_users_path)}" do %>
+                class: "block px-4 py-2 rounded flex items-center gap-3 transition-colors #{active_link?(backstore_users_path)}" do %>
       <i class="fa-solid fa-users"></i>
       <span>Usuarios</span>
     <% end %>
   <% end %>
 
-  <hr class="border-gray-700 my-4">
+  <hr class="border-proyecto-secondary/40 my-4">
 
 </nav>
