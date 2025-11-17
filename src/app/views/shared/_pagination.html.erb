@@ -1,22 +1,50 @@
 <% collection = local_assigns.fetch(:collection) %>
-<% return if collection.blank? || collection.total_pages <= 1 %>
+<% params_hash = local_assigns.fetch(:params, {}) %>
+<% return if collection.blank? %>
 
-<nav class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" aria-label="Paginación">
-  <p class="text-sm text-proyecto-text">
-    Mostrando
-    <span class="font-semibold text-proyecto-primary"><%= pagination_results_range(collection) %></span>
-  </p>
+<nav class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" aria-label="Paginación">
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+    <p class="text-sm text-proyecto-text">
+      Mostrando
+      <span class="font-semibold text-proyecto-primary"><%= pagination_results_range(collection) %></span>
+    </p>
 
-  <div class="flex items-center gap-3">
-    <%= pagination_button("Anterior", collection.prev_page, collection, disabled: collection.prev_page.nil?) %>
+    <!-- Selector de por página -->
+    <div class="flex items-center gap-2">
+      <label for="per_page" class="text-sm text-proyecto-text whitespace-nowrap">Por página:</label>
+      <%= form_with url: request.path, method: :get, local: true, class: "inline-block" do |f| %>
+        <%= f.select :per_page,
+                     options_for_select(
+                       [[5, 5], [10, 10], [25, 25], [50, 50], [100, 100], ["Todos", "all"]],
+                       params[:per_page] || 5
+                     ),
+                     {},
+                     {
+                       id: "per_page",
+                       class: "px-3 py-1 text-sm border border-proyecto-secondary rounded-md bg-white text-proyecto-text focus:ring-2 focus:ring-proyecto-primary focus:border-proyecto-primary",
+                       onchange: "this.form.submit()"
+                     } %>
 
-    <span class="text-sm text-proyecto-text">
-      Página
-      <span class="font-semibold text-proyecto-primary"><%= collection.current_page %></span>
-      de
-      <span class="font-semibold text-proyecto-primary"><%= collection.total_pages %></span>
-    </span>
-
-    <%= pagination_button("Siguiente", collection.next_page, collection, disabled: collection.next_page.nil?) %>
+        <!-- Mantener los parámetros de filtros existentes -->
+        <% params_hash.except(:page, :per_page).each do |key, value| %>
+          <%= f.hidden_field key, value: value %>
+        <% end %>
+      <% end %>
+    </div>
   </div>
+
+  <% if collection.total_pages > 1 %>
+    <div class="flex items-center gap-3">
+      <%= pagination_button("Anterior", collection.prev_page, collection, disabled: collection.prev_page.nil?) %>
+
+      <span class="text-sm text-proyecto-text">
+        Página
+        <span class="font-semibold text-proyecto-primary"><%= collection.current_page %></span>
+        de
+        <span class="font-semibold text-proyecto-primary"><%= collection.total_pages %></span>
+      </span>
+
+      <%= pagination_button("Siguiente", collection.next_page, collection, disabled: collection.next_page.nil?) %>
+    </div>
+  <% end %>
 </nav>

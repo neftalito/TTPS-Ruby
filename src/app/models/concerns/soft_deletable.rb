@@ -7,7 +7,6 @@ module SoftDeletable
 
     self.discard_column = :deleted_at
 
-    default_scope -> { kept }
     scope :with_deleted, -> { with_discarded }
     scope :only_deleted, -> { discarded }
   end
