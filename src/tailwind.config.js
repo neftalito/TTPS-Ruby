@@ -8,15 +8,15 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                'proyecto-text': '#1a1a1a',
-                'proyecto-bg': '#faf6f5',
-                'proyecto-primary': '#1a4d70',
-                'proyecto-secondary': '#e9dcc9',
-                'proyecto-accent': '#c46d45',
-                'proyecto-success': '#4CAF50',
-                'proyecto-error':   '#E53935',
-                'proyecto-warning': '#FB8C00',
-                'proyecto-info':    '#1E88E5',
+                'proyecto-text':      '#1F1C1A',
+                'proyecto-bg':        '#F6F1EA',
+                'proyecto-primary':   '#744C32',
+                'proyecto-secondary': '#D9C7B3',
+                'proyecto-accent':    '#B65E3C',
+                'proyecto-success':   '#6A8C58',
+                'proyecto-error':     '#9E473B',
+                'proyecto-warning':   '#C28A3A',
+                'proyecto-info':      '#5A7C94',
             }
         },
     },
