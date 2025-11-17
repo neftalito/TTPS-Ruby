@@ -7,7 +7,7 @@ module Backstore
 
     def index
       @users = @users
-                 .order(created_at: :desc)
+                 .order(id: :asc)
                  .page(params[:page])
                  .per(25)
     end
