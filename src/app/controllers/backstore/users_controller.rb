@@ -6,7 +6,10 @@ module Backstore
     before_action :prevent_manager_assign_admin, only: [:create, :update]
 
     def index
-      @users = User.all
+      @users = @users
+                 .order(created_at: :desc)
+                 .page(params[:page])
+                 .per(25)
     end
 
     def new
