@@ -90,3 +90,6 @@ gem "vite_rails", "~> 3.0"
 
 # Para paginar
 gem "kaminari"
+
+# Para soft_deletes
+gem "discard"

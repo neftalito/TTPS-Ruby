@@ -1,0 +1,27 @@
+<article class="bg-white rounded-xl shadow border border-proyecto-secondary/30 flex flex-col">
+  <div class="h-40 bg-gradient-to-br from-proyecto-primary/10 to-proyecto-secondary/30 flex items-center justify-center">
+    <span class="text-proyecto-primary text-xl font-semibold">
+      <%= product.name.to_s.first(2).upcase %>
+    </span>
+  </div>
+
+  <div class="p-5 flex-1 flex flex-col gap-3">
+    <div class="flex items-center justify-between text-xs uppercase tracking-wide">
+      <span class="text-proyecto-secondary"><%= product.category&.name || "Sin categoría" %></span>
+      <span class="text-proyecto-secondary/70">Stock: <%= product.stock || 0 %></span>
+    </div>
+
+    <h2 class="text-xl font-semibold text-proyecto-primary"><%= product.name %></h2>
+    <p class="text-sm text-proyecto-secondary h-20 overflow-hidden"><%= product.description %></p>
+
+    <div class="mt-auto flex items-center justify-between">
+      <span class="text-2xl font-bold text-proyecto-accent">
+        <%= number_to_currency(product.price || 0, unit: "$", format: "%u %n") %>
+      </span>
+
+      <%= link_to "Ver detalle",
+                  storefront_product_path(product),
+                  class: "px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg text-sm font-medium hover:bg-proyecto-accent" %>
+    </div>
+  </div>
+</article>

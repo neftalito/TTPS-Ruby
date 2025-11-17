@@ -118,6 +118,8 @@ GEM
       devise (>= 4.9.0)
       rails-i18n
     devise-i18n-views (0.3.7)
+    discard (1.4.0)
+      activerecord (>= 4.2, < 9.0)
     dotenv (3.1.8)
     drb (2.2.3)
     dry-cli (1.3.0)
@@ -411,6 +413,7 @@ DEPENDENCIES
   devise
   devise-i18n
   devise-i18n-views
+  discard
   faker
   foreman
   image_processing (~> 1.2)
