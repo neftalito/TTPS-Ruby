@@ -2,7 +2,7 @@
 <% return if collection.blank? || collection.total_pages <= 1 %>
 
 <nav class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" aria-label="Paginación">
-  <p class="text-sm text-proyecto-secondary">
+  <p class="text-sm text-proyecto-text">
     Mostrando
     <span class="font-semibold text-proyecto-primary"><%= pagination_results_range(collection) %></span>
   </p>
@@ -10,7 +10,7 @@
   <div class="flex items-center gap-3">
     <%= pagination_button("Anterior", collection.prev_page, collection, disabled: collection.prev_page.nil?) %>
 
-    <span class="text-sm text-proyecto-secondary">
+    <span class="text-sm text-proyecto-text">
       Página
       <span class="font-semibold text-proyecto-primary"><%= collection.current_page %></span>
       de
