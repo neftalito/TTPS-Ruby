@@ -87,3 +87,6 @@ gem "faker"
 
 # Para usar vite
 gem "vite_rails", "~> 3.0"
+
+# Para paginar
+gem "kaminari"
