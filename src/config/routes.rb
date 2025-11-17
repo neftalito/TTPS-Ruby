@@ -17,7 +17,11 @@ Rails.application.routes.draw do
         patch :cancel
       end
     end
-    resources :users
+    resources :users do
+      member do
+        patch :restore
+      end
+    end
     resources :categories
     resources :orders
   end

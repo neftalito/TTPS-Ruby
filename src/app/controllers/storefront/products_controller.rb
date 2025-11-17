@@ -5,7 +5,7 @@ module Storefront
     def index
       @products = available_products
                     .page(params[:page])
-                    .per(25)
+                    .per(10)
     end
 
     def show

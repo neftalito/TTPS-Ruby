@@ -1,12 +1,69 @@
-<h1 class="text-2xl font-bold text-proyecto-primary mb-6">Gestión de Usuarios</h1>
+<header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+  <div>
+    <p class="text-sm uppercase tracking-widest text-proyecto-text/30">Usuarios</p>
+    <h1 class="text-3xl font-bold text-proyecto-primary">Gestión de Usuarios</h1>
+    <p class="text-proyecto-text/60">Administrá los usuarios del sistema, sus roles y permisos de acceso.</p>
+  </div>
 
-<div class="flex justify-end mb-4">
   <% if can? :create, User %>
     <%= link_to "Nuevo usuario",
                 new_backstore_user_path,
-                class: "px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg hover:bg-proyecto-accent" %>
+                class: "px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent" %>
+  <% end %>
+</header>
+
+<div class="bg-white p-4 mb-4 rounded-lg border border-proyecto-secondary shadow">
+  <%= form_with url: backstore_users_path,
+                method: :get,
+                local: true,
+                class: "flex flex-wrap justify-between gap-4" do |f| %>
+
+    <!-- Filtros a la izquierda -->
+    <div class="flex flex-wrap gap-4 items-center">
+
+      <!-- Buscar por email -->
+      <div>
+        <%= f.label :q, "Buscar email", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.text_field :q,
+                         value: params[:q],
+                         placeholder: "Ingrese email",
+                         class: "mt-1 px-3 py-1 border rounded-md w-48" %>
+      </div>
+
+      <!-- Filtrar por rol -->
+      <div>
+        <%= f.label :role, "Rol", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.select :role,
+                     [["Todos", ""], ["Administrador", :admin], ["Manager", :manager], ["Empleado", :employee]],
+                     { selected: params[:role] },
+                     class: "mt-1 px-3 py-1 border rounded-md" %>
+      </div>
+
+      <!-- Filtrar eliminados -->
+      <div>
+        <%= f.label :status, "Estado", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.select :status,
+                     [["Activos", ""], ["Eliminados", "deleted"], ["Todos", "all"]],
+                     { selected: params[:status] },
+                     class: "mt-1 px-3 py-1 border rounded-md" %>
+      </div>
+
+    </div>
+
+    <!-- Botones a la derecha, centrados, uno debajo del otro -->
+    <div class="flex flex-col items-center justify-center gap-2">
+      <%= f.submit "Filtrar",
+                   name: nil,
+                   class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+
+      <%= link_to "Limpiar filtros",
+                  backstore_users_path,
+                  class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+    </div>
+
   <% end %>
 </div>
+
 
 <div class="overflow-x-auto shadow border border-proyecto-secondary rounded-lg bg-white">
   <table class="min-w-full divide-y divide-proyecto-secondary">
@@ -15,6 +72,7 @@
       <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider">ID</th>
       <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider">Email</th>
       <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider">Rol</th>
+      <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider">Estado</th>
       <th class="px-6 py-3 text-right text-xs font-medium text-proyecto-primary uppercase tracking-wider">Acciones</th>
     </tr>
     </thead>
@@ -22,7 +80,7 @@
     <tbody class="divide-y divide-proyecto-secondary/70">
     <% if @users.any? %>
       <% @users.each do |user| %>
-        <tr>
+        <tr class="<%= 'bg-proyecto-secondary/30 opacity-70' if user.deleted? %>">
           <td class="px-6 py-4 whitespace-nowrap text-proyecto-text text-sm">
             <%= user.id %>
           </td>
@@ -43,35 +101,61 @@
           </td>
 
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="flex justify-end items-center gap-3">
-              <% if can? :update, user %>
-                <%= link_to "Editar",
-                            edit_backstore_user_path(user),
-                            class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm" %>
-              <% end %>
+            <% if user.deleted? %>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-error/10 text-proyecto-error">
+                Eliminado
+              </span>
+            <% else %>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success">
+                Activo
+              </span>
+            <% end %>
+          </td>
 
-              <% if can? :destroy, user %>
-                <%= link_to "Eliminar",
-                            backstore_user_path(user),
-                            data: {
-                              turbo_method: :delete,
-                              turbo_confirm: "¿Seguro que querés eliminar este usuario?"
-                            },
-                            class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm" %>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex justify-end items-center gap-3">
+              <% if user.deleted? %>
+                <!-- Mostrar botón de restaurar si está eliminado -->
+                <% if can? :restore, user %>
+                  <%= link_to "Restaurar",
+                              restore_backstore_user_path(user),
+                              data: {
+                                turbo_method: :patch,
+                                turbo_confirm: "¿Seguro que querés restaurar este usuario?"
+                              },
+                              class: "px-3 py-1 bg-proyecto-success text-white hover:bg-proyecto-success/80 rounded-md text-sm" %>
+                <% end %>
+              <% else %>
+                <!-- Mostrar botones normales si está activo -->
+                <% if can? :update, user %>
+                  <%= link_to "Editar",
+                              edit_backstore_user_path(user),
+                              class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm" %>
+                <% end %>
+
+                <% if can? :destroy, user %>
+                  <%= link_to "Eliminar",
+                              backstore_user_path(user),
+                              data: {
+                                turbo_method: :delete,
+                                turbo_confirm: "¿Seguro que querés eliminar este usuario?"
+                              },
+                              class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm" %>
+                <% end %>
               <% end %>
             </div>
           </td>
         </tr>
       <% end %>
-      <% else %>
+    <% else %>
       <tr>
-        <td colspan="4" class="px-6 py-10 text-center text-proyecto-text text-lg opacity-70">
+        <td colspan="5" class="px-6 py-10 text-center text-proyecto-text text-lg opacity-70">
           No hay usuarios para mostrar.
         </td>
       </tr>
-      <% end %>
+    <% end %>
     </tbody>
   </table>
 </div>
 
-<%= render "shared/pagination", collection: @users %>
+<%= render "shared/pagination", collection: @users , params: request.query_parameters %>
