@@ -65,97 +65,78 @@
 </div>
 
 
-<div class="overflow-x-auto shadow border border-proyecto-secondary rounded-lg bg-white">
-  <table class="min-w-full divide-y divide-proyecto-secondary">
-    <thead class="bg-proyecto-secondary/80">
-    <tr>
-      <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider">ID</th>
-      <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider">Email</th>
-      <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider">Rol</th>
-      <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider">Estado</th>
-      <th class="px-6 py-3 text-right text-xs font-medium text-proyecto-primary uppercase tracking-wider">Acciones</th>
-    </tr>
-    </thead>
+<% user_columns = [
+  { header: "ID", attribute: :id },
+  { header: "Email", attribute: :email },
+  {
+    header: "Rol",
+    cell_class: "px-6 py-4 whitespace-nowrap",
+    value: ->(user) do
+      badge_classes = case user.role
+                      when "admin" then "bg-proyecto-primary text-proyecto-bg"
+                      when "manager" then "bg-proyecto-accent text-proyecto-bg"
+                      else "bg-proyecto-secondary text-proyecto-primary"
+                      end
+      content_tag(:span, translated_role(user.role), class: "px-3 py-1 rounded-full text-xs font-semibold #{badge_classes}")
+    end
+  },
+  {
+    header: "Estado",
+    cell_class: "px-6 py-4 whitespace-nowrap",
+    value: ->(user) do
+      if user.deleted?
+        content_tag(:span, "Eliminado", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-error/10 text-proyecto-error")
+      else
+        content_tag(:span, "Activo", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success")
+      end
+    end
+  }
+] %>
 
-    <tbody class="divide-y divide-proyecto-secondary/70">
-    <% if @users.any? %>
-      <% @users.each do |user| %>
-        <tr class="<%= 'bg-proyecto-secondary/30 opacity-70' if user.deleted? %>">
-          <td class="px-6 py-4 whitespace-nowrap text-proyecto-text text-sm">
-            <%= user.id %>
-          </td>
+<% user_actions = lambda do |user|
+  if user.deleted?
+    if can? :restore, user
+      link_to "Restaurar",
+              restore_backstore_user_path(user),
+              data: {
+                turbo_method: :patch,
+                turbo_confirm: "¿Seguro que querés restaurar este usuario?"
+              },
+              class: "px-3 py-1 bg-proyecto-success text-white hover:bg-proyecto-success/80 rounded-md text-sm"
+    end
+  else
+    buttons = []
 
-          <td class="px-6 py-4 whitespace-nowrap text-proyecto-text text-sm">
-            <%= user.email %>
-          </td>
+    if can? :update, user
+      buttons << link_to(
+        "Editar",
+        edit_backstore_user_path(user),
+        class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm"
+      )
+    end
 
-          <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-3 py-1 rounded-full text-xs font-semibold
-                <%= case user.role
-                    when "admin" then "bg-proyecto-primary text-proyecto-bg"
-                    when "manager" then "bg-proyecto-accent text-proyecto-bg"
-                    else "bg-proyecto-secondary text-proyecto-primary"
-                    end %>">
-                <%= translated_role(user.role) %>
-              </span>
-          </td>
+    if can? :destroy, user
+      buttons << link_to(
+        "Eliminar",
+        backstore_user_path(user),
+        data: {
+          turbo_method: :delete,
+          turbo_confirm: "¿Seguro que querés eliminar este usuario?"
+        },
+        class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm"
+      )
+    end
 
-          <td class="px-6 py-4 whitespace-nowrap">
-            <% if user.deleted? %>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-error/10 text-proyecto-error">
-                Eliminado
-              </span>
-            <% else %>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success">
-                Activo
-              </span>
-            <% end %>
-          </td>
+    safe_join(buttons)
+  end
+end %>
 
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="flex justify-end items-center gap-3">
-              <% if user.deleted? %>
-                <!-- Mostrar botón de restaurar si está eliminado -->
-                <% if can? :restore, user %>
-                  <%= link_to "Restaurar",
-                              restore_backstore_user_path(user),
-                              data: {
-                                turbo_method: :patch,
-                                turbo_confirm: "¿Seguro que querés restaurar este usuario?"
-                              },
-                              class: "px-3 py-1 bg-proyecto-success text-white hover:bg-proyecto-success/80 rounded-md text-sm" %>
-                <% end %>
-              <% else %>
-                <!-- Mostrar botones normales si está activo -->
-                <% if can? :update, user %>
-                  <%= link_to "Editar",
-                              edit_backstore_user_path(user),
-                              class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm" %>
-                <% end %>
+<%= render "backstore/shared/resource_table",
+           collection: @users,
+           columns: user_columns,
+           row_class: ->(user) { user.deleted? ? "bg-proyecto-secondary/30 opacity-70" : nil },
+           empty_message: "No hay usuarios para mostrar.",
+           actions: user_actions %>
 
-                <% if can? :destroy, user %>
-                  <%= link_to "Eliminar",
-                              backstore_user_path(user),
-                              data: {
-                                turbo_method: :delete,
-                                turbo_confirm: "¿Seguro que querés eliminar este usuario?"
-                              },
-                              class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm" %>
-                <% end %>
-              <% end %>
-            </div>
-          </td>
-        </tr>
-      <% end %>
-    <% else %>
-      <tr>
-        <td colspan="5" class="px-6 py-10 text-center text-proyecto-text text-lg opacity-70">
-          No hay usuarios para mostrar.
-        </td>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
-</div>
 
-<%= render "shared/pagination", collection: @users , params: request.query_parameters %>
+<%= render "shared/pagination", collection: @users, params: request.query_parameters %>
