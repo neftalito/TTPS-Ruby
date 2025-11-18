@@ -1,2 +1,75 @@
-<h1>Backstore::Sales#index</h1>
-<p>Find me in app/views/backstore/sales/index.html.erb</p>
+<header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+  <div>
+    <p class="text-sm uppercase tracking-widest text-proyecto-text/30">Ventas</p>
+    <h1 class="text-3xl font-bold text-proyecto-primary">Historial de ventas</h1>
+    <p class="text-proyecto-text/60">Consultá las órdenes generadas en la tienda y controlá su estado.</p>
+  </div>
+</header>
+
+<% sales_columns = [
+  { header: "ID", attribute: :id },
+  {
+    header: "Comprador",
+    value: ->(sale) { sale.buyer_name.presence || sale.user&.name || sale.user&.email }
+  },
+  {
+    header: "Email",
+    value: ->(sale) { sale.buyer_email.presence || sale.user&.email }
+  },
+  {
+    header: "Total",
+    cell_class: "px-6 py-4 whitespace-nowrap font-semibold text-proyecto-primary",
+    value: ->(sale) { number_to_currency(sale.total || 0, unit: "$", separator: ",", delimiter: ".") }
+  },
+  {
+    header: "Fecha",
+    value: ->(sale) { l(sale.created_at, format: :short) }
+  },
+  {
+    header: "Estado",
+    cell_class: "px-6 py-4 whitespace-nowrap",
+    value: ->(sale) do
+      if sale.cancelled_at.present?
+        content_tag(:span, "Cancelada", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-error/10 text-proyecto-error")
+      else
+        content_tag(:span, "Confirmada", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success")
+      end
+    end
+  }
+] %>
+
+<% sales_actions = lambda do |sale|
+  buttons = []
+
+  if can? :read, sale
+    buttons << link_to(
+      "Ver",
+      backstore_sale_path(sale),
+      class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm"
+    )
+  end
+
+  if can?(:update, sale) && sale.cancelled_at.blank?
+    buttons << link_to(
+      "Cancelar",
+      cancel_backstore_sale_path(sale),
+      data: {
+        turbo_method: :patch,
+        turbo_confirm: "¿Seguro que querés cancelar esta venta?"
+      },
+      class: "px-3 py-1 bg-proyecto-error/80 text-white hover:bg-proyecto-error rounded-md text-sm"
+    )
+  end
+
+  safe_join(buttons)
+end %>
+
+<%= render "backstore/shared/resource_table",
+           collection: @sales,
+           columns: sales_columns,
+           row_class: ->(sale) { sale.cancelled_at.present? ? "bg-proyecto-secondary/30" : nil },
+           empty_message: "No hay ventas registradas.",
+           actions: sales_actions,
+           actions_header: "" %>
+
+<%= render "shared/pagination", collection: @sales, params: request.query_parameters %>

@@ -1,2 +1,90 @@
-<h1>Backstore::Products#index</h1>
-<p>Find me in app/views/backstore/products/index.html.erb</p>
+<header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+  <div>
+    <p class="text-sm uppercase tracking-widest text-proyecto-text/30">Productos</p>
+    <h1 class="text-3xl font-bold text-proyecto-primary">Catálogo de productos</h1>
+    <p class="text-proyecto-text/60">Gestioná el inventario, el stock y la publicación de tus productos.</p>
+  </div>
+
+  <% if can? :create, Product %>
+    <%= link_to "Nuevo producto",
+                new_backstore_product_path,
+                class: "px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent" %>
+  <% end %>
+</header>
+
+<% product_columns = [
+  { header: "ID", attribute: :id },
+  { header: "Nombre", attribute: :name },
+  {
+    header: "Categoría",
+    value: ->(product) { product.category&.name || "Sin categoría" }
+  },
+  {
+    header: "Precio",
+    cell_class: "px-6 py-4 whitespace-nowrap font-semibold text-proyecto-primary",
+    value: ->(product) { number_to_currency(product.price || 0, unit: "$", separator: ",", delimiter: ".") }
+  },
+  {
+    header: "Stock",
+    cell_class: "px-6 py-4 whitespace-nowrap font-semibold",
+    value: ->(product) do
+      stock_class = product.stock.to_i.positive? ? "text-proyecto-success" : "text-proyecto-error"
+      content_tag(:span, product.stock || 0, class: stock_class)
+    end
+  },
+  {
+    header: "Estado",
+    cell_class: "px-6 py-4 whitespace-nowrap",
+    value: ->(product) do
+      if product.published?
+        content_tag(:span, "Publicado", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success")
+      else
+        content_tag(:span, "Oculto", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-secondary text-proyecto-primary")
+      end
+    end
+  }
+] %>
+
+<% product_actions = lambda do |product|
+  buttons = []
+
+  if can? :read, product
+    buttons << link_to(
+      "Ver",
+      backstore_product_path(product),
+      class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm"
+    )
+  end
+
+  if can? :update, product
+    buttons << link_to(
+      "Editar",
+      edit_backstore_product_path(product),
+      class: "px-3 py-1 bg-proyecto-primary/10 text-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg rounded-md text-sm"
+    )
+  end
+
+  if can? :destroy, product
+    buttons << link_to(
+      product.deleted? ? "Eliminado" : "Eliminar",
+      backstore_product_path(product),
+      data: {
+        turbo_method: :delete,
+        turbo_confirm: "¿Seguro que querés eliminar este producto?"
+      },
+      class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm #{"opacity-60 cursor-not-allowed" if product.deleted?}",
+      disabled: product.deleted?
+    )
+  end
+
+  safe_join(buttons)
+end %>
+
+<%= render "backstore/shared/resource_table",
+           collection: @products,
+           columns: product_columns,
+           row_class: ->(product) { product.deleted? ? "bg-proyecto-secondary/20" : nil },
+           empty_message: "No hay productos para mostrar.",
+           actions: product_actions %>
+
+<%= render "shared/pagination", collection: @products, params: request.query_parameters %>
