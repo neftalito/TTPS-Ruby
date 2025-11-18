@@ -1,0 +1,66 @@
+<%#
+  Expected locals:
+    collection: Enumerable - records to display
+    columns: [ { header:, attribute: , value:, header_class:, cell_class: } ]
+    actions: Proc (optional) - lambda receiving record and returning HTML for action buttons
+    actions_header: String (optional) - header title for actions column
+    empty_message: String (optional) - text for empty state row
+    row_class: Proc or String (optional) - CSS class(es) applied to each row
+%>
+<% collection ||= [] %>
+<% columns ||= [] %>
+<% empty_message ||= "No hay registros para mostrar." %>
+<% actions_header ||= "Acciones" %>
+<% row_class ||= nil %>
+<% default_header_class = "px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider" %>
+<% default_cell_class = "px-6 py-4 whitespace-nowrap text-proyecto-text text-sm" %>
+
+<div class="overflow-x-auto shadow border border-proyecto-secondary rounded-lg bg-white">
+  <table class="min-w-full divide-y divide-proyecto-secondary">
+    <thead class="bg-proyecto-secondary/80">
+    <tr>
+      <% columns.each do |column| %>
+        <% header_title = column[:header] || column[:attribute].to_s.humanize %>
+        <% header_class = column[:header_class] || default_header_class %>
+        <th class="<%= header_class %>"><%= header_title %></th>
+      <% end %>
+      <% if actions.present? %>
+        <th class="<%= default_header_class.gsub('text-left', 'text-right') %>"><%= actions_header %></th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody class="divide-y divide-proyecto-secondary/70">
+    <% if collection.any? %>
+      <% collection.each do |record| %>
+        <% row_classes = row_class.respond_to?(:call) ? row_class.call(record) : row_class %>
+        <tr class="<%= row_classes %>">
+          <% columns.each do |column| %>
+            <% cell_class = column[:cell_class] || default_cell_class %>
+            <% value = if column[:value].respond_to?(:call)
+                         column[:value].call(record)
+                       elsif column[:attribute]
+                         record.public_send(column[:attribute])
+                       else
+                         ""
+                       end %>
+            <td class="<%= cell_class %>"><%= value %></td>
+          <% end %>
+          <% if actions.present? %>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex justify-end items-center gap-3">
+                <%= actions.call(record) %>
+              </div>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="<%= columns.size + (actions.present? ? 1 : 0) %>" class="px-6 py-10 text-center text-proyecto-text text-lg opacity-70">
+          <%= empty_message %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
