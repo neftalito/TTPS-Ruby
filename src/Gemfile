@@ -93,3 +93,6 @@ gem "kaminari"
 
 # Para soft_deletes
 gem "discard"
+
+# Para .env
+gem 'dotenv'

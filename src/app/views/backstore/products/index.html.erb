@@ -22,7 +22,7 @@
   {
     header: "Precio",
     cell_class: "px-6 py-4 whitespace-nowrap font-semibold text-proyecto-primary",
-    value: ->(product) { number_to_currency(product.price || 0, unit: "$", separator: ",", delimiter: ".") }
+    value: ->(product) { number_to_currency(product.price || 0, unit: "$", separator: ",", delimiter: ".", format:"%u%n") }
   },
   {
     header: "Stock",

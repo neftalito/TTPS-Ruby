@@ -18,8 +18,12 @@ class Sale < ApplicationRecord
     raise ActiveRecord::ReadOnlyRecord, SALES_IMMUTABLE_MESSAGE
   end
 
-  def self.delete_all(*)
-    raise ActiveRecord::ReadOnlyRecord, SALES_IMMUTABLE_MESSAGE
+  def self.delete_all(*args)
+    if Rails.env.development? && ENV["SKIP_SALE_PROTECTION"] == "1"
+      super
+    else
+      raise ActiveRecord::ReadOnlyRecord, SALES_IMMUTABLE_MESSAGE
+    end
   end
 
   class << self

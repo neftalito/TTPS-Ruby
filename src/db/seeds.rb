@@ -2,10 +2,12 @@ require "faker"
 require "pathname"
 
 puts "Eliminando datos existentes..."
-ProductImage.destroy_all
-Product.condition_new
-Category.destroy_all
-User.destroy_all
+SaleItem.delete_all
+Sale.delete_all
+ProductImage.delete_all
+Product.delete_all
+Category.delete_all
+User.delete_all
 
 puts "Creando usuarios predeterminados..."
 users = [
@@ -116,6 +118,52 @@ conditions = Product.conditions.keys
       alt: "Imagen #{image_index + 1} de #{product.name}"
     )
   end
+end
+
+puts "Creando ventas..."
+
+# Tomamos usuarios y productos existentes
+all_users = User.all
+all_products = Product.where(published: true)
+
+raise "No hay usuarios para crear ventas" if all_users.empty?
+raise "No hay productos publicados para ventas" if all_products.empty?
+
+
+150.times do
+  user = all_users.sample
+
+  created_at = Faker::Time.between(from: 12.months.ago, to: Time.current)
+
+  cancelled_at = rand < 0.10 ? Faker::Time.between(from: created_at, to: Time.current) : nil
+
+  sale = Sale.create!(
+    user: user,
+    buyer_name: Faker::Name.name,
+    buyer_email: Faker::Internet.email,
+    buyer_dni: Faker::Number.number(digits: 8),
+    cancelled_at: cancelled_at,
+    created_at: created_at,
+    updated_at: created_at
+  )
+
+  # SaleItems
+  rand(1..5).times do
+    product = all_products.sample
+    quantity = rand(1..3)
+    unit_price = product.price
+
+    sale.sale_items.create!(
+      product: product,
+      quantity: quantity,
+      unit_price: unit_price
+    )
+  end
+
+  # Calcular total REAL de la venta
+  total = sale.sale_items.sum("quantity * unit_price")
+
+  sale.update_column(:total, total)
 end
 
 puts "Seed completado."

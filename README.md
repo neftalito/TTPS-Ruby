@@ -42,7 +42,7 @@ bundle exec rubocop -a
 ```bash
 bin/rails db:create db:migrate db:seed
 ```
-- Reiniciar desde cero
+- Reiniciar desde cero (también corre las seeds)
 ```bash
-bin/rails db:drop db:create db:migrate db:seed
+bin/rails db:reset
 ```

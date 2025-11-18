@@ -414,6 +414,7 @@ DEPENDENCIES
   devise-i18n
   devise-i18n-views
   discard
+  dotenv
   faker
   foreman
   image_processing (~> 1.2)

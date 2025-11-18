@@ -67,11 +67,17 @@
           <span>Perfil</span>
         <% end %>
 
+        <%= link_to root_path,
+                    class: "px-3 py-1 rounded bg-proyecto-bg text-proyecto-primary border border-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2" do %>
+          <i class="fa-solid fa-store"></i>
+          <span>Volver a la tienda</span>
+        <% end %>
+
         <%= button_to destroy_user_session_path,
                       method: :delete,
                       class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg rounded hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2" do %>
           <i class="fa-solid fa-right-from-bracket"></i>
-          Salir
+          Cerrar sesión
         <% end %>
 
       <% else %>
