@@ -4,7 +4,6 @@ class Product < ApplicationRecord
   belongs_to :category
 
   has_many_attached :images
-  has_many :product_images, dependent: :destroy
 
   enum :product_type, {vinyl: "viniyl", cd: "cd"}, prefix: true
   enum :condition, { new: "new", used: "used" }, prefix: true

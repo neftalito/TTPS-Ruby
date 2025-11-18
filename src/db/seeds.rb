@@ -1,10 +1,11 @@
 require "faker"
 require "pathname"
+require "marcel"
 
 puts "Eliminando datos existentes..."
 SaleItem.delete_all
 Sale.delete_all
-ProductImage.delete_all
+ActiveStorage::Attachment.where(record_type: "Product").find_each(&:purge)
 Product.delete_all
 Category.delete_all
 User.delete_all
@@ -111,12 +112,17 @@ conditions = Product.conditions.keys
     updated_at: last_modified_at
   )
 
-  rand(1..3).times do |image_index|
-    ProductImage.create!(
-      product: product,
-      url: image_library.sample,
-      alt: "Imagen #{image_index + 1} de #{product.name}"
-    )
+  rand(1..3).times do
+    image_path = image_library.sample
+    absolute_path = Rails.root.join(image_path)
+
+    File.open(absolute_path) do |file|
+      product.images.attach(
+        io: file,
+        filename: File.basename(image_path),
+        content_type: Marcel::MimeType.for(file)
+      )
+    end
   end
 end
 
