@@ -38,7 +38,11 @@
           <%= link_to "Inicio", root_path, class: "text-proyecto-secondary hover:text-proyecto-accent transition" %>
           <%= link_to "Catálogo", storefront_products_path, class: "text-proyecto-secondary hover:text-proyecto-accent transition" %>
           <%= link_to "Buscar", storefront_search_path, class: "text-proyecto-secondary hover:text-proyecto-accent transition" %>
-          <%= link_to "Iniciar Sesión", new_user_session_path, class: "text-proyecto-secondary hover:text-proyecto-accent transition" %>
+          <% if user_signed_in? %>
+            <%= link_to "Panel de administración", backstore_root_path, class: "text-proyecto-secondary hover:text-proyecto-accent transition" %>
+          <% else %>
+            <%= link_to "Iniciar Sesión", new_user_session_path, class: "text-proyecto-secondary hover:text-proyecto-accent transition" %>
+          <% end %>
         </div>
 
         <!-- MOBILE MENU BUTTON -->
