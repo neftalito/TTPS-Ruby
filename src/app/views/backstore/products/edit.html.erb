@@ -93,8 +93,7 @@
                 <% @product.images.each do |img| %>
                   <%# CONTENEDOR DE LA IMAGEN CON EL BOTÓN %>
                   <div class="border border-slate-700 rounded-xl overflow-hidden shadow-lg relative group">
-                    <%= image_tag url_for(img.variant(resize_to_limit: [300, 300])), class: "object-cover w-full h-28 sm:h-36" %>
-                    
+                    <%= image_tag img, class: "object-cover w-full h-28 sm:h-36" %>
                     <%# BOTÓN DE ELIMINAR (SOLO APARECE AL HACER HOVER) %>
                     <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
                       <%= link_to delete_image_attachment_backstore_product_path(@product, image_id: img.id),
