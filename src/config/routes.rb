@@ -15,6 +15,12 @@ Rails.application.routes.draw do
       member { patch :change_stock }
     end
 
+    resources :products do
+      member do
+       delete :delete_image_attachment
+      end
+    end
+
     resources :sales do
       member do
         patch :cancel
