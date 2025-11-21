@@ -111,15 +111,16 @@ conditions = Product.conditions.keys
     updated_at: last_modified_at
   )
 
-  rand(1..3).times do |image_index|
-    ProductImage.create!(
-      product: product,
-      url: image_library.sample,
-      alt: "Imagen #{image_index + 1} de #{product.name}"
-    )
-  end
-end
+rand(1..3).times do
+  absolute_path = Rails.root.join(image_library.sample)
 
+  product.images.attach(
+    io: File.open(absolute_path),
+    filename: File.basename(absolute_path),
+    content_type: Marcel::MimeType.for(Pathname.new(absolute_path))
+  )
+end
+end
 puts "Creando ventas..."
 
 # Tomamos usuarios y productos existentes
