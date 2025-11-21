@@ -1,0 +1,173 @@
+<div class="bg-gray-50 min-h-screen py-12">
+  <div class="max-w-4xl mx-auto p-12 bg-slate-900 rounded-3xl shadow-2xl border border-slate-700 font-sans text-gray-100">
+    
+    <header class="mb-10 border-b border-slate-700 pb-5 text-center">
+      <%# TÍTULO DINÁMICO %>
+      <h1 class="text-4xl font-extrabold text-emerald-400 tracking-widest uppercase">
+        <%= @product.persisted? ? "EDITAR PRODUCTO" : "NUEVO PRODUCTO" %> 📀
+      </h1>
+      <p class="text-lg text-slate-400 mt-2 font-light">
+        <%= @product.persisted? ? "Realiza las modificaciones necesarias al registro." : "No te olvides de proporcionar la mayor información necesaria." %>
+      </p>
+      
+      <%# Mostrar errores de validación si existen %>
+      <% if @product.errors.any? %>
+        <div class="mt-4 p-4 rounded-lg bg-red-800/50 border border-red-700 text-red-300 text-left">
+          <h4 class="font-bold mb-2">Se encontraron <%= pluralize(@product.errors.count, "error") %>:</h4>
+          <ul class="list-disc list-inside text-sm">
+            <% @product.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </header>
+
+    <%# FORMULARIO: Usa [:backstore, @product] para manejar las rutas correctamente %>
+    <%= form_with model: [:backstore, @product], local: true, html: { multipart: true } do |f| %>
+      <div class="space-y-12">
+
+        <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
+          <h2 class="text-2xl font-semibold text-blue-400 mb-6 border-b border-slate-700 pb-3">Detalles Esenciales del Activo</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <%= f.label :name, "Título del Álbum", class: "block text-sm font-medium text-blue-400 mb-1" %>
+              <%= f.text_field :name, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            </div>
+            <div>
+              <%= f.label :author, "Autor / Entidad Principal", class: "block text-sm font-medium text-blue-400 mb-1" %>
+              <%= f.text_field :author, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            </div>
+          </div>
+          <div class="mt-8">
+            <%= f.label :description, "Descripción y Metadatos Clave", class: "block text-sm font-medium text-emerald-400 mb-1" %>
+            <%= f.text_area :description, rows: 4, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+          </div>
+        </div>
+
+        <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
+          <h2 class="text-2xl font-semibold text-emerald-400 mb-6 border-b border-slate-700 pb-3">Gestión Financiera e Inventario</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div>
+              <%= f.label :price, "Precio de Venta (AR$)", class: "block text-sm font-medium text-gray-300 mb-1" %>
+              <div class="relative mt-1 rounded-lg shadow-sm">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <span class="text-emerald-400 sm:text-lg font-bold">$</span>
+                </div>
+                <%= f.number_field :price, step: 0.01, class: "block w-full rounded-lg border border-slate-700 pl-8 pr-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+              </div>
+            </div>
+            
+            <div>
+              <%= f.label :stock, "Stock Disponible", class: "block text-sm font-medium text-gray-300 mb-1" %>
+              <%= f.number_field :stock, min: 0, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            </div>
+            
+            <div>
+              <%= f.label :category_id, "Clasificación (Género)", class: "block text-sm text-gray-300 mb-1" %>
+              <%= f.select :category_id, Category.order(:name).pluck(:name, :id), { include_blank: "Seleccionar" }, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
+          <h2 class="text-2xl font-semibold text-blue-400 mb-6 border-b border-slate-700 pb-3">Detalles Físicos y Tracking</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div>
+              <%= f.label :product_type, "Formato", class: "block text-sm font-medium text-gray-300 mb-1" %>
+              <%= f.select :product_type, Product.product_types.keys.map { |k| [k.humanize, k] }, {}, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            </div>
+
+            <div>
+              <%= f.label :product_state, "Condición del Producto", class: "block text-sm font-medium text-gray-300 mb-1" %>
+              <%# CAMPO DE ESTADO: Añadimos un ID para la lógica de JavaScript %>
+              <%= f.select :product_state, Product.product_states.keys.map { |k| [k.humanize, k] }, {}, 
+                  class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200",
+                  id: "product_product_state" %>
+            </div>
+            
+            <div>
+              <%= f.label :inventory_entered_at, "Fecha de Ingreso", class: "block text-sm font-medium text-gray-300 mb-1" %>
+              <%= f.date_field :inventory_entered_at, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            </div>
+          </div>
+          
+          <%# BLOQUE DE AUDIO: Se inicializa oculto con style="display: none;" para que JS lo muestre solo si es "usado" %>
+          <div id="audio_upload_block" class="mt-8" style="display: none;">
+            <label for="product_audio" class="block text-sm font-medium text-blue-400 mb-1">Muestra de Audio (Opcional, solo para discos usados)</label>
+            <%= f.file_field :audio, accept: "audio/*", 
+                class: "mt-1 block w-full text-base text-gray-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-base file:font-semibold file:bg-blue-800 file:text-white hover:file:bg-blue-700 transition duration-200" %>
+            
+            <%# Previsualización del audio adjunto (solo en modo edición) %>
+            <% if @product.persisted? && @product.audio.attached? %>
+              <p class="text-sm text-slate-400 mt-2">Audio actual: <%= link_to @product.audio.filename, url_for(@product.audio), target: "_blank", class: "text-emerald-400 hover:text-emerald-300 underline" %></p>
+            <% end %>
+          </div>
+          
+        </div>
+
+        <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
+          <h2 class="text-2xl font-semibold text-emerald-400 mb-6 border-b border-slate-700 pb-3">Archivos Multimedia de Masterización</h2>
+          
+          <div>
+            <%= f.label :images, "Imágenes de Alta Resolución", class: "block text-sm font-medium text-gray-300 mb-1" %>
+            <%= f.file_field :images, multiple: true, accept: "image/*", class: "mt-1 block w-full text-base text-gray-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-base file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 transition duration-200" %>
+          </div>
+
+          <%# VISTA PREVIA: Solo se muestra si el producto ya está en la DB %>
+          <% if @product.persisted? && @product.images.attached? %>
+            <div class="mt-8">
+              <h3 class="text-xl font-medium text-gray-300 mb-4">Visualización de Activos Actuales:</h3>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <% @product.images.each do |img| %>
+                  <div class="border border-slate-700 rounded-xl overflow-hidden shadow-lg relative group">
+                    <%= image_tag url_for(img.variant(resize_to_limit: [300, 300])), class: "object-cover w-full h-28 sm:h-36" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="pt-8 border-t border-slate-700 flex justify-end gap-4">
+          <%# Botón de Regreso %>
+          <%= link_to "Regresar a Panel", backstore_products_path, class: "px-8 py-3 border border-slate-700 rounded-lg text-gray-300 bg-slate-800 hover:bg-slate-700 transition duration-200 font-medium tracking-wide" %>
+          
+          <%# Botón de Submit Dinámico %>
+          <%= f.submit (@product.persisted? ? "Guardar Cambios" : "Crear Producto"), class: "px-8 py-3 bg-emerald-400 text-slate-950 rounded-lg font-bold hover:bg-emerald-300 transition duration-200 cursor-pointer shadow-lg tracking-wider" %>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%# BLOQUE DE JAVASCRIPT: Lógica para ocultar/mostrar el campo de audio %>
+<script>
+  document.addEventListener('turbo:load', function() {
+    const stateSelect = document.getElementById('product_product_state');
+    const audioBlock = document.getElementById('audio_upload_block');
+
+    if (!stateSelect || !audioBlock) return;
+
+    function toggleAudioBlock() {
+      // **VERIFICACIÓN CORREGIDA:** Usamos 'used_disc' ya que f.select genera las claves del enum como valores.
+      const isUsedDisc = stateSelect.value === 'used_disc'; 
+      
+      if (isUsedDisc) {
+        audioBlock.style.display = 'block';
+      } else {
+        audioBlock.style.display = 'none';
+      }
+    }
+
+    // 1. Ejecutar al cargar la página (para asegurar el estado inicial en new/edit)
+    toggleAudioBlock(); 
+
+    // 2. Ejecutar cuando el usuario cambia la selección
+    stateSelect.addEventListener('change', toggleAudioBlock);
+  });
+</script>
