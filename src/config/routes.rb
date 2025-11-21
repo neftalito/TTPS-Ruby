@@ -11,7 +11,10 @@ Rails.application.routes.draw do
   namespace :backstore, path: "/admin" do
     root "dashboard#index"
 
-    resources :products
+    resources :products do
+      member { patch :change_stock }
+    end
+
     resources :sales do
       member do
         patch :cancel
