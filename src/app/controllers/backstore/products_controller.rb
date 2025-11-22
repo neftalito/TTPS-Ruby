@@ -1,7 +1,7 @@
 module Backstore
   class ProductsController < BaseController
     before_action :authenticate_user!
-    before_action :set_product, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment]
+    before_action :set_product, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment restore]
 
     def index
       @products = Product.all
@@ -91,11 +91,11 @@ module Backstore
 
 
     def destroy
-      Product.transaction do
-        @product.discard  
-        @product.update!(stock: 0)
+      if @product.discard
+        redirect_to backstore_products_path, notice: "Producto dado de baja"
+      else
+        redirect_to backstore_products_path, alert: "No se pudo eliminar el producto"
       end
-      redirect_to backstore_products_path, notice: "Producto dado de baja"
     end
 
     def restore
@@ -162,7 +162,7 @@ module Backstore
     private
 
     def set_product
-      @product = Product.find(params[:id])
+      @product = Product.with_discarded.find(params[:id])
     end
 
     def product_params

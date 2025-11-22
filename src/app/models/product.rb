@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   include SoftDeletable
+  include Discard::Model 
 
   belongs_to :category
 
@@ -9,8 +10,8 @@ class Product < ApplicationRecord
   enum :product_type, { vinyl: "vinyl", cd: "cd" }, prefix: true
   enum :condition, { new: "new", used: "used" }, prefix: true
 
-  # Scope para productos no borrados lógicamente
-  scope :available_products, -> { where(deleted_at: nil) }
+  # Scopes
+  scope :available_products, -> { kept }
 
   validates :author, presence: true
   validates :inventory_entered_at, :last_modified_at, presence: true
@@ -20,7 +21,7 @@ class Product < ApplicationRecord
 
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
-
+  before_discard :reset_stock
   
 
   private
@@ -45,6 +46,10 @@ class Product < ApplicationRecord
     if condition_changed? && condition == "new" && audio.attached?
       audio.purge
     end
+  end
+
+  def reset_stock
+    self.update_column(:stock, 0)
   end
   
 end
