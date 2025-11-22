@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     resources :products do
       member do
        delete :delete_image_attachment
+       delete :delete_audio_attachment
       end
     end
 

@@ -1,7 +1,7 @@
 module Backstore
   class ProductsController < ApplicationController
     before_action :authenticate_user!
-    before_action :set_product, only: %i[show edit update destroy change_stock delete_image_attachment]
+    before_action :set_product, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment]
 
     # GET /backstore/products
     def index
@@ -10,7 +10,6 @@ module Backstore
 
     # GET /backstore/products/:id
     def show
-      # @product cargado por set_product
     end
 
     # GET /backstore/products/new
@@ -37,15 +36,26 @@ module Backstore
 
     # PATCH/PUT /backstore/products/:id
     def update
-      # Separo las imágenes del resto de los parámetros.
-      # Uso .except(:images) para que el update no toque las fotos existentes todavía.
-      update_params = product_params.except(:images)
+      # Guardamos el estado anterior para comparar
+      previous_condition = @product.condition
+      
+      # Actualizamos los parámetros excepto las imágenes y el audio
+      update_params = product_params.except(:images, :audio)
 
       if @product.update(update_params)
         
-        #Verifico si el usuario subió fotos nuevas
+        # Si cambió de usado a nuevo, eliminamos el audio existente
+        if previous_condition == "used" && @product.condition == "new" && @product.audio.attached?
+          @product.audio.purge
+        end
+
+        # Si es usado y hay un nuevo archivo de audio, lo adjuntamos
+        if @product.condition == "used" && params[:product][:audio].present?
+          @product.audio.attach(params[:product][:audio])
+        end
+
+        # Si hay nuevas imágenes, las adjuntamos
         if params[:product][:images].present?
-          # Las adjunto (append) sin borrar las anteriores
           @product.images.attach(params[:product][:images])
         end
 
@@ -55,28 +65,38 @@ module Backstore
       end
     end
 
-    # DELETE /backstore/products/:id  (borrado lógico)
+    # DELETE /backstore/products/:id (borrado lógico)
     def destroy
       @product.soft_delete if @product.respond_to?(:soft_delete)
       redirect_to backstore_products_path, notice: 'Producto dado de baja'
     end
 
+    # DELETE /backstore/products/:id/delete_image_attachment
     def delete_image_attachment
-      # Busco la imagen específica dentro de las adjuntas al producto
       image = @product.images.find(params[:image_id])
-      image.purge # .purge elimina el archivo y el registro de la DB
+      image.purge
       
       redirect_to edit_backstore_product_path(@product), notice: 'Imagen eliminada correctamente.'
     rescue ActiveRecord::RecordNotFound
       redirect_to edit_backstore_product_path(@product), alert: 'Imagen no encontrada.'
     end
 
+    # DELETE /backstore/products/:id/delete_audio_attachment
+    def delete_audio_attachment
+      if @product.audio.attached?
+        @product.audio.purge
+        redirect_to edit_backstore_product_path(@product), notice: 'Audio eliminado correctamente.'
+      else
+        redirect_to edit_backstore_product_path(@product), alert: 'No hay audio para eliminar.'
+      end
+    end
+
     # PATCH /backstore/products/:id/change_stock
     def change_stock
-      stock_param = params.dig(:product, :stock) 
+      stock_param = params.dig(:product, :stock)
       new_stock_value = stock_param.present? ? stock_param.to_i : nil
       
-      if new_stock_value.is_a?(Integer) && new_stock_value >= 0 
+      if new_stock_value.is_a?(Integer) && new_stock_value >= 0
         update_attributes = { stock: new_stock_value }
         
         if @product.respond_to?(:last_modified_at) && @product.class.validators_on(:last_modified_at).any?
@@ -88,7 +108,6 @@ module Backstore
         else
           redirect_to backstore_product_path(@product), alert: "Error al actualizar stock: #{@product.errors.full_messages.join(', ')}"
         end
-        
       else
         redirect_to backstore_product_path(@product), alert: "El valor de stock ingresado no es válido."
       end
@@ -101,13 +120,11 @@ module Backstore
     end
 
     def product_params
-      #  Se mantiene images: [] 
       params.require(:product).permit(
         :name, :author, :category_id, :price, :stock,
-        :product_type, :product_state, :inventory_entered_at, :description,
-        :audio_file, 
-        :audio,      # Si es un solo archivo adjunto (has_one_attached) usa :audio (singular)
-        images: []   # has_many_attached :images
+        :product_type, :condition, :inventory_entered_at, :description,
+        :audio,
+        images: []
       )
     end
   end
