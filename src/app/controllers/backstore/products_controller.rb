@@ -71,15 +71,21 @@ module Backstore
       redirect_to backstore_products_path, notice: 'Producto dado de baja'
     end
 
-    # DELETE /backstore/products/:id/delete_image_attachment
     def delete_image_attachment
+      @product = Product.find(params[:id])
       image = @product.images.find(params[:image_id])
+
+      if @product.images.count <= 1
+        redirect_back fallback_location: edit_backstore_product_path(@product),
+                      alert: "⚠️ No se puede eliminar la última imagen. Debe quedar al menos una."
+        return
+      end
+
       image.purge
-      
-      redirect_to edit_backstore_product_path(@product), notice: 'Imagen eliminada correctamente.'
-    rescue ActiveRecord::RecordNotFound
-      redirect_to edit_backstore_product_path(@product), alert: 'Imagen no encontrada.'
+      redirect_back fallback_location: edit_backstore_product_path(@product),
+                    notice: "Imagen eliminada correctamente."
     end
+
 
     # DELETE /backstore/products/:id/delete_audio_attachment
     def delete_audio_attachment
