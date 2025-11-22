@@ -12,6 +12,56 @@
   <% end %>
 </header>
 
+<div class="bg-white p-4 mb-4 rounded-lg border border-proyecto-secondary shadow">
+  <%= form_with url: backstore_products_path,
+                method: :get,
+                local: true,
+                class: "flex flex-wrap justify-between gap-4" do |f| %>
+
+    <div class="flex flex-wrap gap-4 items-center">
+
+      <!-- Buscar por nombre o autor -->
+      <div>
+        <%= f.label :q, "Buscar", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.text_field :q,
+                         value: params[:q],
+                         placeholder: "Nombre o autor",
+                         class: "mt-1 px-3 py-1 border rounded-md w-48" %>
+      </div>
+
+      <!-- Filtrar por categoría -->
+      <div>
+        <%= f.label :category_id, "Categoría", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.select :category_id,
+                     [["Todas", ""]] + Category.all.map { |c| [c.name, c.id] },
+                     { selected: params[:category_id] },
+                     class: "mt-1 px-3 py-1 border rounded-md" %>
+      </div>
+
+      <!-- Filtrar por estado -->
+      <div>
+        <%= f.label :status, "Estado", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.select :status,
+                     [["Activos", ""], ["Eliminados", "deleted"], ["Todos", "all"]],
+                     { selected: params[:status] },
+                     class: "mt-1 px-3 py-1 border rounded-md" %>
+      </div>
+
+    </div>
+
+    <div class="flex flex-col items-center justify-center gap-2">
+      <%= f.submit "Filtrar",
+                   name: nil,
+                   class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+
+      <%= link_to "Limpiar filtros",
+                  backstore_products_path,
+                  class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+    </div>
+
+  <% end %>
+</div>
+
 <% product_columns = [
   { header: "ID", attribute: :id },
   { header: "Nombre", attribute: :name },
@@ -36,55 +86,62 @@
     header: "Estado",
     cell_class: "px-6 py-4 whitespace-nowrap",
     value: ->(product) do
-      if product.published?
-        content_tag(:span, "Publicado", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success")
+      if product.deleted?
+        content_tag(:span, "Eliminado", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-error/10 text-proyecto-error")
       else
-        content_tag(:span, "Oculto", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-secondary text-proyecto-primary")
+        content_tag(:span, "Activo", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success")
       end
     end
   }
 ] %>
 
 <% product_actions = lambda do |product|
-  buttons = []
+  if product.deleted?
+    if can? :restore, product
+      link_to "Restaurar",
+              restore_backstore_product_path(product),
+              data: { turbo_method: :patch, turbo_confirm: "¿Seguro que querés restaurar este producto?" },
+              class: "px-3 py-1 bg-proyecto-success text-white hover:bg-proyecto-success/80 rounded-md text-sm"
+    end
+  else
+    buttons = []
 
-  if can? :read, product
-    buttons << link_to(
-      "Ver",
-      backstore_product_path(product),
-      class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm"
-    )
+    if can? :read, product
+      buttons << link_to(
+        "Ver",
+        backstore_product_path(product),
+        class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm"
+      )
+    end
+
+    if can? :update, product
+      buttons << link_to(
+        "Editar",
+        edit_backstore_product_path(product),
+        class: "px-3 py-1 bg-proyecto-primary/10 text-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg rounded-md text-sm"
+      )
+    end
+
+    if can? :destroy, product
+      buttons << link_to(
+        "Eliminar",
+        backstore_product_path(product),
+        data: { turbo_method: :delete, turbo_confirm: "¿Seguro que querés eliminar este producto?" },
+        class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm"
+      )
+    end
+
+    safe_join(buttons)
   end
-
-  if can? :update, product
-    buttons << link_to(
-      "Editar",
-      edit_backstore_product_path(product),
-      class: "px-3 py-1 bg-proyecto-primary/10 text-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg rounded-md text-sm"
-    )
-  end
-
-  if can? :destroy, product
-    buttons << link_to(
-      product.deleted? ? "Eliminado" : "Eliminar",
-      backstore_product_path(product),
-      data: {
-        turbo_method: :delete,
-        turbo_confirm: "¿Seguro que querés eliminar este producto?"
-      },
-      class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm #{"opacity-60 cursor-not-allowed" if product.deleted?}",
-      disabled: product.deleted?
-    )
-  end
-
-  safe_join(buttons)
 end %>
 
-<%= render "backstore/shared/resource_table",
-           collection: @products,
-           columns: product_columns,
-           row_class: ->(product) { product.deleted? ? "bg-proyecto-secondary/20" : nil },
-           empty_message: "No hay productos para mostrar.",
-           actions: product_actions %>
+<div class="w-full overflow-x-auto shadow border border-proyecto-secondary rounded-lg bg-white">
+  <%= render "backstore/shared/resource_table",
+             collection: @products,
+             columns: product_columns,
+             row_class: ->(product) { product.deleted? ? "bg-proyecto-secondary/20" : nil },
+             empty_message: "No hay productos para mostrar.",
+             actions: product_actions %>
+</div>
 
 <%= render "shared/pagination", collection: @products, params: request.query_parameters %>
