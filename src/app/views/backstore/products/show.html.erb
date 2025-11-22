@@ -87,7 +87,7 @@
         <div class="bg-gray-50 p-4 rounded">
           <p class="text-base font-semibold text-gray-800">Estado</p>
           <p class="mt-1 text-lg font-medium text-gray-900">
-            <%= (@product.respond_to?(:product_state) ? @product.product_state.humanize : (@product.respond_to?(:condition) ? @product.condition.humanize : "—")) %>
+            <%= @product.condition.humanize %>
           </p>
         </div>
 
@@ -114,7 +114,6 @@
         </div>
       </div>
 
-      <%# --- AQUÍ ESTABA EL FORMULARIO DE STOCK, ELIMINADO --- %>
 
       <div>
         <p class="text-base font-semibold text-gray-800">Descripción</p>
@@ -124,7 +123,7 @@
       </div>
       
       <%# AUDIO PREVIEW (Si es disco usado y tiene audio adjunto) %>
-      <% if @product.used_disc? && @product.audio.attached? %>
+      <% if @product.condition == "used" && @product.audio.attached? %>
         <div class="bg-gray-100 p-4 rounded mt-4">
           <p class="text-base font-semibold text-gray-800 mb-2">Muestra de Audio 🎧</p>
           <audio controls class="w-full">

@@ -82,11 +82,10 @@
             </div>
 
             <div>
-              <%= f.label :product_state, "Condición del Producto", class: "block text-sm font-medium text-gray-300 mb-1" %>
-              <%# CAMPO DE ESTADO: Añadimos un ID para la lógica de JavaScript %>
-              <%= f.select :product_state, Product.product_states.keys.map { |k| [k.humanize, k] }, {}, 
+              <%= f.label :condition, "Condición del Producto", class: "block text-sm font-medium text-gray-300 mb-1" %>
+              <%= f.select :condition, Product.conditions.keys.map { |k| [k.humanize, k] }, {}, 
                   class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200",
-                  id: "product_product_state" %>
+                  id: "product_condition" %>
             </div>
             
             <div>
@@ -103,10 +102,22 @@
             
             <%# Previsualización del audio adjunto (solo en modo edición) %>
             <% if @product.persisted? && @product.audio.attached? %>
-              <p class="text-sm text-slate-400 mt-2">Audio actual: <%= link_to @product.audio.filename, url_for(@product.audio), target: "_blank", class: "text-emerald-400 hover:text-emerald-300 underline" %></p>
+              <div class="bg-slate-950 border border-slate-700 rounded-lg p-4 mt-2">
+                <p class="text-xs text-emerald-400 font-mono mb-2 uppercase tracking-wider">Audio cargado:</p>
+                <audio controls class="w-full mb-2">
+                  <source src="<%= url_for(@product.audio) %>" type="<%= @product.audio.content_type %>">
+                </audio>
+                <%= link_to delete_audio_attachment_backstore_product_path(@product),
+                    data: { turbo_method: :delete},
+                    class: "inline-flex items-center gap-2 px-3 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-600/30 rounded-lg transition-all text-sm" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                  </svg>
+                  Eliminar Audio
+                <% end %>
+              </div>
             <% end %>
           </div>
-          
         </div>
 
         <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
@@ -125,6 +136,15 @@
                 <% @product.images.each do |img| %>
                   <div class="border border-slate-700 rounded-xl overflow-hidden shadow-lg relative group">
                     <%= image_tag url_for(img.variant(resize_to_limit: [300, 300])), class: "object-cover w-full h-28 sm:h-36" %>
+                    <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+                      <%= link_to delete_image_attachment_backstore_product_path(@product, image_id: img.id),
+                          data: { turbo_method: :delete, turbo_confirm: "¿Borrar imagen permanentemente?" },
+                          class: "bg-red-600/90 hover:bg-red-600 text-white p-1.5 rounded-full shadow-md flex items-center justify-center transition backdrop-blur-sm" do %>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      <% end %>
+                    </div>
                   </div>
                 <% end %>
               </div>
@@ -145,29 +165,108 @@
   </div>
 </div>
 
-<%# BLOQUE DE JAVASCRIPT: Lógica para ocultar/mostrar el campo de audio %>
+<%# BLOQUE DE JAVASCRIPT: Toggle audio y modales %>
 <script>
-  document.addEventListener('turbo:load', function() {
-    const stateSelect = document.getElementById('product_product_state');
-    const audioBlock = document.getElementById('audio_upload_block');
-
-    if (!stateSelect || !audioBlock) return;
-
-    function toggleAudioBlock() {
-      // **VERIFICACIÓN CORREGIDA:** Usamos 'used_disc' ya que f.select genera las claves del enum como valores.
-      const isUsedDisc = stateSelect.value === 'used_disc'; 
-      
-      if (isUsedDisc) {
-        audioBlock.style.display = 'block';
-      } else {
-        audioBlock.style.display = 'none';
-      }
+document.addEventListener('turbo:load', () => {
+  // -----------------------
+  // Funciones auxiliares para modales
+  // -----------------------
+  function showModal({ title, message, confirmText, confirmClass, cancelText, onConfirm }) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50';
+    modal.style.animation = 'fadeIn 0.2s ease-out';
+    
+    modal.innerHTML = `
+      <div class="bg-slate-800 border rounded-2xl p-8 max-w-md shadow-xl" style="animation: scaleIn 0.3s ease-out;">
+        <h3 class="text-2xl font-bold mb-4">${title}</h3>
+        <p class="text-gray-300 mb-6">${message}</p>
+        <div class="flex justify-end gap-3">
+          <button id="modal-cancel" class="px-6 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition">${cancelText}</button>
+          <button id="modal-confirm" class="px-6 py-2 ${confirmClass} text-white rounded-lg font-bold hover:opacity-90 transition">${confirmText}</button>
+        </div>
+      </div>
+    `;
+    
+    // Animaciones (solo agregar una vez)
+    if (!document.getElementById('modal-animations')) {
+      const style = document.createElement('style');
+      style.id = 'modal-animations';
+      style.textContent = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      `;
+      document.head.appendChild(style);
     }
 
-    // 1. Ejecutar al cargar la página (para asegurar el estado inicial en new/edit)
-    toggleAudioBlock(); 
+    document.body.appendChild(modal);
 
-    // 2. Ejecutar cuando el usuario cambia la selección
-    stateSelect.addEventListener('change', toggleAudioBlock);
+    modal.querySelector('#modal-cancel').addEventListener('click', () => modal.remove());
+    modal.querySelector('#modal-confirm').addEventListener('click', () => {
+      modal.remove();
+      onConfirm();
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+  }
+
+  // -----------------------
+  // Toggle audio block
+  // -----------------------
+  const conditionSelect = document.getElementById('product_condition');
+  const audioBlock = document.getElementById('audio_upload_block');
+
+  if (conditionSelect && audioBlock) {
+    function toggleAudioBlock() {
+      audioBlock.style.display = conditionSelect.value === 'used' ? 'block' : 'none';
+    }
+
+    toggleAudioBlock();
+
+    conditionSelect.addEventListener('change', (e) => {
+      const newValue = e.target.value;
+      const audioPlayerExists = audioBlock.querySelector('audio') !== null;
+
+      if (newValue === 'new' && audioPlayerExists) {
+        showModal({
+          title: '⚠️ ADVERTENCIA',
+          message: 'Este producto tiene un audio asociado.\nSi cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
+          confirmText: 'Aceptar',
+          confirmClass: 'bg-emerald-500',
+          cancelText: 'Cancelar',
+          onConfirm: () => toggleAudioBlock()
+        });
+
+        // Resetear select a 'used' hasta que el usuario confirme
+        conditionSelect.value = 'used';
+        toggleAudioBlock();
+        return;
+      }
+
+      toggleAudioBlock();
+    });
+  }
+
+  // -----------------------
+  // Eliminar audio
+  // -----------------------
+  const deleteAudioLinks = document.querySelectorAll("a[data-turbo-method='delete'][href*='audio']");
+
+  deleteAudioLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const url = link.getAttribute('href');
+
+      showModal({
+        title: 'Eliminar audio',
+        message: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.',
+        confirmText: 'Eliminar',
+        confirmClass: 'bg-red-500',
+        cancelText: 'Cancelar',
+        onConfirm: () => Turbo.visit(url, { action: 'replace', method: 'delete' })
+      });
+    });
   });
+});
 </script>
