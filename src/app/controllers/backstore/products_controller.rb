@@ -1,11 +1,35 @@
 module Backstore
-  class ProductsController < ApplicationController
+  class ProductsController < BaseController
     before_action :authenticate_user!
     before_action :set_product, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment]
 
-    # GET /backstore/products
     def index
-      @products = Product.available_products.page(params[:page]).per(25)
+      @products = Product.all
+
+      # Filtro por estado (activos, eliminados, todos)
+      case params[:status]
+      when "deleted"
+        @products = @products.only_deleted
+      when "all"
+        @products = @products.with_deleted
+      else
+        @products = Product.available_products
+      end
+
+      # Filtro por categoría
+      if params[:category_id].present?
+        @products = @products.where(category_id: params[:category_id])
+      end
+
+      # Búsqueda por nombre o autor
+      if params[:q].present?
+        query = "%#{params[:q].downcase}%"
+        @products = @products.where("LOWER(name) LIKE ? OR LOWER(author) LIKE ?", query, query)
+      end
+
+      # Paginación con per_page dinámico
+      per_page = params[:per_page] == "all" ? @products.count : (params[:per_page] || 25).to_i
+      @products = @products.order(id: :asc).page(params[:page]).per(per_page)
     end
 
     # GET /backstore/products/:id
@@ -65,11 +89,24 @@ module Backstore
       end
     end
 
-    # DELETE /backstore/products/:id (borrado lógico)
+
     def destroy
-      @product.soft_delete if @product.respond_to?(:soft_delete)
-      redirect_to backstore_products_path, notice: 'Producto dado de baja'
+      Product.transaction do
+        @product.discard  
+        @product.update!(stock: 0)
+      end
+      redirect_to backstore_products_path, notice: "Producto dado de baja"
     end
+
+    def restore
+      if @product.undiscard
+        redirect_to backstore_products_path, notice: "Producto restaurado correctamente."
+      else
+        redirect_to backstore_products_path, alert: "No se pudo restaurar el producto."
+      end
+    end
+
+
 
     def delete_image_attachment
       @product = Product.find(params[:id])
@@ -97,6 +134,8 @@ module Backstore
       end
     end
 
+
+
     # PATCH /backstore/products/:id/change_stock
     def change_stock
       stock_param = params.dig(:product, :stock)
@@ -118,6 +157,7 @@ module Backstore
         redirect_to backstore_product_path(@product), alert: "El valor de stock ingresado no es válido."
       end
     end
+
 
     private
 

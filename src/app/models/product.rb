@@ -21,6 +21,8 @@ class Product < ApplicationRecord
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
 
+  
+
   private
 
   def must_have_at_least_one_image
@@ -29,6 +31,7 @@ class Product < ApplicationRecord
       errors.add(:images, "debe tener al menos una imagen")
     end
   end
+
 
   def audio_only_for_used_products
     # Solo productos usados pueden tener audio
@@ -43,4 +46,5 @@ class Product < ApplicationRecord
       audio.purge
     end
   end
+  
 end
