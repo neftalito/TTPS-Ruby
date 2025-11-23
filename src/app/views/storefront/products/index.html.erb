@@ -1,19 +1,36 @@
 <section class="space-y-8">
-  <header class="text-center space-y-2">
-    <p class="text-sm uppercase tracking-wide text-proyecto-secondary">Catálogo</p>
-    <h1 class="text-3xl font-bold text-proyecto-primary">Nuestros productos</h1>
-    <p class="text-proyecto-secondary max-w-3xl mx-auto">
-      Descubrí los nuevos ingresos y elegidos del staff. Todo el listado cuenta con paginación
-      para que puedas navegarlo cómodamente.
+  <header class="text-center space-y-3 py-10">
+    <p class="text-3xl md:text-4xl font-extrabold text-black drop-shadow-sm">
+      Catálogo
+    </p>
+    <h1 class="text-2xl md:text-3xl font-semibold text-proyecto-primary drop-shadow-sm">
+      Nuestros productos destacados
+    </h1>
+    <p class="text-black text-base md:text-lg max-w-3xl mx-auto drop-shadow-none">
+      Descubrí los nuevos ingresos y los favoritos del staff. Todo lo que buscás está aquí!
     </p>
   </header>
 
   <% if @products.any? %>
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <% @products.each do |product| %>
-        <%= render partial: "storefront/products/card", locals: { product: product } %>
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+          <%# Imagen principal o placeholder online %>
+          <%= image_tag product.images.attached? ? url_for(product.images.first) : "https://via.placeholder.com/300x200?text=Sin+imagen", 
+                        class: "w-full h-48 object-cover" %>
+
+          <div class="p-4 flex flex-col flex-grow">
+            <h2 class="text-lg font-semibold text-slate-800"><%= product.name %></h2>
+            <p class="text-sm text-slate-500 mb-2"><%= product.author %></p>
+            <p class="text-sm text-slate-700 flex-grow"><%= truncate(product.description, length: 80) %></p>
+            <div class="mt-4 flex justify-between items-center">
+              <span class="font-bold text-emerald-600">$<%= product.price %></span>
+              <%= link_to "Ver detalle", storefront_product_path(product), class: "px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-200 text-sm" %>
+            </div>
+          </div>
+        </div>
       <% end %>
-    </div>ss
+    </div>
 
     <%= render "shared/pagination", collection: @products %>
   <% else %>

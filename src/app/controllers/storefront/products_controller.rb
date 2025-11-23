@@ -3,12 +3,11 @@ module Storefront
     before_action :set_product, only: :show
 
     def index
-      @products = available_products
-                    .page(params[:page])
-                    .per(10)
+      @products = Product.kept.page(params[:page]).per(9)
     end
 
     def show
+      @product = Product.kept.find(params[:id])
     end
 
     private
@@ -21,7 +20,11 @@ module Storefront
     end
 
     def set_product
-      @product = available_products.find(params[:id])
+      @product = Product.find_by(id: params[:id], published: true)
+      unless @product
+        redirect_to storefront_products_path, alert: "Producto no disponible."
+      end
     end
+
   end
 end
