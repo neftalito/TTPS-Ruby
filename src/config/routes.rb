@@ -12,14 +12,11 @@ Rails.application.routes.draw do
     root "dashboard#index"
 
     resources :products do
-      member { patch :change_stock }
-    end
-
-    resources :products do
       member do
-       patch :restore
-       delete :delete_image_attachment
-       delete :delete_audio_attachment
+        patch :change_stock
+        patch :restore
+        delete :delete_image_attachment
+        delete :delete_audio_attachment
       end
     end
 
