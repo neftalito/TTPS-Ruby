@@ -179,6 +179,7 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
+    kaminari-tailwind (0.1.0)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
@@ -422,6 +423,7 @@ DEPENDENCIES
   jbuilder
   kamal
   kaminari
+  kaminari-tailwind
   propshaft
   puma (>= 5.0)
   rails (~> 8.1.1)

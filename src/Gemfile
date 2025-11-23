@@ -96,3 +96,5 @@ gem "discard"
 
 # Para .env
 gem 'dotenv'
+
+gem 'kaminari-tailwind'

@@ -1,0 +1,12 @@
+es:
+  helpers:
+    page_entries_info:
+      one: "Mostrando 1 producto"
+      other: "Mostrando %{count} productos"
+  views:
+    pagination:
+      first: "Primero"
+      last: "Último"
+      previous: "Anterior"
+      next: "Siguiente"
+      truncate: "..."

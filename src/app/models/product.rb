@@ -11,8 +11,9 @@ class Product < ApplicationRecord
   enum :condition, { new: "new", used: "used" }, prefix: true
 
   # Scopes
-  scope :available_products, -> { kept }
-
+  
+  scope :available_products, -> { kept.includes(:category).order(created_at: :desc) }
+  
   validates :author, presence: true
   validates :inventory_entered_at, :last_modified_at, presence: true
 

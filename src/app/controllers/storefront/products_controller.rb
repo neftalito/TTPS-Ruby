@@ -3,12 +3,32 @@ module Storefront
     before_action :set_product, only: :show
 
     def index
-      @products = Product.kept.page(params[:page]).per(9)
+      @categories = Category.all
+      @products = Product.available_products
+
+      # Filtro por búsqueda
+      if params[:search].present?
+        q = "%#{params[:search]}%"
+        @products = @products.where("name LIKE :q OR author LIKE :q", q: q)
+      end
+
+      # Filtro por categoría
+      if params[:category].present?
+        @products = @products.where(category_id: params[:category])
+      end
+
+      # Paginación
+      @products = @products.page(params[:page]).per(params[:per_page] || 12)
     end
 
+
     def show
-      @product = Product.kept.find(params[:id])
+      @product = Product.available_products.find_by(id: params[:id])
+      redirect_to storefront_products_path, alert: "Producto no disponible." unless @product
     end
+
+
+    
 
     private
 
@@ -20,10 +40,8 @@ module Storefront
     end
 
     def set_product
-      @product = Product.find_by(id: params[:id], published: true)
-      unless @product
-        redirect_to storefront_products_path, alert: "Producto no disponible."
-      end
+      @product = Product.available_products.find_by(id: params[:id])
+      redirect_to storefront_products_path, alert: "Producto no disponible." unless @product
     end
 
   end
