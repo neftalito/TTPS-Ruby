@@ -1,4 +1,4 @@
-class ChangeProductStateToCondition < ActiveRecord::Migration[7.1]
+class ChangeProductStateToCondition < ActiveRecord::Migration[8.1]
   def up
     # Migrar datos existentes de product_state a condition
     if column_exists?(:products, :product_state)
