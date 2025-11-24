@@ -47,12 +47,6 @@
         <span>Catálogo</span>
       <% end %>
 
-      <%= link_to storefront_search_path,
-                  class: "text-proyecto-secondary hover:text-proyecto-accent transition flex items-center gap-2" do %>
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <span>Buscar</span>
-      <% end %>
-
       <% if user_signed_in? %>
         <%= link_to backstore_root_path,
                     class: "text-proyecto-secondary hover:text-proyecto-accent transition flex items-center gap-2" do %>
@@ -89,12 +83,6 @@
                   class: "py-3 flex items-center gap-3 hover:text-proyecto-accent" do %>
         <i class="fa-solid fa-compact-disc"></i>
         <span>Catálogo</span>
-      <% end %>
-
-      <%= link_to storefront_search_path,
-                  class: "py-3 flex items-center gap-3 hover:text-proyecto-accent" do %>
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <span>Buscar</span>
       <% end %>
 
       <% if user_signed_in? %>
@@ -136,7 +124,6 @@
       <ul class="text-sm text-proyecto-secondary space-y-1">
         <li><%= link_to "Inicio", root_path, class: "hover:text-proyecto-accent" %></li>
         <li><%= link_to "Catálogo", storefront_products_path, class: "hover:text-proyecto-accent" %></li>
-        <li><%= link_to "Buscar", storefront_search_path, class: "hover:text-proyecto-accent" %></li>
       </ul>
     </div>
 
