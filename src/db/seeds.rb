@@ -94,7 +94,7 @@ conditions = Product.conditions.keys
   last_modified_at = Faker::Time.between(from: inventory_entered_at, to: Time.current)
   deactivated_at = rand < 0.15 ? Faker::Time.between(from: last_modified_at, to: Time.current) : nil
 
-  product = Product.create!(
+  product = Product.new(
     name: Faker::Music.album,
     description: Faker::Lorem.paragraph(sentence_count: 4),
     author: Faker::Music.band,
@@ -112,15 +112,17 @@ conditions = Product.conditions.keys
     updated_at: last_modified_at
   )
 
-rand(1..3).times do
-  absolute_path = Rails.root.join(image_library.sample)
+  rand(1..3).times do
+    absolute_path = Rails.root.join(image_library.sample)
 
-  product.images.attach(
-    io: File.open(absolute_path),
-    filename: File.basename(absolute_path),
-    content_type: Marcel::MimeType.for(Pathname.new(absolute_path))
-  )
-end
+    product.images.attach(
+      io: File.open(absolute_path),
+      filename: File.basename(absolute_path),
+      content_type: Marcel::MimeType.for(Pathname.new(absolute_path))
+    )
+  end
+
+  product.save!
 end
 puts "Creando ventas..."
 

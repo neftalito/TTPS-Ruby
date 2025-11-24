@@ -85,15 +85,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_21_231817) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "product_images", force: :cascade do |t|
-    t.string "alt"
-    t.datetime "created_at", null: false
-    t.integer "product_id", null: false
-    t.datetime "updated_at", null: false
-    t.string "url"
-    t.index ["product_id"], name: "index_product_images_on_product_id"
-  end
-
   create_table "products", force: :cascade do |t|
     t.string "audio_file"
     t.string "audio_sample_url"
@@ -144,7 +135,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_21_231817) do
     t.datetime "deleted_at"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "name"
     t.datetime "remember_created_at"
     t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
@@ -160,7 +150,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_21_231817) do
   add_foreign_key "carts", "users"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
-  add_foreign_key "product_images", "products"
   add_foreign_key "products", "categories"
   add_foreign_key "sale_items", "products"
   add_foreign_key "sale_items", "sales"
