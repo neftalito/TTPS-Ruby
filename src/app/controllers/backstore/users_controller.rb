@@ -50,7 +50,15 @@ module Backstore
     def edit; end
 
     def update
-      if @user.update(user_params)
+      sanitized_params = user_params.dup
+
+      # Si password viene vacío, eliminarlo para que Devise NO lo valide
+      if sanitized_params[:password].blank?
+        sanitized_params.delete(:password)
+        sanitized_params.delete(:password_confirmation)
+      end
+
+      if @user.update(sanitized_params)
         redirect_to backstore_users_path, notice: "Usuario actualizado correctamente."
       else
         render :edit, status: :unprocessable_entity

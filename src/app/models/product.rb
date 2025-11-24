@@ -1,6 +1,5 @@
 class Product < ApplicationRecord
   include SoftDeletable
-  include Discard::Model 
 
   belongs_to :category
 
