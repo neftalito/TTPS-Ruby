@@ -18,7 +18,7 @@ users = [
     role: :employee
   },
   {
-    email: "neftalitosu@gmail.com",
+    email: "empleado@sistema.com",
     password: "empleado123",
     role: :employee
   },
