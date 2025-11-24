@@ -1,10 +1,11 @@
 require "faker"
 require "pathname"
+require "marcel"
 
 puts "Eliminando datos existentes..."
 SaleItem.delete_all
 Sale.delete_all
-ProductImage.delete_all
+ActiveStorage::Attachment.where(record_type: "Product").find_each(&:purge)
 Product.delete_all
 Category.delete_all
 User.delete_all
