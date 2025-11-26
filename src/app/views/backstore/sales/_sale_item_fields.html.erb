@@ -1,0 +1,28 @@
+<div class="nested-form-wrapper flex items-end gap-4 mb-4 border-b pb-4" data-new-record="<%= f.object.new_record? %>">
+  
+  <div class="flex-1">
+    <%= f.label :product_id, "Producto", class: "block text-sm font-medium text-gray-700" %>
+    <%= f.collection_select :product_id, 
+          Product.available_products, 
+          :id, 
+          :name, 
+          { prompt: "Selecciona un producto..." }, 
+          { class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" } 
+    %>
+  </div>
+
+  <div class="w-32">
+    <%= f.label :quantity, "Cantidad", class: "block text-sm font-medium text-gray-700" %>
+    <%= f.number_field :quantity, min: 1, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+  </div>
+
+  <div class="mb-1">
+    <button type="button" 
+            data-action="click->nested-form#remove"
+            class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-2 rounded-md text-sm font-medium transition">
+      Eliminar
+    </button>
+    
+    <%= f.hidden_field :_destroy %>
+  </div>
+</div>

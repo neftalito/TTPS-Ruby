@@ -1,2 +1,74 @@
-<h1>Backstore::Sales#new</h1>
-<p>Find me in app/views/backstore/sales/new.html.erb</p>
+<div class="max-w-4xl mx-auto py-8">
+  <h1 class="text-2xl font-bold mb-6 text-gray-800">Registrar Nueva Venta</h1>
+
+  <% if @sale.errors.any? %>
+    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+      <div class="flex">
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            No se pudo guardar la venta:
+          </h3>
+          <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+            <% @sale.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%= form_with model: [:backstore, @sale], 
+                data: { controller: "nested-form", action: "submit->nested-form#submit" }, 
+                class: "space-y-8 bg-white p-6 shadow rounded-lg" do |form| %>
+
+    <div class="border-b pb-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Datos del Cliente</h2>
+      <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+        <div>
+          <%= form.label :buyer_name, "Nombre Completo", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :buyer_name, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+        </div>
+        
+        <div>
+          <%= form.label :buyer_dni, "DNI", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :buyer_dni, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+        </div>
+
+        <div>
+          <%= form.label :buyer_email, "Email", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.email_field :buyer_email, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-medium text-gray-900">Productos</h2>
+      </div>
+
+      <div data-nested-form-target="target">
+        <%= form.fields_for :sale_items do |sale_item_form| %>
+          <%= render "sale_item_fields", f: sale_item_form %>
+        <% end %>
+      </div>
+
+      <button type="button" 
+              data-action="nested-form#add"
+              class="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+        + Agregar otro producto
+      </button>
+      
+      <template data-nested-form-target="template">
+        <%= form.fields_for :sale_items, SaleItem.new, child_index: 'NEW_RECORD' do |sale_item_form| %>
+          <%= render "sale_item_fields", f: sale_item_form %>
+        <% end %>
+      </template>
+    </div>
+
+    <div class="pt-5 border-t flex justify-end gap-3">
+      <%= link_to "Cancelar", backstore_sales_path, class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+      <%= form.submit "Finalizar Venta", class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    </div>
+  <% end %>
+</div>

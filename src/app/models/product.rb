@@ -18,12 +18,27 @@ class Product < ApplicationRecord
 
   validate :must_have_at_least_one_image
   validate :audio_only_for_used_products
+  validates :stock, numericality: { greater_than_or_equal_to: 0 }
 
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
   before_discard :reset_stock
   
 
+  
+  def has_stock?(quantity_needed)
+    stock >= quantity_needed
+  end
+
+  def decrement_stock!(quantity)
+    self.stock -= quantity
+    save! 
+  end
+
+  def increment_stock!(quantity)
+    self.stock += quantity
+    save!
+  end
   private
 
   def must_have_at_least_one_image
@@ -51,5 +66,5 @@ class Product < ApplicationRecord
   def reset_stock
     self.update_column(:stock, 0)
   end
-  
+
 end
