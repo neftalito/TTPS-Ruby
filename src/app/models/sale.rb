@@ -35,8 +35,7 @@ class Sale < ApplicationRecord
     alias destroy_all delete_all
   end
 
-  private
-
+  
   def cancel!
     return if cancelled? # Evitar cancelar dos veces
 
@@ -53,6 +52,8 @@ class Sale < ApplicationRecord
   def cancelled?
     cancelled_at.present?
   end
+  private
+
 
   def calculate_total
     self.total = sale_items.reduce(0) do |sum, item|
