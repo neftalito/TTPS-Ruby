@@ -5,14 +5,9 @@
     <p class="text-proyecto-text/60">Consultá las órdenes generadas en la tienda y controlá su estado.</p>
   </div>
 
-  <div>
-    <%= link_to new_backstore_sale_path, class: "flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-lg" do %>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-      Registrar Venta
-    <% end %>
-  </div>
+  <%= link_to new_backstore_sale_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors" do %>
+    Registrar Venta
+  <% end %>
 </header>
 
 <% sales_columns = [
