@@ -26,6 +26,14 @@ module Backstore
         query = "%#{params[:q].downcase}%"
         @products = @products.where("LOWER(name) LIKE ? OR LOWER(author) LIKE ?", query, query)
       end
+      # Filtro por condición
+      if params[:condition].present? && params[:condition] != 'all'
+        @products = @products.where(condition: params[:condition])
+      end
+      # Filtro por tipo de producto
+      if params[:product_type].present? && params[:product_type] != 'all'
+        @products = @products.where(product_type: params[:product_type])
+      end
 
       # Paginación con per_page dinámico
       per_page = params[:per_page] == "all" ? @products.count : (params[:per_page] || 25).to_i

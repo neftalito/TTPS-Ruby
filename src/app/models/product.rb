@@ -26,9 +26,17 @@ class Product < ApplicationRecord
   
 
   def label_for_select
-    estado = condition_new? ? "NUEVO" : "USADO"
+    condicion = condition_new? ? "NUEVO" : "USADO"
+    tipo = product_type_vinyl? ? "VINILO" : "CD"
     
-    "#{name} - #{author} (#{estado})"
+    "#{name} - #{author} (#{tipo}, #{condicion})"
+  end
+
+  def label_for_sale
+    condicion = condition_new? ? "NUEVO" : "USADO"
+    tipo = product_type_vinyl? ? "VINILO" : "CD"
+    
+    "#{name} (#{tipo}, #{condicion})"
   end
 
   def has_stock?(quantity_needed)

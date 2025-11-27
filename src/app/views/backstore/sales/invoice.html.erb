@@ -151,7 +151,7 @@
         <% @sale.sale_items.each do |item| %>
           <tr>
             <td>
-              <span class="item-name"><%= item.product&.name %></span>
+              <span class="item-name"><%= item.product&.label_for_sale %></span>
               <span class="item-desc"><%= item.product&.author %></span>
             </td>
             <td class="text-right"><%= number_to_currency(item.unit_price) %></td>
