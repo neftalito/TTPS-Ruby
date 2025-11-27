@@ -41,7 +41,8 @@ module Backstore
           render pdf: "factura_#{@sale.id}", 
                  template: "backstore/sales/invoice", 
                  layout: "pdf",
-                 formats: [:html]
+                 formats: [:html],
+                 disposition: "attachment"
         end
       end
     end

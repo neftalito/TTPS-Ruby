@@ -1,69 +1,184 @@
-<div class="max-w-3xl mx-auto border border-gray-200 p-8">
-  <div class="flex justify-between items-center mb-8 border-b pb-4">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-800 tracking-tight">DISQUERÍA TTPS</h1>
-      <p class="text-sm text-gray-500 mt-1">La mejor música, siempre.</p>
+<style>
+  .invoice-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0;
+  }
+  
+  /* Cabecera oscura */
+  .header {
+    background-color: #1f2937; /* Gris muy oscuro (tipo Tailwind gray-800) */
+    color: #ffffff;
+    padding: 40px;
+    display: flex; /* Nota: wkhtmltopdf soporta flex básico */
+    overflow: hidden; /* Fallback para floats */
+  }
+  .header-left { float: left; width: 60%; }
+  .header-right { float: right; width: 40%; text-align: right; }
+
+  .brand-name { font-size: 28px; font-weight: bold; margin: 0; letter-spacing: 1px; }
+  .brand-sub { font-size: 12px; opacity: 0.8; margin-top: 5px; }
+  .invoice-title { font-size: 24px; font-weight: bold; margin: 0; color: #818cf8; /* Indigo suave */ }
+  .invoice-details { margin-top: 5px; font-size: 13px; opacity: 0.9; }
+
+  /* Información de Cliente/Empresa */
+  .info-section { padding: 40px; overflow: hidden; }
+  .col-left { float: left; width: 50%; }
+  .col-right { float: right; width: 50%; text-align: right; }
+  
+  .section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #6b7280; /* Gray 500 */
+    font-weight: bold;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+    display: inline-block;
+    padding-bottom: 3px;
+  }
+  .client-name { font-size: 16px; font-weight: bold; margin-bottom: 4px; color: #111; }
+  .info-text { color: #4b5563; font-size: 13px; margin: 2px 0; }
+
+  /* Tabla */
+  .table-container { padding: 0 40px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+  
+  th {
+    text-align: left;
+    padding: 12px 10px;
+    background-color: #f3f4f6; /* Gray 100 */
+    color: #374151;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  
+  td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+    color: #1f2937;
+  }
+  
+  .text-right { text-align: right; }
+  .item-name { font-weight: 600; display: block; }
+  .item-desc { font-size: 11px; color: #6b7280; }
+
+  /* Totales */
+  .totals-section {
+    float: right;
+    width: 40%;
+    padding-right: 40px;
+    margin-bottom: 50px;
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    color: #4b5563;
+  }
+  .total-row.final {
+    border-top: 2px solid #1f2937;
+    margin-top: 10px;
+    padding-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+  }
+  .total-label { float: left; }
+  .total-value { float: right; }
+  
+  /* Footer */
+  .footer {
+    clear: both;
+    text-align: center;
+    padding: 30px;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    font-size: 11px;
+    color: #9ca3af;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+</style>
+
+<div class="invoice-container">
+  <div class="header">
+    <div class="header-left">
+      <h1 class="brand-name">DISQUERÍA TTPS</h1>
+      <p class="brand-sub">Música, Vinilos & Pasión.</p>
     </div>
-    <div class="text-right">
-      <h2 class="text-xl font-bold text-gray-700">FACTURA</h2>
-      <p class="text-gray-500">#<%= @sale.id.to_s.rjust(8, '0') %></p>
-      <p class="text-gray-500"><%= l(@sale.created_at, format: :short) %></p>
+    <div class="header-right">
+      <h2 class="invoice-title">FACTURA</h2>
+      <div class="invoice-details">
+        <p>Nº <%= @sale.id.to_s.rjust(8, '0') %></p>
+        <p><%= l(@sale.created_at, format: :long) %></p>
+      </div>
     </div>
   </div>
 
-  <div class="grid grid-cols-2 gap-8 mb-8">
-    <div>
-      <h3 class="font-bold text-gray-700 mb-2 uppercase text-xs">Facturar a:</h3>
-      <p class="font-semibold"><%= @sale.buyer_name %></p>
-      <p class="text-gray-600">DNI: <%= @sale.buyer_dni %></p>
-      <p class="text-gray-600"><%= @sale.buyer_email %></p>
+  <div class="info-section">
+    <div class="col-left">
+      <div class="section-title">Facturar a</div>
+      <div class="client-name"><%= @sale.buyer_name %></div>
+      <p class="info-text">DNI: <%= @sale.buyer_dni %></p>
+      <p class="info-text"><%= @sale.buyer_email %></p>
     </div>
-    <div class="text-right">
-      <h3 class="font-bold text-gray-700 mb-2 uppercase text-xs">Emitido por:</h3>
-      <p class="font-semibold">Disquería TTPS S.A.</p>
-      <p class="text-gray-600">Av. 7 y 50, La Plata</p>
-      <p class="text-gray-600">Vendedor: <%= @sale.user&.email %></p>
+    
+    <div class="col-right">
+      <div class="section-title">Emitido por</div>
+      <div class="client-name">Disquería TTPS S.A.</div>
+      <p class="info-text">Av. 7 y 50, La Plata</p>
+      <p class="info-text">Vendedor: <%= @sale.user&.email %></p>
     </div>
   </div>
 
-  <table class="w-full mb-8">
-    <thead>
-      <tr class="border-b-2 border-gray-800">
-        <th class="text-left py-2 text-sm uppercase">Producto</th>
-        <th class="text-right py-2 text-sm uppercase">Precio Unit.</th>
-        <th class="text-right py-2 text-sm uppercase">Cant.</th>
-        <th class="text-right py-2 text-sm uppercase">Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @sale.sale_items.each do |item| %>
-        <tr class="border-b border-gray-200">
-          <td class="py-3">
-            <span class="block font-bold"><%= item.product&.name %></span>
-            <span class="text-xs text-gray-500"><%= item.product&.author %></span>
-          </td>
-          <td class="py-3 text-right"><%= number_to_currency(item.unit_price) %></td>
-          <td class="py-3 text-right"><%= item.quantity %></td>
-          <td class="py-3 text-right font-medium"><%= number_to_currency(item.unit_price * item.quantity) %></td>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th width="50%">Producto / Artista</th>
+          <th width="20%" class="text-right">Precio Unit.</th>
+          <th width="10%" class="text-right">Cant.</th>
+          <th width="20%" class="text-right">Subtotal</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @sale.sale_items.each do |item| %>
+          <tr>
+            <td>
+              <span class="item-name"><%= item.product&.name %></span>
+              <span class="item-desc"><%= item.product&.author %></span>
+            </td>
+            <td class="text-right"><%= number_to_currency(item.unit_price) %></td>
+            <td class="text-right"><%= item.quantity %></td>
+            <td class="text-right" style="font-weight: bold;"><%= number_to_currency(item.unit_price * item.quantity) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
-  <div class="flex justify-end">
-    <div class="w-1/2">
-      <div class="flex justify-between py-2 border-b border-gray-200">
-        <span class="font-semibold text-gray-600">Total Items</span>
-        <span class="text-gray-800"><%= @sale.sale_items.sum(:quantity) %></span>
+  <div class="clearfix"> <div class="totals-section">
+      <div class="total-row">
+        <span class="total-label">Total Items:</span>
+        <span class="total-value"><%= @sale.sale_items.sum(:quantity) %></span>
       </div>
-      <div class="flex justify-between py-4">
-        <span class="font-bold text-xl text-gray-800">TOTAL</span>
-        <span class="font-bold text-xl text-indigo-600"><%= number_to_currency(@sale.total) %></span>
+      
+      <div class="total-row final">
+        <span class="total-label">TOTAL A PAGAR</span>
+        <span class="total-value"><%= number_to_currency(@sale.total) %></span>
       </div>
     </div>
   </div>
 
-  <div class="mt-12 pt-4 border-t border-gray-200 text-center text-xs text-gray-400">
-    <p>Gracias por tu compra. Conserva este documento como comprobante.</p>
-  </div>
+</div>
+
+<div class="footer">
+  <p>Gracias por confiar en nosotros. Este documento sirve como comprobante de venta no fiscal para fines educativos.</p>
+  <p>www.ttps-disqueria.com | info@ttps-disqueria.com</p>
 </div>
