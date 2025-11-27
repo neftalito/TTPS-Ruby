@@ -1,0 +1,69 @@
+<div class="max-w-3xl mx-auto border border-gray-200 p-8">
+  <div class="flex justify-between items-center mb-8 border-b pb-4">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800 tracking-tight">DISQUERÍA TTPS</h1>
+      <p class="text-sm text-gray-500 mt-1">La mejor música, siempre.</p>
+    </div>
+    <div class="text-right">
+      <h2 class="text-xl font-bold text-gray-700">FACTURA</h2>
+      <p class="text-gray-500">#<%= @sale.id.to_s.rjust(8, '0') %></p>
+      <p class="text-gray-500"><%= l(@sale.created_at, format: :short) %></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-8 mb-8">
+    <div>
+      <h3 class="font-bold text-gray-700 mb-2 uppercase text-xs">Facturar a:</h3>
+      <p class="font-semibold"><%= @sale.buyer_name %></p>
+      <p class="text-gray-600">DNI: <%= @sale.buyer_dni %></p>
+      <p class="text-gray-600"><%= @sale.buyer_email %></p>
+    </div>
+    <div class="text-right">
+      <h3 class="font-bold text-gray-700 mb-2 uppercase text-xs">Emitido por:</h3>
+      <p class="font-semibold">Disquería TTPS S.A.</p>
+      <p class="text-gray-600">Av. 7 y 50, La Plata</p>
+      <p class="text-gray-600">Vendedor: <%= @sale.user&.email %></p>
+    </div>
+  </div>
+
+  <table class="w-full mb-8">
+    <thead>
+      <tr class="border-b-2 border-gray-800">
+        <th class="text-left py-2 text-sm uppercase">Producto</th>
+        <th class="text-right py-2 text-sm uppercase">Precio Unit.</th>
+        <th class="text-right py-2 text-sm uppercase">Cant.</th>
+        <th class="text-right py-2 text-sm uppercase">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sale.sale_items.each do |item| %>
+        <tr class="border-b border-gray-200">
+          <td class="py-3">
+            <span class="block font-bold"><%= item.product&.name %></span>
+            <span class="text-xs text-gray-500"><%= item.product&.author %></span>
+          </td>
+          <td class="py-3 text-right"><%= number_to_currency(item.unit_price) %></td>
+          <td class="py-3 text-right"><%= item.quantity %></td>
+          <td class="py-3 text-right font-medium"><%= number_to_currency(item.unit_price * item.quantity) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="flex justify-end">
+    <div class="w-1/2">
+      <div class="flex justify-between py-2 border-b border-gray-200">
+        <span class="font-semibold text-gray-600">Total Items</span>
+        <span class="text-gray-800"><%= @sale.sale_items.sum(:quantity) %></span>
+      </div>
+      <div class="flex justify-between py-4">
+        <span class="font-bold text-xl text-gray-800">TOTAL</span>
+        <span class="font-bold text-xl text-indigo-600"><%= number_to_currency(@sale.total) %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-12 pt-4 border-t border-gray-200 text-center text-xs text-gray-400">
+    <p>Gracias por tu compra. Conserva este documento como comprobante.</p>
+  </div>
+</div>

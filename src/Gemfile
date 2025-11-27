@@ -98,3 +98,7 @@ gem "discard"
 gem 'dotenv'
 
 gem 'kaminari-tailwind'
+
+# Para generar PDFs
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'

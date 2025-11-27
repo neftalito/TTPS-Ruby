@@ -35,12 +35,13 @@ module Backstore
     end
 
     def show
-      # El TFI pide generar factura PDF [cite: 174]
       respond_to do |format|
         format.html
         format.pdf do
-          # Aquí luego integraremos la gema de PDF (como Prawn o WickedPDF)
-          render pdf: "factura_#{@sale.id}", template: "backstore/sales/invoice", formats: [:html]
+          render pdf: "factura_#{@sale.id}", 
+                 template: "backstore/sales/invoice", 
+                 layout: "pdf",
+                 formats: [:html]
         end
       end
     end
