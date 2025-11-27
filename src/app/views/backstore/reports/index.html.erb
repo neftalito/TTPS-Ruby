@@ -1,0 +1,170 @@
+<div class="max-w-[95%] mx-auto mb-10" data-controller="report-filters">
+  
+  <header class="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between mb-8">
+    <div>
+      <p class="text-sm uppercase tracking-widest text-proyecto-text/30">Métricas</p>
+      <h1 class="text-3xl font-bold text-proyecto-primary">Reporte de Ventas</h1>
+      <p class="text-proyecto-text/60 mt-1">
+        <% if @range == 'all' %>
+          Mostrando el <span class="font-semibold text-proyecto-accent">historial completo</span>
+        <% else %>
+          Desde <span class="font-semibold text-proyecto-accent"><%= l(@start_date) %></span> hasta <span class="font-semibold text-proyecto-accent"><%= l(@end_date) %></span>
+        <% end %>
+      </p>
+    </div>
+
+    <div class="flex flex-col items-end gap-3 w-full xl:w-auto">
+      
+      <div class="inline-flex rounded-md p-1 bg-proyecto-secondary/20 border border-proyecto-text/10 overflow-x-auto max-w-full gap-1">
+        
+        <%# Clases base para botones %>
+        <% btn_class = "px-4 py-2 text-sm font-medium rounded-md focus:outline-none transition-colors whitespace-nowrap" %>
+        
+        <%# Activo: Color Primario solido %>
+        <% active_class = "bg-proyecto-primary text-proyecto-bg shadow-sm" %>
+        
+        <%# Inactivo: Transparente con texto primario, hover acentuado %>
+        <% inactive_class = "text-proyecto-primary hover:bg-proyecto-secondary hover:text-proyecto-primary" %>
+
+        <%= link_to "Hoy", backstore_reports_path(start_date: Date.current, end_date: Date.current, range: 'today'), 
+            class: "#{btn_class} #{@range == 'today' ? active_class : inactive_class}" %>
+
+        <%= link_to "Esta Semana", backstore_reports_path(start_date: Date.current.beginning_of_week, end_date: Date.current.end_of_week, range: 'week'), 
+            class: "#{btn_class} #{@range == 'week' ? active_class : inactive_class}" %>
+
+        <%= link_to "Este Mes", backstore_reports_path(start_date: Date.current.beginning_of_month, end_date: Date.current.end_of_month, range: 'month'), 
+            class: "#{btn_class} #{@range == 'month' ? active_class : inactive_class}" %>
+
+        <%= link_to "Este Año", backstore_reports_path(start_date: Date.current.beginning_of_year, end_date: Date.current.end_of_year, range: 'year'), 
+            class: "#{btn_class} #{@range == 'year' ? active_class : inactive_class}" %>
+
+        <%= link_to "Histórico", backstore_reports_path(range: 'all'), 
+            class: "#{btn_class} #{@range == 'all' ? active_class : inactive_class}" %>
+
+        <button type="button" data-action="report-filters#toggle" 
+                class="<%= btn_class %> <%= @range == 'custom' ? active_class : inactive_class %>">
+          📅 Personalizado
+        </button>
+      </div>
+
+      <div data-report-filters-target="customRange" class="hidden w-full xl:w-auto bg-proyecto-secondary/20 p-3 rounded-lg border border-proyecto-text/10 animate-fade-in-down shadow-lg">
+        <%= form_with url: backstore_reports_path, method: :get, class: "flex flex-col sm:flex-row gap-2 items-center" do |f| %>
+          <%= f.hidden_field :range, value: 'custom' %>
+          
+          <div class="flex items-center gap-2 w-full">
+            <%= f.date_field :start_date, value: @start_date || Date.current, class: "w-full rounded-md border-proyecto-text/20 bg-proyecto-bg text-proyecto-primary text-xs py-1.5 focus:border-proyecto-accent focus:ring-proyecto-accent" %>
+            <span class="text-proyecto-text/40">-</span>
+            <%= f.date_field :end_date, value: @end_date || Date.current, class: "w-full rounded-md border-proyecto-text/20 bg-proyecto-bg text-proyecto-primary text-xs py-1.5 focus:border-proyecto-accent focus:ring-proyecto-accent" %>
+          </div>
+          
+          <%= f.button "Aplicar", class: "w-full sm:w-auto px-3 py-1.5 bg-proyecto-primary text-proyecto-bg text-xs font-bold rounded-md hover:bg-proyecto-accent transition" %>
+        <% end %>
+      </div>
+
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    
+    <div class="bg-proyecto-secondary/10 p-6 rounded-xl border border-proyecto-text/5 relative overflow-hidden group hover:border-proyecto-accent/30 transition-all">
+      <div class="absolute right-0 top-0 h-full w-1 bg-proyecto-success"></div>
+      <p class="text-xs font-bold text-proyecto-text/60 uppercase tracking-wider">Ingresos Totales</p>
+      <p class="text-3xl font-bold text-proyecto-primary mt-2 group-hover:text-proyecto-success transition-colors">
+        <%= number_to_currency(@total_revenue, unit: "$") %>
+      </p>
+      <p class="text-xs text-proyecto-text/40 mt-2">Facturado en el periodo</p>
+    </div>
+
+    <div class="bg-proyecto-secondary/10 p-6 rounded-xl border border-proyecto-text/5 relative overflow-hidden group hover:border-proyecto-accent/30 transition-all">
+      <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
+      <p class="text-xs font-bold text-proyecto-text/60 uppercase tracking-wider">Ventas Confirmadas</p>
+      <p class="text-3xl font-bold text-proyecto-primary mt-2 group-hover:text-blue-500 transition-colors">
+        <%= @total_sales %>
+      </p>
+      <p class="text-xs text-proyecto-text/40 mt-2">Transacciones exitosas</p>
+    </div>
+
+    <div class="bg-proyecto-secondary/10 p-6 rounded-xl border border-proyecto-text/5 relative overflow-hidden group hover:border-proyecto-accent/30 transition-all">
+      <div class="absolute right-0 top-0 h-full w-1 bg-purple-500"></div>
+      <p class="text-xs font-bold text-proyecto-text/60 uppercase tracking-wider">Ticket Promedio</p>
+      <p class="text-3xl font-bold text-proyecto-primary mt-2 group-hover:text-purple-500 transition-colors">
+        <%= number_to_currency(@average_ticket, unit: "$") %>
+      </p>
+      <p class="text-xs text-proyecto-text/40 mt-2">Promedio por venta</p>
+    </div>
+
+    <div class="bg-proyecto-secondary/10 p-6 rounded-xl border border-proyecto-text/5 relative overflow-hidden group hover:border-proyecto-accent/30 transition-all">
+      <div class="absolute right-0 top-0 h-full w-1 bg-orange-500"></div>
+      <p class="text-xs font-bold text-proyecto-text/60 uppercase tracking-wider">Discos Vendidos</p>
+      <p class="text-3xl font-bold text-proyecto-primary mt-2 group-hover:text-orange-500 transition-colors">
+        <%= @total_items %>
+      </p>
+      <p class="text-xs text-proyecto-text/40 mt-2">Unidades despachadas</p>
+    </div>
+  </div>
+
+  <div class="border border-proyecto-text/10 rounded-lg overflow-hidden">
+    
+    <div class="px-6 py-4 border-b border-proyecto-text/10 bg-proyecto-secondary/20 flex justify-between items-center">
+      <h3 class="text-lg font-bold text-proyecto-primary">Top 5 Más Vendidos</h3>
+      <span class="text-xs font-medium px-2 py-1 rounded bg-proyecto-accent/10 text-proyecto-accent">Ranking por cantidad</span>
+    </div>
+
+    <% if @top_products.present? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-proyecto-text/10">
+          <thead class="bg-proyecto-secondary/10">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-text/60 uppercase tracking-wider w-10">#</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Producto</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Categoría</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Unidades</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-proyecto-text/10 bg-transparent">
+            <% @top_products.each_with_index do |(product, quantity), index| %>
+              <tr class="hover:bg-proyecto-secondary/10 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-proyecto-text/40">
+                  <%= index + 1 %>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 rounded bg-proyecto-secondary/30 overflow-hidden flex items-center justify-center border border-proyecto-text/10">
+                      <% if product.images.attached? %>
+                         <%= image_tag product.images.first.variant(:thumb), class: "h-full w-full object-cover" rescue image_tag(product.images.first, class: "h-full w-full object-cover") %>
+                      <% else %>
+                        <span class="text-[10px] text-proyecto-text/40">Sin img</span>
+                      <% end %>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-proyecto-primary break-words"><%= product.name %></div>
+                      <div class="text-sm text-proyecto-text/60"><%= product.author %></div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-proyecto-text/60">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-proyecto-secondary text-proyecto-primary">
+                    <%= product.category&.name || "Sin categoría" %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-proyecto-accent">
+                  <%= quantity %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-12 text-center">
+        <div class="mx-auto h-12 w-12 text-proyecto-text/30 mb-4">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-proyecto-primary">Sin datos en este período</h3>
+        <p class="mt-1 text-sm text-proyecto-text/60">Intenta cambiar las fechas del filtro para ver resultados.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

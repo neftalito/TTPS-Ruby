@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   namespace :backstore, path: "/admin" do
     root "dashboard#index"
-
+    get 'reports', to: 'reports#index', as: 'reports'
     resources :products do
       member do
         patch :change_stock

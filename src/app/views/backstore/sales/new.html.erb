@@ -1,19 +1,24 @@
-<div class="bg-gray-50 min-h-screen py-12">
-  <div class="max-w-4xl mx-auto p-12 bg-slate-900 rounded-3xl shadow-2xl border border-slate-700 font-sans text-gray-100">
+<div class="min-h-screen py-12 bg-proyecto-bg">
+  <div class="max-w-4xl mx-auto p-8 md:p-12 bg-proyecto-secondary/10 rounded-3xl shadow-2xl border border-proyecto-text/10 font-sans">
     
-    <header class="mb-10 border-b border-slate-700 pb-5 text-center">
-      <h1 class="text-4xl font-extrabold text-emerald-400 tracking-widest uppercase">
-        REGISTRAR NUEVA VENTA 💸
+    <header class="mb-10 border-b border-proyecto-text/10 pb-5 text-center">
+      <h1 class="text-4xl font-extrabold text-proyecto-primary tracking-widest uppercase">
+        Registrar Nueva Venta 
       </h1>
-      <p class="text-lg text-slate-400 mt-2 font-light">
+      <p class="text-lg text-proyecto-text/60 mt-2 font-light">
         Ingresa los datos del cliente y agrega los productos a la transacción.
       </p>
 
-      <%# Manejo de Errores con estilo oscuro %>
+      <%# Manejo de Errores %>
       <% if @sale.errors.any? %>
-        <div class="mt-4 p-4 rounded-lg bg-red-800/50 border border-red-700 text-red-300 text-left">
-          <h4 class="font-bold mb-2">No se pudo guardar la venta:</h4>
-          <ul class="list-disc list-inside text-sm">
+        <div class="mt-6 p-4 rounded-lg bg-proyecto-error/10 border border-proyecto-error/20 text-proyecto-error text-left animate-pulse">
+          <h4 class="font-bold mb-2 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            No se pudo guardar la venta:
+          </h4>
+          <ul class="list-disc list-inside text-sm ml-5">
             <% @sale.errors.full_messages.each do |msg| %>
               <li><%= msg %></li>
             <% end %>
@@ -27,45 +32,48 @@
                   class: "space-y-12" do |form| %>
 
       <%# SECCIÓN 1: DATOS DEL CLIENTE %>
-      <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
-        <h2 class="text-2xl font-semibold text-blue-400 mb-6 border-b border-slate-700 pb-3">Datos del Cliente</h2>
+      <div class="p-8 border border-proyecto-text/10 rounded-xl bg-proyecto-bg/50 shadow-sm">
+        <h2 class="text-2xl font-semibold text-proyecto-primary mb-6 border-b border-proyecto-text/10 pb-3 flex items-center gap-2">
+          Datos del Cliente
+        </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <%= form.label :buyer_name, "Nombre Completo", class: "block text-sm font-medium text-blue-400 mb-1" %>
-            <%= form.text_field :buyer_name, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            <%= form.label :buyer_name, "Nombre Completo *", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
+            <%= form.text_field :buyer_name, required: true, class: "block w-full border border-proyecto-text/20 rounded-lg px-4 py-3 bg-proyecto-bg text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
           </div>
           
           <div>
-            <%= form.label :buyer_dni, "DNI", class: "block text-sm font-medium text-blue-400 mb-1" %>
-            <%= form.text_field :buyer_dni, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            <%= form.label :buyer_dni, "DNI *", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
+            <%= form.text_field :buyer_dni, required: true, class: "block w-full border border-proyecto-text/20 rounded-lg px-4 py-3 bg-proyecto-bg text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
           </div>
 
           <div>
-            <%= form.label :buyer_email, "Email", class: "block text-sm font-medium text-blue-400 mb-1" %>
-            <%= form.email_field :buyer_email, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            <%= form.label :buyer_email, "Email *", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
+            <%= form.email_field :buyer_email, required: true, class: "block w-full border border-proyecto-text/20 rounded-lg px-4 py-3 bg-proyecto-bg text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
           </div>
         </div>
       </div>
 
       <%# SECCIÓN 2: PRODUCTOS %>
-      <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
-        <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-3">
-          <h2 class="text-2xl font-semibold text-emerald-400">Productos</h2>
+      <div class="p-8 border border-proyecto-text/10 rounded-xl bg-proyecto-bg/50 shadow-sm">
+        <div class="flex justify-between items-center mb-6 border-b border-proyecto-text/10 pb-3">
+          <h2 class="text-2xl font-semibold text-proyecto-primary flex items-center gap-2">
+            Productos
+          </h2>
         </div>
 
         <div data-nested-form-target="target" class="space-y-4">
-          <%# Aquí se renderizan los items existentes %>
           <%= form.fields_for :sale_items do |sale_item_form| %>
             <%= render "sale_item_fields", f: sale_item_form %>
           <% end %>
         </div>
 
-        <div class="mt-6">
+        <div class="mt-8">
           <button type="button" 
                   data-action="nested-form#add"
-                  class="inline-flex items-center px-6 py-3 border border-dashed border-emerald-500/50 text-sm font-medium rounded-lg text-emerald-400 bg-emerald-900/10 hover:bg-emerald-900/20 hover:border-emerald-400 transition duration-200 w-full justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  class="inline-flex items-center px-6 py-3 border border-dashed border-proyecto-accent/40 text-sm font-medium rounded-lg text-proyecto-accent bg-proyecto-accent/5 hover:bg-proyecto-accent/10 hover:border-proyecto-accent transition duration-200 w-full justify-center group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
             </svg>
             Agregar otro producto
@@ -80,10 +88,10 @@
       </div>
 
       <%# FOOTER: BOTONES DE ACCIÓN %>
-      <div class="pt-8 border-t border-slate-700 flex justify-end gap-4">
-        <%= link_to "Cancelar", backstore_sales_path, class: "px-8 py-3 border border-slate-700 rounded-lg text-gray-300 bg-slate-800 hover:bg-slate-700 transition duration-200 font-medium tracking-wide" %>
+      <div class="pt-8 border-t border-proyecto-text/10 flex flex-col sm:flex-row justify-end gap-4">
+        <%= link_to "Cancelar", backstore_sales_path, class: "px-8 py-3 border border-proyecto-text/20 rounded-lg text-proyecto-text hover:bg-proyecto-secondary/20 transition duration-200 font-medium text-center" %>
         
-        <%= form.submit "Finalizar Venta", class: "px-8 py-3 bg-emerald-400 text-slate-950 rounded-lg font-bold hover:bg-emerald-300 transition duration-200 cursor-pointer shadow-lg tracking-wider" %>
+        <%= form.submit "Finalizar Venta", class: "px-8 py-3 bg-proyecto-primary text-proyecto-bg rounded-lg font-bold hover:bg-proyecto-accent transition duration-200 cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center" %>
       </div>
     
     <% end %>
