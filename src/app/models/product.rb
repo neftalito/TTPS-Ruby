@@ -2,7 +2,7 @@ class Product < ApplicationRecord
   include SoftDeletable
 
   belongs_to :category
-
+  has_many :sale_items
   has_many_attached :images
   has_one_attached :audio
 

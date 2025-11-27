@@ -24,12 +24,15 @@ module Backstore
       @total_items   = SaleItem.where(sale: @sales_scope).sum(:quantity)
       @average_ticket = @total_sales > 0 ? (@total_revenue / @total_sales) : 0
 
-      # 3. Top Products
-      @top_products = SaleItem.where(sale: @sales_scope)
-                              .group(:product)
-                              .order('sum_quantity DESC')
-                              .limit(5)
-                              .sum(:quantity)
+      per_page = params[:per_page] == "all" ? 1000 : (params[:per_page] || 5).to_i
+      @top_products = Product
+                        .joins(sale_items: :sale)
+                        .where(sales: { id: @sales_scope.select(:id) })
+                        .group('products.id')
+                        .select('products.*, SUM(sale_items.quantity) as total_quantity')
+                        .order('total_quantity DESC')
+                        .page(params[:page])
+                        .per(per_page)
     end
   end
 end
