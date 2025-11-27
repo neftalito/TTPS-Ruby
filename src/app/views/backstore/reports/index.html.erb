@@ -17,13 +17,13 @@
       
       <div class="inline-flex rounded-md p-1 bg-proyecto-secondary/20 border border-proyecto-text/10 overflow-x-auto max-w-full gap-1">
         
-        <%# Clases base para botones %>
+
         <% btn_class = "px-4 py-2 text-sm font-medium rounded-md focus:outline-none transition-colors whitespace-nowrap" %>
         
-        <%# Activo: Color Primario solido %>
+
         <% active_class = "bg-proyecto-primary text-proyecto-bg shadow-sm" %>
         
-        <%# Inactivo: Transparente con texto primario, hover acentuado %>
+
         <% inactive_class = "text-proyecto-primary hover:bg-proyecto-secondary hover:text-proyecto-primary" %>
 
         <%= link_to "Hoy", backstore_reports_path(start_date: Date.current, end_date: Date.current, range: 'today'), 
@@ -43,10 +43,10 @@
 
         <button type="button" data-action="report-filters#toggle" 
                 class="<%= btn_class %> <%= @range == 'custom' ? active_class : inactive_class %>">
-          📅 Personalizado
+          Personalizado
         </button>
+        
       </div>
-
       <div data-report-filters-target="customRange" class="hidden w-full xl:w-auto bg-proyecto-secondary/20 p-3 rounded-lg border border-proyecto-text/10 animate-fade-in-down shadow-lg">
         <%= form_with url: backstore_reports_path, method: :get, class: "flex flex-col sm:flex-row gap-2 items-center" do |f| %>
           <%= f.hidden_field :range, value: 'custom' %>
@@ -60,6 +60,25 @@
           <%= f.button "Aplicar", class: "w-full sm:w-auto px-3 py-1.5 bg-proyecto-primary text-proyecto-bg text-xs font-bold rounded-md hover:bg-proyecto-accent transition" %>
         <% end %>
       </div>
+        <div class="flex gap-2 mt-4 xl:mt-0">
+        
+          <%= link_to backstore_reports_path(format: :csv, params: request.query_parameters), class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white font-medium text-sm transition shadow-sm" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            CSV
+          <% end %>
+
+          <%= link_to backstore_reports_path(format: :pdf, params: request.query_parameters), target: "_blank", class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-medium text-sm transition shadow-sm" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            PDF
+          <% end %>
+        </div>
+
+
+
 
     </div>
   </header>
@@ -107,16 +126,16 @@
     
     <div class="px-6 py-4 border-b border-proyecto-text/10 bg-proyecto-secondary/20 flex justify-between items-center">
       <h3 class="text-lg font-bold text-proyecto-primary">
-        <% if @top_products.limit_value==1000 %>
+        <% if @paginated_ranking.limit_value==1000 %>
           Todos los Productos Vendidos
         <% else %>
-          Top <%= @top_products.limit_value %> Más Vendidos
+          Top <%= @paginated_ranking.limit_value %> Más Vendidos
         <% end %>
         </h3>
       <span class="text-xs font-medium px-2 py-1 rounded bg-proyecto-accent/10 text-proyecto-accent">Ranking por cantidad</span>
     </div>
 
-    <% if @top_products.present? %>
+    <% if @products_for_view.present? %>
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-proyecto-text/10">
           <thead class="bg-proyecto-secondary/10">
@@ -128,8 +147,8 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-proyecto-text/10 bg-transparent">
-            <% @top_products.each_with_index do |product, index| %>
-              <% real_index = index + 1 + ((@top_products.current_page - 1) * @top_products.limit_value) %>
+            <% @products_for_view.each_with_index do |product, index| %>
+              <% real_index = index + 1 + ((@paginated_ranking.current_page - 1) * @paginated_ranking.limit_value) %>
               
               <tr class="hover:bg-proyecto-secondary/10 transition-colors">
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-proyecto-text/40">
@@ -175,5 +194,5 @@
       </div>
     <% end %>
   </div>
-  <%= render "shared/pagination", collection: @top_products, params: request.query_parameters %>
+  <%= render "shared/pagination", collection: @paginated_ranking, params: request.query_parameters %>
 </div>
