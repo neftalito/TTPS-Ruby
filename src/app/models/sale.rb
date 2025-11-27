@@ -73,7 +73,7 @@ class Sale < ApplicationRecord
   def validate_stock_availability
     sale_items.each do |item|
       if item.product && !item.product.has_stock?(item.quantity)
-        errors.add(:base, "No hay suficiente stock para el producto: #{item.product.name}, solicitado: #{item.quantity}, disponible: #{item.product.stock}")
+        errors.add(:base, "No hay suficiente stock para el producto: #{item.product.label_for_select}, solicitado: #{item.quantity}, disponible: #{item.product.stock}")
       end
     end
   end

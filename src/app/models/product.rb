@@ -25,7 +25,12 @@ class Product < ApplicationRecord
   before_discard :reset_stock
   
 
-  
+  def label_for_select
+    estado = condition_new? ? "NUEVO" : "USADO"
+    
+    "#{name} - #{author} (#{estado})"
+  end
+
   def has_stock?(quantity_needed)
     stock >= quantity_needed
   end
