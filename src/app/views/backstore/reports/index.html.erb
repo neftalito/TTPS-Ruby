@@ -52,9 +52,9 @@
           <%= f.hidden_field :range, value: 'custom' %>
           
           <div class="flex items-center gap-2 w-full">
-            <%= f.date_field :start_date, value: @start_date || Date.current, class: "w-full rounded-md border-proyecto-text/20 bg-proyecto-bg text-proyecto-primary text-xs py-1.5 focus:border-proyecto-accent focus:ring-proyecto-accent" %>
+            <%= f.date_field :start_date, value: @start_date || Date.current, class: "w-full rounded-md border-proyecto-text/20 bg-proyecto-bg text-proyecto-primary text-xs py-1.5 focus:border-proyecto-accent focus:ring-proyecto-accent", data: { report_filters_target: "startDate", action: "change->report-filters#updateConstraints" } %>
             <span class="text-proyecto-text/40">-</span>
-            <%= f.date_field :end_date, value: @end_date || Date.current, class: "w-full rounded-md border-proyecto-text/20 bg-proyecto-bg text-proyecto-primary text-xs py-1.5 focus:border-proyecto-accent focus:ring-proyecto-accent" %>
+            <%= f.date_field :end_date, value: @end_date || Date.current, class: "w-full rounded-md border-proyecto-text/20 bg-proyecto-bg text-proyecto-primary text-xs py-1.5 focus:border-proyecto-accent focus:ring-proyecto-accent", data: { report_filters_target: "endDate", action: "change->report-filters#updateConstraints" } %>
           </div>
           
           <%= f.button "Aplicar", class: "w-full sm:w-auto px-3 py-1.5 bg-proyecto-primary text-proyecto-bg text-xs font-bold rounded-md hover:bg-proyecto-accent transition" %>
