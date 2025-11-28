@@ -2,7 +2,7 @@ class Product < ApplicationRecord
   include SoftDeletable
 
   belongs_to :category
-
+  has_many :sale_items
   has_many_attached :images
   has_one_attached :audio
 
@@ -18,12 +18,40 @@ class Product < ApplicationRecord
 
   validate :must_have_at_least_one_image
   validate :audio_only_for_used_products
+  validates :stock, numericality: { greater_than_or_equal_to: 0 }
 
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
   before_discard :reset_stock
   
 
+  def label_for_select
+    condicion = condition_new? ? "NUEVO" : "USADO"
+    tipo = product_type_vinyl? ? "VINILO" : "CD"
+    
+    "#{name} - #{author} (#{tipo}, #{condicion})"
+  end
+
+  def label_for_sale
+    condicion = condition_new? ? "NUEVO" : "USADO"
+    tipo = product_type_vinyl? ? "VINILO" : "CD"
+    
+    "#{name} (#{tipo}, #{condicion})"
+  end
+
+  def has_stock?(quantity_needed)
+    stock >= quantity_needed
+  end
+
+  def decrement_stock!(quantity)
+    self.stock -= quantity
+    save! 
+  end
+
+  def increment_stock!(quantity)
+    self.stock += quantity
+    save!
+  end
   private
 
   def must_have_at_least_one_image
@@ -51,5 +79,5 @@ class Product < ApplicationRecord
   def reset_stock
     self.update_column(:stock, 0)
   end
-  
+
 end

@@ -46,7 +46,21 @@
                      { selected: params[:status] },
                      class: "mt-1 px-3 py-1 border rounded-md" %>
       </div>
+      <div>
+        <%= f.label :product_type, "Tipo", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.select :product_type,
+                      [["Todos", "all"], ["Vinilos", "vinyl"], ["CDs", "cd"]],
+                      { selected: params[:product_type] || "all" },
+                      class: "mt-1 px-3 py-1 border rounded-md" %>
+      </div>
 
+      <div>
+        <%= f.label :condition, "Condición", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.select :condition,
+                      [["Todos", "all"], ["Nuevos", "new"], ["Usados", "used"]],
+                      { selected: params[:condition] || "all" },
+                      class: "mt-1 px-3 py-1 border rounded-md" %>
+      </div>
     </div>
 
     <div class="flex flex-col items-center justify-center gap-2">
@@ -64,7 +78,7 @@
 
 <% product_columns = [
   { header: "ID", attribute: :id },
-  { header: "Nombre", attribute: :name },
+  { header: "Nombre", attribute: :label_for_select },
   {
     header: "Categoría",
     value: ->(product) { product.category&.name || "Sin categoría" }
