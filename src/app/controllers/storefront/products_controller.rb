@@ -17,6 +17,14 @@ module Storefront
         @products = @products.where(category_id: params[:category])
       end
 
+      if params[:product_type].present?
+        @products = @products.where(product_type: params[:product_type])
+      end
+
+      if params[:condition].present?
+        @products = @products.where(condition: params[:condition])
+      end
+
       # Paginación
       @products = @products.page(params[:page]).per(params[:per_page] || 12)
     end
