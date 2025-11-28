@@ -97,7 +97,7 @@
 
         <div class="bg-gray-50 p-4 rounded">
           <p class="text-base font-semibold text-gray-800">Precio</p>
-          <p class="mt-1 text-lg font-semibold text-indigo-600"><%= number_to_currency(@product.try(:unit_price) || @product.try(:price) || 0) %></p>
+          <p class="mt-1 text-lg font-semibold text-indigo-600"><%= number_to_currency(@product.price || 0, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></p>
         </div>
 
         <div class="bg-gray-50 p-4 rounded">

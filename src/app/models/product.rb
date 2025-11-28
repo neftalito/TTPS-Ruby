@@ -39,6 +39,14 @@ class Product < ApplicationRecord
     "#{name} (#{tipo}, #{condicion})"
   end
 
+  def label_for_type
+    product_type_vinyl? ? "VINILO" : "CD"
+  end
+
+  def label_for_condition
+    condition_new? ? "NUEVO" : "USADO"
+  end
+
   def has_stock?(quantity_needed)
     stock >= quantity_needed
   end
