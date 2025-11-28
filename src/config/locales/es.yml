@@ -1,4 +1,15 @@
 es:
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: "hace 1 hora"
+        other: "hace %{count} horas"
+      x_days:
+        one: "hace 1 día"
+        other: "hace %{count} días"
+      about_x_months:
+        one: "hace 1 mes"
+        other: "hace %{count} meses"
   helpers:
     page_entries_info:
       one: "Mostrando 1 producto"

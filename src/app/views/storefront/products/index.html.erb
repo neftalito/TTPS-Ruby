@@ -18,6 +18,16 @@
       <%= f.text_field :search, value: params[:search], placeholder: "Buscar por nombre o autor", 
             class: "px-4 py-2 border rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400" %>
 
+        <%= f.select :product_type, 
+            options_for_select([["Vinilos", "vinyl"], ["CDs", "cd"]], params[:product_type]), 
+            { include_blank: "Todos los tipos" }, 
+            class: "px-4 py-2 border rounded-lg w-full md:w-48 focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+
+      <%= f.select :condition, 
+            options_for_select([["Nuevos", "new"], ["Usados", "used"]], params[:condition]), 
+            { include_blank: "Todos los estados" }, 
+            class: "px-4 py-2 border rounded-lg w-full md:w-48 focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+              
       <%= f.select :category, 
             options_for_select(@categories&.map { |c| [c.name, c.id] } || [], params[:category]), 
             { include_blank: "Todas las categorías" }, 

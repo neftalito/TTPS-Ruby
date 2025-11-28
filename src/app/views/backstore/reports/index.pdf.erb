@@ -70,7 +70,7 @@
         <td class="kpi-card border-green">
           <div class="kpi-label">Ingresos Totales</div>
           <div class="kpi-value" style="color: #059669;">
-            <%= number_to_currency(@total_revenue, unit: "$") %>
+            <%= number_to_currency(@total_revenue, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
           </div>
           <div class="kpi-sub">Facturado en el periodo</div>
         </td>
@@ -86,7 +86,7 @@
         <td class="kpi-card border-purple">
           <div class="kpi-label">Precio Promedio</div>
           <div class="kpi-value" style="color: #7c3aed;">
-            <%= number_to_currency(@average_ticket, unit: "$") %>
+            <%= number_to_currency(@average_ticket, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
           </div>
           <div class="kpi-sub">Promedio por venta</div>
         </td>

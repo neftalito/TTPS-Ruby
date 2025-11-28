@@ -17,6 +17,14 @@ module Storefront
         @products = @products.where(category_id: params[:category])
       end
 
+      if params[:product_type].present?
+        @products = @products.where(product_type: params[:product_type])
+      end
+
+      if params[:condition].present?
+        @products = @products.where(condition: params[:condition])
+      end
+
       # Paginación
       @products = @products.page(params[:page]).per(params[:per_page] || 12)
     end
@@ -25,6 +33,11 @@ module Storefront
     def show
       @product = Product.available_products.find_by(id: params[:id])
       redirect_to storefront_products_path, alert: "Producto no disponible." unless @product
+      @related_products = Product.available_products
+                                 .where(category_id: @product.category_id)
+                                 .where.not(id: @product.id)
+                                 .limit(4)
+                                 .order("RANDOM()")
     end
 
 

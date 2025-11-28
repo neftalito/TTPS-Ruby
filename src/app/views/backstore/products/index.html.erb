@@ -78,7 +78,9 @@
 
 <% product_columns = [
   { header: "ID", attribute: :id },
-  { header: "Nombre", attribute: :label_for_select },
+  { header: "Nombre", attribute: :name },
+  { header: "Tipo", attribute: :label_for_type },
+  { header: "Estado", attribute: :label_for_condition },
   {
     header: "Categoría",
     value: ->(product) { product.category&.name || "Sin categoría" }

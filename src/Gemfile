@@ -99,7 +99,11 @@ gem 'dotenv'
 
 gem 'kaminari-tailwind'
 
-# Para generar PDFs
+# Para generar PDFs y csvs
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem "csv"
+
+# Para graficos
+gem "chartkick"
+gem "groupdate"

@@ -16,7 +16,7 @@
         <%= f.select :per_page,
                      options_for_select(
                        [[5, 5], [10, 10], [25, 25], [50, 50], [100, 100], ["Todos", "all"]],
-                       params[:per_page] || 5
+                       params[:per_page] || 25
                      ),
                      {},
                      {
