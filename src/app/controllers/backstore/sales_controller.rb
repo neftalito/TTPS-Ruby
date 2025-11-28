@@ -2,33 +2,44 @@ module Backstore
   class SalesController < BaseController
     before_action :set_sale, only: [:show, :cancel]
     def index
-      @sales = Sale
-                 .includes(:user)
-                 .order(created_at: :desc)
-                 .page(params[:page])
-                 .per(25)
+      per_page = params[:per_page] == "all" ? Sale.count : (params[:per_page] || 25).to_i
+      @sales = Sale.includes(:user).order(created_at: :desc)
+
+      if params[:q].present?
+        query = "%#{params[:q].downcase}%"
+        @sales = @sales.where("LOWER(buyer_name) LIKE ? OR LOWER(buyer_email) LIKE ?", query, query)
+      end
+
+      if params[:status].present?
+        case params[:status]
+        when "cancelled"
+          @sales = @sales.where.not(cancelled_at: nil)
+        when "confirmed"
+          @sales = @sales.where(cancelled_at: nil)
+        end
+      end
+
+      @sales = @sales.page(params[:page]).per(per_page)
     end
 
     def new
       @sale = Sale.new
-      # Inicializamos un ítem vacío para que el formulario muestre al menos una línea de producto
+
       @sale.sale_items.build 
-      
-      # Cargamos los productos para el select del formulario
-      # Usamos el scope 'available_products' que vimos en tu modelo Product
+
       @products = Product.available_products
     end
 
     def create
       @sale = Sale.new(sale_params)
-      # Asignamos el empleado actual (requisito: "Empleado/a que realizó la venta") [cite: 184]
+
       @sale.user = current_user 
 
       if @sale.save
-        # Si se guarda, el modelo ya validó stock, descontó cantidades y calculó el total.
+
         redirect_to backstore_sale_path(@sale), notice: "Venta registrada exitosamente."
       else
-        # Si falla (ej: falta stock), volvemos a cargar los productos y mostramos el error.
+
         @products = Product.available_products
         render :new, status: :unprocessable_entity
       end
@@ -48,8 +59,8 @@ module Backstore
     end
 
     def cancel
-      # Usamos el método cancel! que creamos en el modelo Sale
-      # Esto devuelve el stock automáticamente [cite: 171]
+
+
       if @sale.cancel!
         redirect_to backstore_sales_path, notice: "Venta cancelada y stock restaurado."
       else

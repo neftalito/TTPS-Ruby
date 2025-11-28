@@ -5,23 +5,22 @@
     padding: 0;
   }
   
-  /* Cabecera oscura */
   .header {
-    background-color: #1f2937; /* Gris muy oscuro (tipo Tailwind gray-800) */
+    background-color: #1f2937; 
     color: #ffffff;
     padding: 40px;
-    display: flex; /* Nota: wkhtmltopdf soporta flex básico */
-    overflow: hidden; /* Fallback para floats */
+    display: flex; 
+    overflow: hidden;
   }
   .header-left { float: left; width: 60%; }
   .header-right { float: right; width: 40%; text-align: right; }
 
   .brand-name { font-size: 28px; font-weight: bold; margin: 0; letter-spacing: 1px; }
   .brand-sub { font-size: 12px; opacity: 0.8; margin-top: 5px; }
-  .invoice-title { font-size: 24px; font-weight: bold; margin: 0; color: #818cf8; /* Indigo suave */ }
+  .invoice-title { font-size: 24px; font-weight: bold; margin: 0; color: #818cf8; 
   .invoice-details { margin-top: 5px; font-size: 13px; opacity: 0.9; }
 
-  /* Información de Cliente/Empresa */
+
   .info-section { padding: 40px; overflow: hidden; }
   .col-left { float: left; width: 50%; }
   .col-right { float: right; width: 50%; text-align: right; }
@@ -30,7 +29,7 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: #6b7280; /* Gray 500 */
+    color: #6b7280; 
     font-weight: bold;
     margin-bottom: 8px;
     border-bottom: 1px solid #e5e7eb;
@@ -40,14 +39,14 @@
   .client-name { font-size: 16px; font-weight: bold; margin-bottom: 4px; color: #111; }
   .info-text { color: #4b5563; font-size: 13px; margin: 2px 0; }
 
-  /* Tabla */
+
   .table-container { padding: 0 40px; }
   table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
   
   th {
     text-align: left;
     padding: 12px 10px;
-    background-color: #f3f4f6; /* Gray 100 */
+    background-color: #f3f4f6;
     color: #374151;
     font-size: 11px;
     font-weight: bold;
@@ -66,7 +65,7 @@
   .item-name { font-weight: 600; display: block; }
   .item-desc { font-size: 11px; color: #6b7280; }
 
-  /* Totales */
+ 
   .totals-section {
     float: right;
     width: 40%;
@@ -91,7 +90,7 @@
   .total-label { float: left; }
   .total-value { float: right; }
   
-  /* Footer */
+ 
   .footer {
     clear: both;
     text-align: center;
