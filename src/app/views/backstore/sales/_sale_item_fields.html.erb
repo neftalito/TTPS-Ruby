@@ -7,13 +7,16 @@
           :id, 
           :label_for_select, 
           { prompt: "Selecciona un producto..." }, 
-          { class: "block w-full border border-proyecto-text/20 rounded-lg px-4 py-3 bg-proyecto-bg text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" } 
-    %>
+          { class: "block w-full border border-proyecto-text/20 rounded-lg px-4 py-3 bg-proyecto-bg text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200",
+            data: { 
+              unique_selection_target: "select", 
+              action: "change->unique-selection#change" 
+            } }  %>
   </div>
 
   <div class="w-32">
     <%= f.label :quantity, "Cantidad", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
-    <%= f.number_field :quantity, min: 1, class: "block w-full border border-proyecto-text/20 rounded-lg px-4 py-3 bg-proyecto-bg text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
+    <%= f.number_field :quantity, min: 1, required: true, placeholder: "1", class: "block w-full border border-proyecto-text/20 rounded-lg px-4 py-3 bg-proyecto-bg text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
   </div>
 
   <div class="mb-1">

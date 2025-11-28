@@ -63,7 +63,7 @@
           </h2>
         </div>
 
-        <div data-nested-form-target="target" class="space-y-4">
+        <div data-nested-form-target="target" class="space-y-4" data-controller="unique-selection">
           <%= form.fields_for :sale_items do |sale_item_form| %>
             <%= render "sale_item_fields", f: sale_item_form %>
           <% end %>
