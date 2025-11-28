@@ -2,7 +2,7 @@
   
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-proyecto-primary">
-      Hola, <%= current_user.email.split('@').first.capitalize %> 👋
+      Hola, <%= current_user.email %>
     </h1>
     <p class="text-proyecto-text/60">Aquí tienes un resumen de la actividad de la disquería.</p>
   </div>
@@ -29,7 +29,9 @@
 
       <%= link_to backstore_products_path, class: "flex flex-col items-center gap-2 group" do %>
         <div class="p-4 rounded-full bg-purple-100 text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 3-2 3-2zm0 0c0 1.105 1.343 2 3 2s3-.895 3-2-3-2-3-2zM9 4l12-3m0 0v13m0-13c0 1.105-1.343 2-3 2s-3-.895-3-2 3-2 3-2" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+          </svg>
         </div>
         <span class="text-sm font-medium text-proyecto-text group-hover:text-proyecto-primary">Inventario</span>
       <% end %>
@@ -84,14 +86,15 @@
 
     <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-proyecto-secondary/20 overflow-hidden">
       <div class="px-6 py-4 bg-proyecto-secondary/5 border-b border-proyecto-secondary/20">
-        <h3 class="font-bold text-proyecto-primary">Últimas Transacciones</h3>
+        <h3 class="font-bold text-proyecto-primary">Últimas Ventas</h3>
       </div>
+      
       <table class="w-full text-sm text-left">
         <thead class="bg-gray-50 text-gray-500 uppercase font-bold text-xs">
           <tr>
             <th class="px-6 py-3">ID</th>
             <th class="px-6 py-3">Vendedor</th>
-            <th class="px-6 py-3">Fecha</th>
+            <th class="px-6 py-3 text-left">Fecha</th>
             <th class="px-6 py-3 text-right">Total</th>
           </tr>
         </thead>
@@ -101,12 +104,15 @@
               <td class="px-6 py-3 font-mono">
                 <%= link_to "##{sale.id}", backstore_sale_path(sale), class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors" %>
               </td>
-              <td class="px-6 py-3 text-gray-600"><%= sale.user.email.split('@').first %></td>
-              <td class="px-6 py-3 text-gray-500">
-                <td class="px-6 py-3 text-gray-500">
-                  <%= time_ago_in_words(sale.created_at) %>
-                </td>
+              
+              <td class="px-6 py-3 text-gray-600">
+                <%= sale.user.email %>
               </td>
+              
+              <td class="px-6 py-3 text-gray-500 text-left">
+                <%= time_ago_in_words(sale.created_at) %>
+              </td>
+              
               <td class="px-6 py-3 text-right font-bold text-proyecto-primary">
                 <%= number_to_currency(sale.total, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
               </td>

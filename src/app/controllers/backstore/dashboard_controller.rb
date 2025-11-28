@@ -10,9 +10,16 @@ module Backstore
                                      .sum(:quantity)
                                      .transform_keys { |id| Category.find(id).name }
 
-      @low_stock_products = Product.kept.where("stock <= ?", 5).order(:stock).limit(5)
+      @low_stock_products = Product.kept
+                                   .where(condition: "new")
+                                   .where("stock <= ?", 5)
+                                   .order(:stock)
+                                   .limit(5)
 
-      @recent_sales = Sale.includes(:user).order(created_at: :desc).limit(5)
+      @recent_sales = Sale.where(cancelled_at: nil)
+                          .includes(:user)
+                          .order(created_at: :desc)
+                          .limit(5)
 
       @my_sales_count = Sale.where(user: current_user, cancelled_at: nil).count
       @my_total_revenue = Sale.where(user: current_user, cancelled_at: nil).sum(:total)
