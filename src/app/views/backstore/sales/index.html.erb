@@ -69,7 +69,7 @@
   {
     header: "Total",
     cell_class: "px-6 py-4 whitespace-nowrap font-semibold text-proyecto-primary",
-    value: ->(sale) { number_to_currency(sale.total || 0, unit: "$", separator: ",", delimiter: ".") }
+    value: ->(sale) { number_to_currency(sale.total || 0, unit: "$", separator: ",", delimiter: ".", format:"%u%n") }
   },
   {
     header: "Fecha",

@@ -59,13 +59,13 @@
                   <div class="text-sm text-proyecto-text/60"><%= item.product&.author %></div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-proyecto-text/80">
-                  <%= number_to_currency(item.unit_price) %>
+                  <%= number_to_currency(item.unit_price, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-proyecto-text/80">
                   <%= item.quantity %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-proyecto-primary">
-                  <%= number_to_currency(item.unit_price * item.quantity) %>
+                  <%= number_to_currency(item.unit_price * item.quantity, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
                 </td>
               </tr>
             <% end %>
@@ -75,7 +75,7 @@
             <tr>
               <td colspan="3" class="px-6 py-4 text-right text-base font-bold text-proyecto-text">Total</td>
               <td class="px-6 py-4 text-right text-xl font-bold text-proyecto-accent">
-                <%= number_to_currency(@sale.total) %>
+                <%= number_to_currency(@sale.total, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
               </td>
             </tr>
           </tfoot>

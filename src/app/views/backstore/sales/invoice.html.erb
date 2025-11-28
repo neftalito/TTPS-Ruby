@@ -3,13 +3,14 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
   }
   
   .header {
     background-color: #1f2937; 
     color: #ffffff;
     padding: 40px;
-    display: flex; 
     overflow: hidden;
   }
   .header-left { float: left; width: 60%; }
@@ -17,9 +18,10 @@
 
   .brand-name { font-size: 28px; font-weight: bold; margin: 0; letter-spacing: 1px; }
   .brand-sub { font-size: 12px; opacity: 0.8; margin-top: 5px; }
-  .invoice-title { font-size: 24px; font-weight: bold; margin: 0; color: #818cf8; 
+  
+  .invoice-title { font-size: 24px; font-weight: bold; margin: 0; color: #818cf8; }
+  
   .invoice-details { margin-top: 5px; font-size: 13px; opacity: 0.9; }
-
 
   .info-section { padding: 40px; overflow: hidden; }
   .col-left { float: left; width: 50%; }
@@ -38,7 +40,6 @@
   }
   .client-name { font-size: 16px; font-weight: bold; margin-bottom: 4px; color: #111; }
   .info-text { color: #4b5563; font-size: 13px; margin: 2px 0; }
-
 
   .table-container { padding: 0 40px; }
   table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
@@ -65,7 +66,12 @@
   .item-name { font-weight: 600; display: block; }
   .item-desc { font-size: 11px; color: #6b7280; }
 
- 
+  .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
   .totals-section {
     float: right;
     width: 40%;
@@ -90,7 +96,6 @@
   .total-label { float: left; }
   .total-value { float: right; }
   
- 
   .footer {
     clear: both;
     text-align: center;
@@ -150,19 +155,20 @@
         <% @sale.sale_items.each do |item| %>
           <tr>
             <td>
-              <span class="item-name"><%= item.product&.label_for_sale %></span>
+              <span class="item-name"><%= item.product&.try(:label_for_sale) || item.product&.name %></span>
               <span class="item-desc"><%= item.product&.author %></span>
             </td>
-            <td class="text-right"><%= number_to_currency(item.unit_price) %></td>
+            <td class="text-right"><%= number_to_currency(item.unit_price, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></td>
             <td class="text-right"><%= item.quantity %></td>
-            <td class="text-right" style="font-weight: bold;"><%= number_to_currency(item.unit_price * item.quantity) %></td>
+            <td class="text-right" style="font-weight: bold;"><%= number_to_currency(item.unit_price * item.quantity, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></td>
           </tr>
         <% end %>
       </tbody>
     </table>
   </div>
 
-  <div class="clearfix"> <div class="totals-section">
+  <div class="clearfix">
+    <div class="totals-section">
       <div class="total-row">
         <span class="total-label">Total Items:</span>
         <span class="total-value"><%= @sale.sale_items.sum(:quantity) %></span>
@@ -170,7 +176,7 @@
       
       <div class="total-row final">
         <span class="total-label">TOTAL A PAGAR</span>
-        <span class="total-value"><%= number_to_currency(@sale.total) %></span>
+        <span class="total-value"><%= number_to_currency(@sale.total, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></span>
       </div>
     </div>
   </div>

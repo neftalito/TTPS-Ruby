@@ -79,7 +79,7 @@ module Backstore
         :buyer_name, 
         :buyer_email, 
         :buyer_dni,
-        sale_items_attributes: [:product_id, :quantity, :unit_price, :_destroy]
+        sale_items_attributes: [:product_id, :quantity, :_destroy]
       )
     end
   end

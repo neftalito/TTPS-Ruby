@@ -29,7 +29,7 @@ module Backstore
 
       sorted_ranking = ranking_hash.sort_by { |_id, qty| -qty }
 
-      per_page = params[:per_page] == "all" ? 1000 : (params[:per_page] || 5).to_i
+      per_page = params[:per_page] == "all" ? 1000 : (params[:per_page] || 25).to_i
       
 
       @paginated_ranking = Kaminari.paginate_array(sorted_ranking)

@@ -29,7 +29,7 @@ module Backstore
       end
 
       # Paginación con per_page dinámico
-      per_page = params[:per_page] == "all" ? @users.count : (params[:per_page] || 5).to_i
+      per_page = params[:per_page] == "all" ? @users.count : (params[:per_page] || 25).to_i
       @users = @users.order(id: :asc).page(params[:page]).per(per_page)
     end
 

@@ -89,7 +89,7 @@
       <div class="absolute right-0 top-0 h-full w-1 bg-proyecto-success"></div>
       <p class="text-xs font-bold text-proyecto-text/60 uppercase tracking-wider">Ingresos Totales</p>
       <p class="text-3xl font-bold text-proyecto-primary mt-2 group-hover:text-proyecto-success transition-colors">
-        <%= number_to_currency(@total_revenue, unit: "$") %>
+        <%= number_to_currency(@total_revenue, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
       </p>
       <p class="text-xs text-proyecto-text/40 mt-2">Facturado en el periodo</p>
     </div>
@@ -107,7 +107,7 @@
       <div class="absolute right-0 top-0 h-full w-1 bg-purple-500"></div>
       <p class="text-xs font-bold text-proyecto-text/60 uppercase tracking-wider">Precio Promedio</p>
       <p class="text-3xl font-bold text-proyecto-primary mt-2 group-hover:text-purple-500 transition-colors">
-        <%= number_to_currency(@average_ticket, unit: "$") %>
+        <%= number_to_currency(@average_ticket, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
       </p>
       <p class="text-xs text-proyecto-text/40 mt-2">Promedio por venta</p>
     </div>
