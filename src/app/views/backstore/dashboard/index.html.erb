@@ -2,7 +2,7 @@
   
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-proyecto-primary">
-      Hola, <%= current_user.email %>
+      Hola, <%= current_user.email%>
     </h1>
     <p class="text-proyecto-text/60">Aquí tienes un resumen de la actividad de la disquería.</p>
   </div>
@@ -59,7 +59,7 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     
-    <div class="bg-white rounded-xl shadow-sm border border-red-200 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-red-200 overflow-hidden flex flex-col h-full">
       <div class="px-6 py-4 bg-red-50 border-b border-red-100 flex items-center justify-between">
         <h3 class="font-bold text-red-800 flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
@@ -67,9 +67,9 @@
         </h3>
         <span class="text-xs font-bold bg-red-200 text-red-800 px-2 py-1 rounded-full">Bajo</span>
       </div>
-      <div class="p-4">
+      <div class="p-4 flex-1 flex flex-col justify-center">
         <% if @low_stock_products.any? %>
-          <ul class="space-y-3">
+          <ul class="space-y-3 w-full">
             <% @low_stock_products.each do |product| %>
               <li class="flex justify-between items-center text-sm border-b border-red-50 last:border-0 pb-2 last:pb-0">
                 <%= link_to product.name, backstore_product_path(product), class: "text-gray-700 truncate max-w-[180px] hover:text-red-700 hover:underline transition-colors", title: product.name %>
@@ -79,47 +79,67 @@
             <% end %>
           </ul>
         <% else %>
-          <p class="text-sm text-green-600 text-center py-4">¡Todo el stock está saludable!</p>
+          <div class="text-center py-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-green-100 text-green-600 rounded-full mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <p class="text-lg font-medium text-green-700">¡Todo en orden!</p>
+            <p class="text-sm text-green-600 mt-1">No hay stock crítico.</p>
+          </div>
         <% end %>
       </div>
     </div>
 
-    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-proyecto-secondary/20 overflow-hidden">
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-proyecto-secondary/20 overflow-hidden flex flex-col h-full">
       <div class="px-6 py-4 bg-proyecto-secondary/5 border-b border-proyecto-secondary/20">
         <h3 class="font-bold text-proyecto-primary">Últimas Ventas</h3>
       </div>
       
-      <table class="w-full text-sm text-left">
-        <thead class="bg-gray-50 text-gray-500 uppercase font-bold text-xs">
-          <tr>
-            <th class="px-6 py-3">ID</th>
-            <th class="px-6 py-3">Vendedor</th>
-            <th class="px-6 py-3 text-left">Fecha</th>
-            <th class="px-6 py-3 text-right">Total</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-          <% @recent_sales.each do |sale| %>
-            <tr class="hover:bg-gray-50 transition-colors group">
-              <td class="px-6 py-3 font-mono">
-                <%= link_to "##{sale.id}", backstore_sale_path(sale), class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors" %>
-              </td>
-              
-              <td class="px-6 py-3 text-gray-600">
-                <%= sale.user.email %>
-              </td>
-              
-              <td class="px-6 py-3 text-gray-500 text-left">
-                <%= time_ago_in_words(sale.created_at) %>
-              </td>
-              
-              <td class="px-6 py-3 text-right font-bold text-proyecto-primary">
-                <%= number_to_currency(sale.total, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
-              </td>
+      <% if @recent_sales.any? %>
+        <table class="w-full text-sm text-left">
+          <thead class="bg-gray-50 text-gray-500 uppercase font-bold text-xs">
+            <tr>
+              <th class="px-6 py-3">ID</th>
+              <th class="px-6 py-3">Vendedor</th>
+              <th class="px-6 py-3 text-left">Fecha</th>
+              <th class="px-6 py-3 text-right">Total</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <% @recent_sales.each do |sale| %>
+              <tr class="hover:bg-gray-50 transition-colors group">
+                <td class="px-6 py-3 font-mono">
+                  <%= link_to "##{sale.id}", backstore_sale_path(sale), class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors" %>
+                </td>
+                
+                <td class="px-6 py-3 text-gray-600">
+                  <%= sale.user.email %>
+                </td>
+                
+                <td class="px-6 py-3 text-gray-500 text-left">
+                  <%= time_ago_in_words(sale.created_at) %>
+                </td>
+                
+                <td class="px-6 py-3 text-right font-bold text-proyecto-primary">
+                  <%= number_to_currency(sale.total, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="flex flex-col items-center justify-center flex-1 py-12 text-center">
+          <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <p class="text-gray-500 font-medium">No hay ventas recientes</p>
+          <p class="text-xs text-gray-400 mt-1">Las nuevas ventas aparecerán aquí.</p>
+        </div>
+      <% end %>
     </div>
 
   </div>
