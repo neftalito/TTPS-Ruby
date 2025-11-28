@@ -9,7 +9,6 @@
         Ingresa los datos del cliente y agrega los productos a la transacción.
       </p>
 
-      <%# Manejo de Errores %>
       <% if @sale.errors.any? %>
         <div class="mt-6 p-4 rounded-lg bg-proyecto-error/10 border border-proyecto-error/20 text-proyecto-error text-left animate-pulse">
           <h4 class="font-bold mb-2 flex items-center gap-2">
@@ -31,7 +30,6 @@
                   data: { controller: "nested-form", action: "submit->nested-form#submit" }, 
                   class: "space-y-12" do |form| %>
 
-      <%# SECCIÓN 1: DATOS DEL CLIENTE %>
       <div class="p-8 border border-proyecto-text/10 rounded-xl bg-proyecto-bg/50 shadow-sm">
         <h2 class="text-2xl font-semibold text-proyecto-primary mb-6 border-b border-proyecto-text/10 pb-3 flex items-center gap-2">
           Datos del Cliente
@@ -55,7 +53,6 @@
         </div>
       </div>
 
-      <%# SECCIÓN 2: PRODUCTOS %>
       <div class="p-8 border border-proyecto-text/10 rounded-xl bg-proyecto-bg/50 shadow-sm">
         <div class="flex justify-between items-center mb-6 border-b border-proyecto-text/10 pb-3">
           <h2 class="text-2xl font-semibold text-proyecto-primary flex items-center gap-2">
@@ -87,7 +84,6 @@
         </template>
       </div>
 
-      <%# FOOTER: BOTONES DE ACCIÓN %>
       <div class="pt-8 border-t border-proyecto-text/10 flex flex-col sm:flex-row justify-end gap-4">
         <%= link_to "Cancelar", backstore_sales_path, class: "px-8 py-3 border border-proyecto-text/20 rounded-lg text-proyecto-text hover:bg-proyecto-secondary/20 transition duration-200 font-medium text-center" %>
         
