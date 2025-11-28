@@ -33,6 +33,11 @@ module Storefront
     def show
       @product = Product.available_products.find_by(id: params[:id])
       redirect_to storefront_products_path, alert: "Producto no disponible." unless @product
+      @related_products = Product.available_products
+                                 .where(category_id: @product.category_id)
+                                 .where.not(id: @product.id)
+                                 .limit(4)
+                                 .order("RANDOM()")
     end
 
 

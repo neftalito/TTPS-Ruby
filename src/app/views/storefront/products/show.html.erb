@@ -38,7 +38,6 @@
 
   <div class="flex flex-col md:flex-row gap-6">
     <div class="md:w-1/2">
-      <%# CARRUSEL DE IMÁGENES %>
       <div id="carousel-<%= @product.id %>" class="relative bg-white rounded-lg shadow-sm overflow-hidden">
         <div class="carousel-track flex transition-transform duration-500 ease-in-out">
           <% if @product.images.attached? %>
@@ -54,7 +53,6 @@
           <% end %>
         </div>
 
-        <%# BOTONES DE NAVEGACIÓN %>
         <button data-action="prev" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white/100 rounded-full p-2 shadow">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M12.293 16.293a1 1 0 010-1.414L15.586 11H4a1 1 0 110-2h11.586l-3.293-3.293a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
@@ -66,7 +64,6 @@
           </svg>
         </button>
 
-        <%# INDICADORES %>
         <div class="absolute bottom-3 left-3 flex items-center gap-3">
           <div class="text-sm text-gray-600 bg-white/80 px-2 py-1 rounded">
             <%= pluralize(@product.images.attached? ? @product.images.count : 0, 'imagen') %>
@@ -127,6 +124,19 @@
       
     </div>
   </div>
+</div>
+
+<% if @related_products.present? %>
+    <div class="mt-16 border-t border-gray-200 pt-10">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Tal vez también te interese...</h2>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <% @related_products.each do |related| %>
+          <%= render "storefront/products/card", product: related %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>
 
 <script>
