@@ -2,15 +2,15 @@
   <div class="max-w-4xl mx-auto p-12 bg-slate-900 rounded-3xl shadow-2xl border border-slate-700 font-sans text-gray-100">
     
     <header class="mb-10 border-b border-slate-700 pb-5 text-center">
-      <%# TÍTULO DINÁMICO %>
-      <h1 class="text-4xl font-extrabold text-emerald-400 tracking-widest uppercase">
+      <%# Título dinámico que cambia entre "EDITAR" y "NUEVO" %>
+      <h1 class="text-4xl font-extrabold text-emerald-400 tracking-widest uppercase" id="form_title">
         <%= @product.persisted? ? "EDITAR PRODUCTO" : "NUEVO PRODUCTO" %> 📀
       </h1>
       <p class="text-lg text-slate-400 mt-2 font-light">
         <%= @product.persisted? ? "Realiza las modificaciones necesarias al registro." : "No te olvides de proporcionar la mayor información necesaria." %>
       </p>
       
-      <%# Mostrar errores de validación si existen %>
+      <%# Muestra errores de validación si existen %>
       <% if @product.errors.any? %>
         <div class="mt-4 p-4 rounded-lg bg-red-800/50 border border-red-700 text-red-300 text-left">
           <h4 class="font-bold mb-2">Se encontraron <%= pluralize(@product.errors.count, "error") %>:</h4>
@@ -23,7 +23,7 @@
       <% end %>
     </header>
 
-    <%# FORMULARIO: Usa [:backstore, @product] para manejar las rutas correctamente %>
+    <%# Definición del formulario con soporte para subida de archivos (multipart) %>
     <%= form_with model: [:backstore, @product], local: true, html: { multipart: true } do |f| %>
       <div class="space-y-12">
 
@@ -61,7 +61,9 @@
             
             <div>
               <%= f.label :stock, "Stock Disponible", class: "block text-sm font-medium text-gray-300 mb-1" %>
-              <%= f.number_field :stock, min: 0, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+              <%= f.number_field :stock, min: 0, 
+                  class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200", 
+                  id: "product_stock_field" %>
             </div>
             
             <div>
@@ -94,13 +96,13 @@
             </div>
           </div>
           
-          <%# BLOQUE DE AUDIO: Se inicializa oculto con style="display: none;" para que JS lo muestre solo si es "usado" %>
-          <div id="audio_upload_block" class="mt-8" style="display: none;">
+          <%# Bloque de subida de audio, solo visible para condición "Usado" %>
+          <div id="audio_upload_block" class="mt-8" style="display: none; opacity: 0; transition: all 0.5s ease;">
             <label for="product_audio" class="block text-sm font-medium text-blue-400 mb-1">Muestra de Audio (Opcional, solo para discos usados)</label>
             <%= f.file_field :audio, accept: "audio/*", 
-                class: "mt-1 block w-full text-base text-gray-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-base file:font-semibold file:bg-blue-800 file:text-white hover:file:bg-blue-700 transition duration-200" %>
+              class: "mt-1 block w-full text-base text-gray-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-base file:font-semibold file:bg-blue-800 file:text-white hover:file:bg-blue-700 transition duration-200" %>
             
-            <%# Previsualización del audio adjunto (solo en modo edición) %>
+            <%# Muestra la previsualización del audio si ya está adjunto %>
             <% if @product.persisted? && @product.audio.attached? %>
               <div class="bg-slate-950 border border-slate-700 rounded-lg p-4 mt-2">
                 <p class="text-xs text-emerald-400 font-mono mb-2 uppercase tracking-wider">Audio cargado:</p>
@@ -128,7 +130,7 @@
             <%= f.file_field :images, multiple: true, accept: "image/*", class: "mt-1 block w-full text-base text-gray-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-base file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 transition duration-200" %>
           </div>
 
-          <%# VISTA PREVIA: Solo se muestra si el producto ya está en la DB %>
+          <%# Vista previa de imágenes adjuntas %>
           <% if @product.persisted? && @product.images.attached? %>
             <div class="mt-8">
               <h3 class="text-xl font-medium text-gray-300 mb-4">Visualización de Activos Actuales:</h3>
@@ -153,8 +155,8 @@
         </div>
 
         <div class="pt-8 border-t border-slate-700 flex justify-end gap-4">
-          <%# Botón de Regreso %>
-          <%= link_to "Regresar a Panel", backstore_products_path, class: "px-8 py-3 border border-slate-700 rounded-lg text-gray-300 bg-slate-800 hover:bg-slate-700 transition duration-200 font-medium tracking-wide" %>
+          <%# Botón para regresar al panel o a la vista del producto %>
+          <%= link_to "Regresar a Panel", @product.persisted? ? backstore_product_path(@product) : backstore_products_path, class: "px-8 py-3 border border-slate-700 rounded-lg text-gray-300 bg-slate-800 hover:bg-slate-700 transition duration-200 font-medium tracking-wide" %>
           
           <%# Botón de Submit Dinámico %>
           <%= f.submit (@product.persisted? ? "Guardar Cambios" : "Crear Producto"), class: "px-8 py-3 bg-emerald-400 text-slate-950 rounded-lg font-bold hover:bg-emerald-300 transition duration-200 cursor-pointer shadow-lg tracking-wider" %>
@@ -164,109 +166,180 @@
     <% end %>
   </div>
 </div>
-
-<%# BLOQUE DE JAVASCRIPT: Toggle audio y modales %>
+<%# BLOQUE DE JAVASCRIPT: Lógica Centralizada para Modales, Stock y Audio %>
 <script>
 document.addEventListener('turbo:load', () => {
-  // -----------------------
-  // Funciones auxiliares para modales
-  // -----------------------
-  function showModal({ title, message, confirmText, confirmClass, cancelText, onConfirm }) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50';
-    modal.style.animation = 'fadeIn 0.2s ease-out';
-    
-    modal.innerHTML = `
-      <div class="bg-slate-800 border rounded-2xl p-8 max-w-md shadow-xl" style="animation: scaleIn 0.3s ease-out;">
-        <h3 class="text-2xl font-bold mb-4">${title}</h3>
-        <p class="text-gray-300 mb-6">${message}</p>
-        <div class="flex justify-end gap-3">
-          <button id="modal-cancel" class="px-6 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition">${cancelText}</button>
-          <button id="modal-confirm" class="px-6 py-2 ${confirmClass} text-white rounded-lg font-bold hover:opacity-90 transition">${confirmText}</button>
-        </div>
-      </div>
-    `;
-    
-    // Animaciones (solo agregar una vez)
-    if (!document.getElementById('modal-animations')) {
-      const style = document.createElement('style');
-      style.id = 'modal-animations';
-      style.textContent = `
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-      `;
-      document.head.appendChild(style);
-    }
+  
+  function showModal({ title, message, confirmText, confirmClass, cancelText, onConfirm, onCancel }) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50';
+    modal.style.animation = 'fadeIn 0.2s ease-out';
+    
+    modal.innerHTML = `
+      <div class="bg-slate-800 border rounded-2xl p-8 max-w-md shadow-xl" style="animation: scaleIn 0.3s ease-out;">
+        <h3 class="text-2xl font-bold mb-4">${title}</h3>
+        <p class="text-gray-300 mb-6">${message.replace(/\n/g, '<br>')}</p>
+        <div class="flex justify-end gap-3">
+          <button id="modal-cancel" class="px-6 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition">${cancelText}</button>
+          <button id="modal-confirm" class="px-6 py-2 ${confirmClass} text-white rounded-lg font-bold hover:opacity-90 transition">${confirmText}</button>
+        </div>
+      </div>
+    `;
+    
+    if (!document.getElementById('modal-animations')) {
+      const style = document.createElement('style');
+      style.id = 'modal-animations';
+      style.textContent = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      `;
+      document.head.appendChild(style);
+    }
 
-    document.body.appendChild(modal);
+    document.body.appendChild(modal);
 
-    modal.querySelector('#modal-cancel').addEventListener('click', () => modal.remove());
-    modal.querySelector('#modal-confirm').addEventListener('click', () => {
-      modal.remove();
-      onConfirm();
-    });
+    modal.querySelector('#modal-cancel').addEventListener('click', () => {
+      modal.remove();
+      if (onCancel) onCancel();
+    });
+    modal.querySelector('#modal-confirm').addEventListener('click', () => {
+      modal.remove();
+      onConfirm();
+    });
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.remove();
-    });
-  }
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+        if (onCancel) onCancel();
+      }
+    });
+  }
 
-  // -----------------------
-  // Toggle audio block
-  // -----------------------
-  const conditionSelect = document.getElementById('product_condition');
-  const audioBlock = document.getElementById('audio_upload_block');
+  // ----------------------------------------------------
+  // LÓGICA PRINCIPAL DEL FORMULARIO: PREVENCIÓN DE DUPLICACIÓN y CORRECCIÓN EN CANCELAR
+  // ----------------------------------------------------
 
-  if (conditionSelect && audioBlock) {
-    function toggleAudioBlock() {
-      audioBlock.style.display = conditionSelect.value === 'used' ? 'block' : 'none';
-    }
+  const conditionSelect = document.getElementById('product_condition');
+  const stockInput = document.getElementById('product_stock_field');
+  const audioBlock = document.getElementById('audio_upload_block');
+  const formTitle = document.getElementById('form_title');
+  const isEditing = formTitle ? formTitle.textContent.includes("EDITAR PRODUCTO") : false;
 
-    toggleAudioBlock();
+  if (conditionSelect && audioBlock && stockInput) {
+    // -> Verificamos la bandera antes de adjuntar el listener de 'change' para evitar duplicación
+    if (!conditionSelect.dataset.listenerAttached) {
+        
+        // **NUEVA LÍNEA: Guardamos el valor inicial de la condición aquí.**
+        conditionSelect.dataset.initialCondition = conditionSelect.value;
+        conditionSelect.dataset.initialStock = stockInput.value;
 
-    conditionSelect.addEventListener('change', (e) => {
-      const newValue = e.target.value;
-      const audioPlayerExists = audioBlock.querySelector('audio') !== null;
+        function toggleAudioBlockAndStock() {
+            const isUsed = conditionSelect.value === 'used';
+            
+            // Lógica para mostrar/ocultar el bloque de audio
+            audioBlock.style.display = isUsed ? 'block' : 'none';
+            setTimeout(() => {
+                audioBlock.style.opacity = isUsed ? '1' : '0';
+            }, 10);
+            
+            // Lógica para forzar el stock a 1 si la condición es 'used'
+            if (isUsed) {
+                stockInput.value = 1;
+            } else if (stockInput.value === '1') {
+                stockInput.value = '';
+            }
+        }
 
-      if (newValue === 'new' && audioPlayerExists) {
-        showModal({
-          title: '⚠️ ADVERTENCIA',
-          message: 'Este producto tiene un audio asociado.\nSi cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
-          confirmText: 'Aceptar',
-          confirmClass: 'bg-emerald-500',
-          cancelText: 'Cancelar',
-          onConfirm: () => toggleAudioBlock()
+        // Ejecuta la lógica al cargar la página
+        toggleAudioBlockAndStock();
+
+        conditionSelect.addEventListener('change', function(e) {
+            const newCondition = e.target.value;
+            const audioPlayerExists = audioBlock.querySelector('audio') !== null;
+            const currentStockValue = stockInput.value;
+            
+            // Guardamos la condición actual ANTES de que se disparen las alertas, 
+            // para que sea el valor a restaurar si el usuario CANCELA.
+            const previousCondition = conditionSelect.dataset.initialCondition;
+            conditionSelect.dataset.initialCondition = newCondition;
+
+            // Alerta de stock al cambiar a USADO en la vista de edición
+            if (newCondition === 'used' && isEditing && currentStockValue !== '1') {
+
+                showModal({
+                    title: '📦 Advertencia de Inventario',
+                    message: `Estás cambiando la condición a 'Usado'. Esto cambiara el Stock por 1 unidad. ¿Confirmas el cambio?`,
+                    confirmText: 'Sí, Confirmar',
+                    confirmClass: 'bg-red-600 hover:bg-red-500',
+                    cancelText: 'Cancelar',
+                    onConfirm: () => {
+                        // Si confirma, ejecutamos la lógica
+                        toggleAudioBlockAndStock();
+                    },
+                    onCancel: () => {
+                        // Si cancela, restablece el valor que estaba ANTES de hacer el cambio
+                        conditionSelect.value = previousCondition; 
+                        // No re-ejecuta toggleAudioBlockAndStock().
+                    }
+                });
+                return;
+            }
+            
+            // Alerta de eliminación de audio al cambiar de USADO a otra condición
+            if (newCondition !== 'used' && audioPlayerExists) {
+                showModal({
+                    title: '⚠️ ADVERTENCIA de Audio',
+                    message: 'Este producto tiene un audio asociado. Si cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
+                    confirmText: 'Aceptar y Eliminar Audio',
+                    confirmClass: 'bg-emerald-500 hover:bg-emerald-400',
+                    cancelText: 'Cancelar y Mantener Usado',
+                    onConfirm: () => {
+                        // Si confirma, ejecutamos la lógica
+                        toggleAudioBlockAndStock();
+                    },
+                    onCancel: () => {
+                        // Si cancela, restablece la condición a 'used' y FUERZA la UI a ese estado
+                        conditionSelect.value = 'used';
+                        toggleAudioBlockAndStock();
+                    }
+                });
+                return;
+            }
+
+            // Ejecuta la lógica si no hay alertas
+            toggleAudioBlockAndStock();
         });
+        
+        // -> Marcamos el elemento como procesado
+        conditionSelect.dataset.listenerAttached = 'true';
+    }
+  }
 
-        // Resetear select a 'used' hasta que el usuario confirme
-        conditionSelect.value = 'used';
-        toggleAudioBlock();
-        return;
-      }
+  // ----------------------------------------------------
+  // Lógica para el botón de eliminar audio
+  // ----------------------------------------------------
 
-      toggleAudioBlock();
-    });
-  }
+  const deleteAudioLinks = document.querySelectorAll("a[data-turbo-method='delete'][href*='audio']");
 
-  // -----------------------
-  // Eliminar audio
-  // -----------------------
-  const deleteAudioLinks = document.querySelectorAll("a[data-turbo-method='delete'][href*='audio']");
+  deleteAudioLinks.forEach(link => {
+    // -> Verificamos la bandera para evitar duplicación
+    if (!link.dataset.listenerAttached) {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = link.getAttribute('href');
 
-  deleteAudioLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const url = link.getAttribute('href');
-
-      showModal({
-        title: 'Eliminar audio',
-        message: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.',
-        confirmText: 'Eliminar',
-        confirmClass: 'bg-red-500',
-        cancelText: 'Cancelar',
-        onConfirm: () => Turbo.visit(url, { action: 'replace', method: 'delete' })
+        showModal({
+          title: 'Eliminar audio',
+          message: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.',
+          confirmText: 'Eliminar',
+          confirmClass: 'bg-red-500',
+          cancelText: 'Cancelar',
+          onConfirm: () => Turbo.visit(url, { action: 'replace', method: 'delete' })
+        });
       });
-    });
-  });
+      // -> Ponemos la bandera
+      link.dataset.listenerAttached = 'true';
+    }
+  });
 });
 </script>

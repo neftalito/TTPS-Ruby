@@ -22,6 +22,7 @@ class Product < ApplicationRecord
 
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
+  before_validation :force_stock_to_one_if_used, if: -> { self.condition_used? }
   before_discard :reset_stock
   
 
@@ -86,6 +87,11 @@ class Product < ApplicationRecord
 
   def reset_stock
     self.update_column(:stock, 0)
+  end
+
+  def force_stock_to_one_if_used
+    # Esto asegura que si la condición es 'used', el stock no puede ser otro valor.
+    self.stock = 1
   end
 
 end
