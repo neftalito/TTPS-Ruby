@@ -3,6 +3,7 @@ require "pathname"
 require "marcel"
 
 puts "Eliminando datos existentes..."
+ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
 SaleItem.delete_all
 Sale.delete_all
 ActiveStorage::Attachment.where(record_type: "Product").find_each(&:purge)
@@ -10,6 +11,7 @@ Product.delete_all
 Category.delete_all
 User.delete_all
 
+ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
 puts "Creando usuarios predeterminados..."
 users = [
   {
@@ -121,22 +123,22 @@ conditions = Product.conditions.keys
 end
 puts "Creando ventas..."
 
-# Tomamos usuarios y productos existentes
+# Tomamos usuarios existentes
 all_users = User.all
-all_products = Product.where(published: true)
 
 raise "No hay usuarios para crear ventas" if all_users.empty?
-raise "No hay productos publicados para ventas" if all_products.empty?
-
 
 150.times do
+  # Volvemos a consultar productos en cada vuelta por si se agotó el stock
+  all_products = Product.where(published: true).where("stock > 0").to_a
+  
+  break if all_products.empty?
+  
   user = all_users.sample
-
   created_at = Faker::Time.between(from: 12.months.ago, to: Time.current)
-
   cancelled_at = rand < 0.10 ? Faker::Time.between(from: created_at, to: Time.current) : nil
 
-  sale = Sale.create!(
+  sale = Sale.new(
     user: user,
     buyer_name: Faker::Name.name,
     buyer_email: Faker::Internet.email,
@@ -149,20 +151,27 @@ raise "No hay productos publicados para ventas" if all_products.empty?
   # SaleItems
   rand(1..5).times do
     product = all_products.sample
-    quantity = rand(1..3)
-    unit_price = product.price
+    product.reload # Recargar stock actual del producto
+    
+    max_quantity = [product.stock, 3].min
+    next if max_quantity < 1
+    
+    quantity = rand(1..max_quantity)
 
-    sale.sale_items.create!(
+    sale.sale_items.build(
       product: product,
       quantity: quantity,
-      unit_price: unit_price
+      unit_price: product.price
     )
   end
 
+  next if sale.sale_items.empty?
+
   # Calcular total REAL de la venta
-  total = sale.sale_items.sum("quantity * unit_price")
+  total = sale.sale_items.sum { |item| item.quantity * item.unit_price }
+  sale.total = total
 
-  sale.update_column(:total, total)
+  # Guardar
+  sale.save!
 end
-
-puts "Seed completado."
+puts "Datos de prueba creados exitosamente."
