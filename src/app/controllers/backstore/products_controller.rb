@@ -54,7 +54,14 @@ module Backstore
     end
 
     def create
-      @product = Product.new(product_params)
+      # Clonamos los parámetros para modificar el stock si es necesario
+      initial_params = product_params.to_h 
+      
+      if initial_params['condition'] == 'used'
+        initial_params['stock'] = 1
+      end
+
+      @product = Product.new(initial_params)
       
       # Asignamos fecha manualmente ya q es un campo personalizado obligatorio
       @product.last_modified_at = Time.current 
@@ -70,11 +77,19 @@ module Backstore
     def update
       # Guardamos el estado anterior para comparar
       previous_condition = @product.condition
-      
-      # Actualizamos los parámetros excepto las imágenes y el audio
-      update_params = product_params.except(:images, :audio)
 
-      if @product.update(update_params)
+      # Clonamos los parámetros permitidos para poder modificarlos si es necesario
+      permitted_params = product_params.except(:images, :audio)
+      
+      # Convertimos a hash de Ruby para poder modificar la clave 'stock'
+      update_hash = permitted_params.to_h
+
+      if update_hash['condition'] == 'used'
+        # Si la condición es 'used', forzamos el stock a 1, ya que el campo estaba deshabilitado 
+        update_hash['stock'] = 1
+      end
+
+      if @product.update(update_hash)
         
         # Si cambió de usado a nuevo, eliminamos el audio existente
         if previous_condition == "used" && @product.condition == "new" && @product.audio.attached?

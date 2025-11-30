@@ -166,6 +166,7 @@
     <% end %>
   </div>
 </div>
+
 <%# BLOQUE DE JAVASCRIPT: Lógica Centralizada para Modales, Stock y Audio %>
 <script>
 document.addEventListener('turbo:load', () => {
@@ -216,7 +217,7 @@ document.addEventListener('turbo:load', () => {
   }
 
   // ----------------------------------------------------
-  // LÓGICA PRINCIPAL DEL FORMULARIO: PREVENCIÓN DE DUPLICACIÓN y CORRECCIÓN EN CANCELAR
+  // LÓGICA PRINCIPAL DEL FORMULARIO
   // ----------------------------------------------------
 
   const conditionSelect = document.getElementById('product_condition');
@@ -229,7 +230,7 @@ document.addEventListener('turbo:load', () => {
     // -> Verificamos la bandera antes de adjuntar el listener de 'change' para evitar duplicación
     if (!conditionSelect.dataset.listenerAttached) {
         
-        // **NUEVA LÍNEA: Guardamos el valor inicial de la condición aquí.**
+        // Guardamos el valor inicial de la condición
         conditionSelect.dataset.initialCondition = conditionSelect.value;
         conditionSelect.dataset.initialStock = stockInput.value;
 
@@ -242,12 +243,23 @@ document.addEventListener('turbo:load', () => {
                 audioBlock.style.opacity = isUsed ? '1' : '0';
             }, 10);
             
-            // Lógica para forzar el stock a 1 si la condición es 'used'
+            // Lógica para deshabilitar el stock si es usado y forzar el valor a 1 (visual)
             if (isUsed) {
-                stockInput.value = 1;
-            } else if (stockInput.value === '1') {
-                stockInput.value = '';
+                stockInput.value = 1; // Visualmente lo ponemos en 1
+                stockInput.disabled = true; // Deshabilitamos el campo
+                stockInput.classList.add('opacity-50', 'cursor-not-allowed'); // Estilos para deshabilitado
+            } else {
+                if (stockInput.value === '1') {
+                     stockInput.value = ''; // Vaciamos si el valor era el forzado
+                }
+                stockInput.disabled = false; // Habilitamos el campo
+                stockInput.classList.remove('opacity-50', 'cursor-not-allowed'); // Quitamos estilos
             }
+            
+            // Nota: Si el campo está deshabilitado (disabled), el backend NO recibe el parámetro stock.
+            // Para asegurar que Rails reciba stock: 1, deberás forzar el stock a 1 en el controlador de Rails (backstore/products_controller.rb) 
+            // cuando recibas params[:product][:condition] == 'used'. Esto es lo más robusto.
+            // Por ahora, solo deshabilitamos la UI.
         }
 
         // Ejecuta la lógica al cargar la página
@@ -258,8 +270,7 @@ document.addEventListener('turbo:load', () => {
             const audioPlayerExists = audioBlock.querySelector('audio') !== null;
             const currentStockValue = stockInput.value;
             
-            // Guardamos la condición actual ANTES de que se disparen las alertas, 
-            // para que sea el valor a restaurar si el usuario CANCELA.
+            // Guardamos la condición actual ANTES de que se disparen las alertas
             const previousCondition = conditionSelect.dataset.initialCondition;
             conditionSelect.dataset.initialCondition = newCondition;
 
@@ -268,7 +279,7 @@ document.addEventListener('turbo:load', () => {
 
                 showModal({
                     title: '📦 Advertencia de Inventario',
-                    message: `Estás cambiando la condición a 'Usado'. Esto cambiara el Stock por 1 unidad. ¿Confirmas el cambio?`,
+                    message: `Estás cambiando la condición a 'Usado'. Esto hará que el stock se fije en 1 unidad. El campo de Stock será deshabilitado. ¿Confirmas el cambio?`,
                     confirmText: 'Sí, Confirmar',
                     confirmClass: 'bg-red-600 hover:bg-red-500',
                     cancelText: 'Cancelar',
@@ -279,7 +290,7 @@ document.addEventListener('turbo:load', () => {
                     onCancel: () => {
                         // Si cancela, restablece el valor que estaba ANTES de hacer el cambio
                         conditionSelect.value = previousCondition; 
-                        // No re-ejecuta toggleAudioBlockAndStock().
+                        // Mantenemos la UI como estaba
                     }
                 });
                 return;
