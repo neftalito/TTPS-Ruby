@@ -21,11 +21,18 @@ module Backstore
         @products = @products.where(category_id: params[:category_id])
       end
 
-      # Búsqueda por nombre o autor
-      if params[:q].present?
-        query = "%#{params[:q].downcase}%"
-        @products = @products.where("LOWER(name) LIKE ? OR LOWER(author) LIKE ?", query, query)
+      # Búsqueda por Nombre del Disco
+      if params[:name_q].present?
+        query = "%#{params[:name_q].downcase}%"
+        @products = @products.where("LOWER(name) LIKE ?", query)
       end
+
+      # Búsqueda por Nombre del Artista
+      if params[:author_q].present?
+        query = "%#{params[:author_q].downcase}%"
+        @products = @products.where("LOWER(author) LIKE ?", query)
+      end
+
       # Filtro por condición
       if params[:condition].present? && params[:condition] != 'all'
         @products = @products.where(condition: params[:condition])
