@@ -96,6 +96,20 @@ module Backstore
         update_hash['stock'] = 1
       end
 
+      # Validar límite de imágenes ANTES de intentar actualizar
+      if params[:product][:images].present?
+        new_images = params[:product][:images].reject(&:blank?)
+        new_images_count = new_images.size
+        current_images_count = @product.images.count
+        total_images = current_images_count + new_images_count
+        
+        if total_images > 10
+          flash.now[:alert] = "No puedes subir #{new_images_count} imagen(es) nueva(s). Ya tienes #{current_images_count} imagen(es) y el límite es 10."
+          render :edit, status: :unprocessable_entity
+          return
+        end
+      end
+
       if @product.update(update_hash)
         
         # Si cambió de usado a nuevo, eliminamos el audio existente
