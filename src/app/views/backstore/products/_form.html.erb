@@ -127,10 +127,56 @@
           
           <div>
             <%= f.label :images, "Imágenes de Alta Resolución", class: "block text-sm font-medium text-gray-300 mb-1" %>
-            <%= f.file_field :images, multiple: true, accept: "image/*", class: "mt-1 block w-full text-base text-gray-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-base file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 transition duration-200" %>
+            
+            <%# Contador de imágenes %>
+            <% current_images_count = @product.persisted? && @product.images.attached? ? @product.images.count : 0 %>
+            <% remaining_slots = 10 - current_images_count %>
+            
+            <div class="mb-3 p-3 bg-slate-950 border border-slate-700 rounded-lg" id="images-counter">
+              <p class="text-sm text-gray-300">
+                 Imágenes actuales: <span class="font-bold text-emerald-400" id="current-count"><%= current_images_count %></span> / 10
+                <span class="text-slate-400">|</span>
+                Puedes agregar: <span class="font-bold text-blue-400" id="remaining-count"><%= remaining_slots %></span> más
+              </p>
+            </div>
+            
+            <%# Input oculto para las imágenes %>
+            <input type="file" 
+                   id="image_upload_input" 
+                   name="product[images][]"
+                   multiple 
+                   accept="image/*"
+                   data-current-images="<%= current_images_count %>"
+                   style="display: none;">
+            
+            <%# Botón personalizado para subir imágenes %>
+            <button type="button" 
+                    id="upload_button" 
+                    class="w-full mt-1 px-6 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition duration-200 flex items-center justify-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              Seleccionar Imágenes
+            </button>
+            
+            <p class="text-xs text-slate-400 mt-2">
+              ⚠️ Máximo 10 imágenes en total por producto.
+            </p>
+            
+            <%# Contenedor para vista previa de NUEVAS imágenes %>
+            <div id="new-images-preview" class="mt-6 hidden">
+              <h3 class="text-lg font-medium text-blue-400 mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Nuevas imágenes a subir:
+              </h3>
+              <div id="new-images-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4"></div>
+            </div>
           </div>
 
-          <%# Vista previa de imágenes adjuntas %>
+          <%# Vista previa de imágenes YA SUBIDAS %>
           <% if @product.persisted? && @product.images.attached? %>
             <div class="mt-8">
               <h3 class="text-xl font-medium text-gray-300 mb-4">Visualización de Activos Actuales:</h3>
@@ -352,5 +398,168 @@ document.addEventListener('turbo:load', () => {
       link.dataset.listenerAttached = 'true';
     }
   });
+
+// ----------------------------------------------------
+// GESTIÓN DE IMÁGENES MÚLTIPLES CON VISTA PREVIA
+// ----------------------------------------------------
+
+  const imageInput = document.getElementById('image_upload_input');
+  const uploadButton = document.getElementById('upload_button');
+  const newImagesPreview = document.getElementById('new-images-preview');
+  const newImagesGrid = document.getElementById('new-images-grid');
+  const currentCountSpan = document.getElementById('current-count');
+  const remainingCountSpan = document.getElementById('remaining-count');
+
+  // Array para almacenar los archivos seleccionados
+  let selectedFiles = [];
+
+  if (imageInput && uploadButton) {
+    
+    // Prevenir doble click en el botón
+    uploadButton.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    // Al hacer clic en el botón, abrir el selector de archivos
+    uploadButton.addEventListener('click', () => {
+      const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
+      const totalImages = currentImages + selectedFiles.length;
+      
+      if (totalImages >= 10) {
+        showModal({
+          title: '⚠️ Límite Alcanzado',
+          message: `Ya tienes el máximo de 10 imágenes permitidas.\n\nActuales: ${currentImages}\nNuevas seleccionadas: ${selectedFiles.length}\n\nDebes eliminar algunas imágenes antes de agregar más.`,
+          confirmText: 'Entendido',
+          confirmClass: 'bg-red-600 hover:bg-red-500',
+          cancelText: '',
+          onConfirm: () => {}
+        });
+        return;
+      }
+      
+      imageInput.click();
+    });
+
+    // Cuando se seleccionan archivos
+    imageInput.addEventListener('change', function(e) {
+      const files = Array.from(e.target.files);
+      const currentImages = parseInt(this.dataset.currentImages) || 0;
+      const currentSelected = selectedFiles.length;
+      const totalAfterSelection = currentImages + currentSelected + files.length;
+      
+      // Validar el límite
+      if (totalAfterSelection > 10) {
+        const available = 10 - currentImages - currentSelected;
+        showModal({
+          title: '⚠️ Límite de Imágenes Excedido',
+          message: `Solo puedes agregar ${available} imagen(es) más.\n\nActuales en servidor: ${currentImages}\nYa seleccionadas: ${currentSelected}\nIntentando agregar: ${files.length}\n\nPor favor, selecciona menos archivos.`,
+          confirmText: 'Entendido',
+          confirmClass: 'bg-red-600 hover:bg-red-500',
+          cancelText: 'Cerrar',
+          onConfirm: () => {}
+        });
+        imageInput.value = '';
+        return;
+      }
+      
+      // Agregar los nuevos archivos al array
+      files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+          selectedFiles.push(file);
+        }
+      });
+      
+      // Actualizar la vista previa
+      updateImagePreview();
+      updateCounter();
+      
+      // Limpiar el input para poder seleccionar los mismos archivos de nuevo si se eliminan
+      imageInput.value = '';
+    });
+
+    function updateImagePreview() {
+      newImagesGrid.innerHTML = '';
+      
+      if (selectedFiles.length === 0) {
+        newImagesPreview.classList.add('hidden');
+        return;
+      }
+      
+      newImagesPreview.classList.remove('hidden');
+      
+      selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const imageContainer = document.createElement('div');
+          imageContainer.className = 'border border-blue-500 rounded-xl overflow-hidden shadow-lg relative group';
+          imageContainer.innerHTML = `
+            <img src="${e.target.result}" class="object-cover w-full h-28 sm:h-36" alt="Preview">
+            <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+              <button type="button" 
+                      data-index="${index}"
+                      class="remove-new-image bg-red-600/90 hover:bg-red-600 text-white p-1.5 rounded-full shadow-md flex items-center justify-center transition backdrop-blur-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div class="absolute bottom-1 left-1 bg-blue-600/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
+              Nueva
+            </div>
+          `;
+          
+          newImagesGrid.appendChild(imageContainer);
+        };
+        
+        reader.readAsDataURL(file);
+      });
+      
+      // Agregar event listeners para eliminar imágenes
+      setTimeout(() => {
+        document.querySelectorAll('.remove-new-image').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const index = parseInt(this.dataset.index);
+            removeImage(index);
+          });
+        });
+      }, 100);
+    }
+
+    function removeImage(index) {
+      selectedFiles.splice(index, 1);
+      updateImagePreview();
+      updateCounter();
+      updateFileInput();
+    }
+
+    function updateCounter() {
+      const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
+      const totalImages = currentImages + selectedFiles.length;
+      const remaining = 10 - totalImages;
+      
+      currentCountSpan.textContent = totalImages;
+      remainingCountSpan.textContent = remaining;
+    }
+
+    function updateFileInput() {
+      // Crear un nuevo DataTransfer para actualizar el input file
+      const dataTransfer = new DataTransfer();
+      selectedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+      });
+      imageInput.files = dataTransfer.files;
+    }
+
+    // Antes de enviar el formulario, actualizar el input file
+    const form = imageInput.closest('form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        updateFileInput();
+      });
+    }
+  }
+
 });
 </script>
