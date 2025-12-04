@@ -153,6 +153,9 @@
             <label for="product_audio" class="block text-sm font-medium text-proyecto-primary mb-1">
               Muestra de Audio (Opcional, solo para discos usados)
             </label>
+            <p class="text-xs text-gray-500 mb-2">
+              📁 <strong>Formatos:</strong> MP3, WAV, OGG, M4A, FLAC. <strong>Tamaño máximo:</strong> 15 MB.
+            </p>
             <%= f.file_field :audio, accept: "audio/*", 
               class: "mt-1 block w-full text-base **text-proyecto-text/80**
                       file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 
@@ -223,7 +226,7 @@
             </button>
             
             <p class="text-xs text-gray-500 mt-2">
-              ⚠️ Máximo 10 imágenes en total por producto.
+              ⚠️ Máximo 10 imágenes por producto. <strong>Formatos:</strong> JPEG, PNG, GIF, WebP. <strong>Tamaño máximo:</strong> 10 MB por imagen.
             </p>
             
             <%# Contenedor para vista previa de NUEVAS imágenes %>
@@ -287,351 +290,373 @@
   </div>
 </div>
 
-<%# BLOQUE DE JAVASCRIPT: Lógica Centralizada %>
 <script>
 document.addEventListener('turbo:load', () => {
-  
-  // Función Modal (Ajustada a colores de proyecto para ser coherente)
-  function showModal({ title, message, confirmText, confirmClass, cancelText, onConfirm, onCancel }) {
-    const existingModal = document.querySelector('.modal-overlay');
-    if (existingModal) {
-      existingModal.remove();
-    }
+  
+  // Función Modal
+  function showModal({ title, message, confirmText, confirmClass, cancelText, onConfirm, onCancel }) {
+    const existingModal = document.querySelector('.modal-overlay');
+    if (existingModal) {
+      existingModal.remove();
+    }
 
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 modal-overlay';
-    modal.style.animation = 'fadeIn 0.2s ease-out';
-    
-    const cancelButton = cancelText 
-      ? `<button id="modal-cancel" class="px-6 py-2 bg-gray-200 **text-proyecto-text/80** rounded-lg hover:bg-gray-300 transition border border-gray-300">${cancelText}</button>`
-      : '';
-    
-    modal.innerHTML = `
-      <%# Modal en blanco/gris claro con texto oscuro y Primary color para título %>
-      <div class="bg-white border border-gray-300 rounded-2xl p-8 max-w-md shadow-xl text-gray-800" style="animation: scaleIn 0.3s ease-out;">
-        <h3 class="text-2xl font-bold mb-4 text-proyecto-primary">${title}</h3>
-        <p class="text-gray-600 mb-6">${message.replace(/\n/g, '<br>')}</p>
-        <div class="flex justify-end gap-3">
-          ${cancelButton}
-          <button id="modal-confirm" class="px-6 py-2 ${confirmClass} text-white rounded-lg font-bold transition">${confirmText}</button>
-        </div>
-      </div>
-    `;
-    // ... (rest of JS functions remain the same for functionality)
-    
-    if (!document.getElementById('modal-animations')) {
-      const style = document.createElement('style');
-      style.id = 'modal-animations';
-      style.textContent = `
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-      `;
-      document.head.appendChild(style);
-    }
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 modal-overlay';
+    modal.style.animation = 'fadeIn 0.2s ease-out';
+    
+    const cancelButton = cancelText 
+      ? `<button id="modal-cancel" class="px-6 py-2 bg-gray-200 text-proyecto-text/80 rounded-lg hover:bg-gray-300 transition border border-gray-300">${cancelText}</button>`
+      : '';
+    
+    modal.innerHTML = `
+      <div class="bg-white border border-gray-300 rounded-2xl p-8 max-w-md shadow-xl text-gray-800" style="animation: scaleIn 0.3s ease-out;">
+        <h3 class="text-2xl font-bold mb-4 text-proyecto-primary">${title}</h3>
+        <p class="text-gray-600 mb-6">${message.replace(/\n/g, '<br>')}</p>
+        <div class="flex justify-end gap-3">
+          ${cancelButton}
+          <button id="modal-confirm" class="px-6 py-2 ${confirmClass} text-white rounded-lg font-bold transition">${confirmText}</button>
+        </div>
+      </div>
+    `;
+    
+    if (!document.getElementById('modal-animations')) {
+      const style = document.createElement('style');
+      style.id = 'modal-animations';
+      style.textContent = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      `;
+      document.head.appendChild(style);
+    }
 
-    document.body.appendChild(modal);
+    document.body.appendChild(modal);
 
-    const cancelBtn = modal.querySelector('#modal-cancel');
-    if (cancelBtn) {
-      cancelBtn.addEventListener('click', () => {
-        modal.remove();
-        if (onCancel) onCancel();
-      });
-    }
-    
-    modal.querySelector('#modal-confirm').addEventListener('click', () => {
-      modal.remove();
-      onConfirm();
-    });
+    const cancelBtn = modal.querySelector('#modal-cancel');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        modal.remove();
+        if (onCancel) onCancel();
+      });
+    }
+    
+    modal.querySelector('#modal-confirm').addEventListener('click', () => {
+      modal.remove();
+      onConfirm();
+    });
 
-    if (cancelText) {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.remove();
-          if (onCancel) onCancel();
-        }
-      });
-    }
-  }
+    if (cancelText) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.remove();
+          if (onCancel) onCancel();
+        }
+      });
+    }
+  }
 
-  // ----------------------------------------------------
-  // LÓGICA DE CONDICIÓN Y STOCK
-  // ----------------------------------------------------
+  // ----------------------------------------------------
+  // LÓGICA DE CONDICIÓN Y STOCK
+  // ----------------------------------------------------
 
-  const conditionSelect = document.getElementById('product_condition');
-  const stockInput = document.getElementById('product_stock_field');
-  const audioBlock = document.getElementById('audio_upload_block');
-  const formTitle = document.getElementById('form_title');
-  const isEditing = formTitle ? formTitle.textContent.includes("EDITAR PRODUCTO") : false;
+  const conditionSelect = document.getElementById('product_condition');
+  const stockInput = document.getElementById('product_stock_field');
+  const audioBlock = document.getElementById('audio_upload_block');
+  const formTitle = document.getElementById('form_title');
+  const isEditing = formTitle ? formTitle.textContent.includes("EDITAR PRODUCTO") : false;
 
-  if (conditionSelect && audioBlock && stockInput) {
-    if (!conditionSelect.dataset.listenerAttached) {
-        
-      conditionSelect.dataset.initialCondition = conditionSelect.value;
-      conditionSelect.dataset.initialStock = stockInput.value;
+  if (conditionSelect && audioBlock && stockInput) {
+    if (!conditionSelect.dataset.listenerAttached) {
+        
+      conditionSelect.dataset.initialCondition = conditionSelect.value;
+      conditionSelect.dataset.initialStock = stockInput.value;
 
-      function toggleAudioBlockAndStock() {
-        const isUsed = conditionSelect.value === 'used';
-        
-        audioBlock.style.display = isUsed ? 'block' : 'none';
-        setTimeout(() => {
-            audioBlock.style.opacity = isUsed ? '1' : '0';
-        }, 10);
-        
-        if (isUsed) {
-          stockInput.value = 1;
-          stockInput.disabled = true;
-          // Estilos para campo deshabilitado consistente con Light Mode
-          stockInput.classList.add('opacity-70', 'cursor-not-allowed', 'bg-gray-100', 'text-gray-500');
-          stockInput.classList.remove('bg-white', 'text-gray-900');
-        } else {
-          if (stockInput.value === '1') {
-            stockInput.value = '';
-          }
-          stockInput.disabled = false;
-          // Estilos para campo habilitado consistente con Light Mode
-          stockInput.classList.remove('opacity-70', 'cursor-not-allowed', 'bg-gray-100', 'text-gray-500');
-          stockInput.classList.add('bg-white', 'text-gray-900');
-        }
-      }
+      function toggleAudioBlockAndStock() {
+        const isUsed = conditionSelect.value === 'used';
+        
+        audioBlock.style.display = isUsed ? 'block' : 'none';
+        setTimeout(() => {
+            audioBlock.style.opacity = isUsed ? '1' : '0';
+        }, 10);
+        
+        if (isUsed) {
+          stockInput.value = 1;
+          stockInput.disabled = true;
+          stockInput.classList.add('opacity-70', 'cursor-not-allowed', 'bg-gray-100', 'text-gray-500');
+          stockInput.classList.remove('bg-white', 'text-gray-900');
+        } else {
+          if (stockInput.value === '1') {
+            stockInput.value = '';
+          }
+          stockInput.disabled = false;
+          stockInput.classList.remove('opacity-70', 'cursor-not-allowed', 'bg-gray-100', 'text-gray-500');
+          stockInput.classList.add('bg-white', 'text-gray-900');
+        }
+      }
 
-      toggleAudioBlockAndStock();
+      toggleAudioBlockAndStock();
 
-      conditionSelect.addEventListener('change', function(e) {
-        const newCondition = e.target.value;
-        const audioPlayerExists = audioBlock.querySelector('audio') !== null;
-        const currentStockValue = stockInput.value;
-        
-        const previousCondition = conditionSelect.dataset.initialCondition;
-        conditionSelect.dataset.initialCondition = newCondition;
+      conditionSelect.addEventListener('change', function(e) {
+        const newCondition = e.target.value;
+        const audioPlayerExists = audioBlock.querySelector('audio') !== null;
+        const currentStockValue = stockInput.value;
+        
+        const previousCondition = conditionSelect.dataset.initialCondition;
+        conditionSelect.dataset.initialCondition = newCondition;
 
-        // Alerta de stock al cambiar a USADO
-        if (newCondition === 'used' && isEditing && currentStockValue !== '1') {
-          showModal({
-            title: '📦 Advertencia de Inventario',
-            message: `Estás cambiando la condición a 'Usado'. Esto hará que el stock se fije en 1 unidad. El campo de Stock será deshabilitado. ¿Confirmas el cambio?`,
-            confirmText: 'Sí, Confirmar',
-            // Usamos proyecto-error para el botón de confirmación de un riesgo
-            confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
-            cancelText: 'Cancelar',
-            onConfirm: () => {
-              toggleAudioBlockAndStock();
-            },
-            onCancel: () => {
-              conditionSelect.value = previousCondition; 
-            }
-          });
-          return;
-        }
-        
-        // Alerta de eliminación de audio al cambiar de USADO a otra
-        if (newCondition !== 'used' && audioPlayerExists) {
-          showModal({
-            title: '⚠️ ADVERTENCIA de Audio',
-            message: 'Este producto tiene un audio asociado. Si cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
-            confirmText: 'Aceptar y Eliminar Audio',
-            // Usamos proyecto-primary para el botón de confirmación de una acción
-            confirmClass: 'bg-proyecto-primary hover:bg-proyecto-primary/90', 
-            cancelText: 'Cancelar y Mantener Usado',
-            onConfirm: () => {
-              toggleAudioBlockAndStock();
-            },
-            onCancel: () => {
-              conditionSelect.value = 'used';
-              toggleAudioBlockAndStock();
-            }
-          });
-          return;
-        }
+        if (newCondition === 'used' && isEditing && currentStockValue !== '1') {
+          showModal({
+            title: '📦 Advertencia de Inventario',
+            message: `Estás cambiando la condición a 'Usado'. Esto hará que el stock se fije en 1 unidad. El campo de Stock será deshabilitado. ¿Confirmas el cambio?`,
+            confirmText: 'Sí, Confirmar',
+            confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
+            cancelText: 'Cancelar',
+            onConfirm: () => {
+              toggleAudioBlockAndStock();
+            },
+            onCancel: () => {
+              conditionSelect.value = previousCondition; 
+            }
+          });
+          return;
+        }
+        
+        if (newCondition !== 'used' && audioPlayerExists) {
+          showModal({
+            title: '⚠️ ADVERTENCIA de Audio',
+            message: 'Este producto tiene un audio asociado. Si cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
+            confirmText: 'Aceptar y Eliminar Audio',
+            confirmClass: 'bg-proyecto-primary hover:bg-proyecto-primary/90', 
+            cancelText: 'Cancelar y Mantener Usado',
+            onConfirm: () => {
+              toggleAudioBlockAndStock();
+            },
+            onCancel: () => {
+              conditionSelect.value = 'used';
+              toggleAudioBlockAndStock();
+            }
+          });
+          return;
+        }
 
-        toggleAudioBlockAndStock();
-      });
-      
-      conditionSelect.dataset.listenerAttached = 'true';
-    }
-  }
+        toggleAudioBlockAndStock();
+      });
+      
+      conditionSelect.dataset.listenerAttached = 'true';
+    }
+  }
 
-  // ----------------------------------------------------
-  // Lógica para el botón de eliminar audio (Modal)
-  // ----------------------------------------------------
+  // ----------------------------------------------------
+  // Lógica para el botón de eliminar audio
+  // ----------------------------------------------------
 
-  const deleteAudioLinks = document.querySelectorAll("a[data-turbo-method='delete'][href*='audio']");
+  const deleteAudioLinks = document.querySelectorAll("a[data-turbo-method='delete'][href*='audio']");
 
-  deleteAudioLinks.forEach(link => {
-    if (!link.dataset.listenerAttached) {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const url = link.getAttribute('href');
+  deleteAudioLinks.forEach(link => {
+    if (!link.dataset.listenerAttached) {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = link.getAttribute('href');
 
-        showModal({
-          title: 'Eliminar audio',
-          message: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.',
-          confirmText: 'Eliminar',
-          // Usamos proyecto-error para el botón de eliminar
-          confirmClass: 'bg-proyecto-error', 
-          cancelText: 'Cancelar',
-          onConfirm: () => Turbo.visit(url, { action: 'replace', method: 'delete' })
-        });
-      });
-      link.dataset.listenerAttached = 'true';
-    }
-  });
+        showModal({
+          title: 'Eliminar audio',
+          message: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.',
+          confirmText: 'Eliminar',
+          confirmClass: 'bg-proyecto-error', 
+          cancelText: 'Cancelar',
+          onConfirm: () => Turbo.visit(url, { action: 'replace', method: 'delete' })
+        });
+      });
+      link.dataset.listenerAttached = 'true';
+    }
+  });
 
-// ----------------------------------------------------
-// GESTIÓN DE IMÁGENES MÚLTIPLES
-// ----------------------------------------------------
+  // ----------------------------------------------------
+  // GESTIÓN DE IMÁGENES MÚLTIPLES CON VALIDACIONES
+  // ----------------------------------------------------
 
-  const imageInput = document.getElementById('image_upload_input');
-  const uploadButton = document.getElementById('upload_button');
-  const newImagesPreview = document.getElementById('new-images-preview');
-  const newImagesGrid = document.getElementById('new-images-grid');
-  const currentCountSpan = document.getElementById('current-count');
-  const remainingCountSpan = document.getElementById('remaining-count');
+  const imageInput = document.getElementById('image_upload_input');
+  const uploadButton = document.getElementById('upload_button');
+  const newImagesPreview = document.getElementById('new-images-preview');
+  const newImagesGrid = document.getElementById('new-images-grid');
+  const currentCountSpan = document.getElementById('current-count');
+  const remainingCountSpan = document.getElementById('remaining-count');
 
-  let selectedFiles = [];
+  let selectedFiles = [];
 
-  if (imageInput && uploadButton) {
-    
-    uploadButton.addEventListener('dblclick', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
+  if (imageInput && uploadButton) {
+    
+    uploadButton.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
 
-    uploadButton.addEventListener('click', () => {
-      const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
-      const totalImages = currentImages + selectedFiles.length;
-      
-      // Modal de Límite Alcanzado
-      if (totalImages >= 10) {
-        showModal({
-          title: '⚠️ Límite Alcanzado',
-          message: `Ya tienes el máximo de 10 imágenes permitidas.\n\nActuales: ${currentImages}\nNuevas seleccionadas: ${selectedFiles.length}\n\nDebes eliminar algunas imágenes antes de agregar más.`,
-          confirmText: 'Entendido',
-          // Usamos proyecto-error para la alerta de límite
-          confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
-          cancelText: '',
-          onConfirm: () => {}
-        });
-        return;
-      }
-      
-      imageInput.click();
-    });
+    uploadButton.addEventListener('click', () => {
+      const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
+      const totalImages = currentImages + selectedFiles.length;
+      
+      if (totalImages >= 10) {
+        showModal({
+          title: '⚠️ Límite Alcanzado',
+          message: `Ya tienes el máximo de 10 imágenes permitidas.\n\nActuales: ${currentImages}\nNuevas seleccionadas: ${selectedFiles.length}\n\nDebes eliminar algunas imágenes antes de agregar más.`,
+          confirmText: 'Entendido',
+          confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
+          cancelText: '',
+          onConfirm: () => {}
+        });
+        return;
+      }
+      
+      imageInput.click();
+    });
 
-    imageInput.addEventListener('change', function(e) {
-      const files = Array.from(e.target.files);
-      const currentImages = parseInt(this.dataset.currentImages) || 0;
-      const currentSelected = selectedFiles.length;
-      const totalAfterSelection = currentImages + currentSelected + files.length;
-      
-      // Modal de Límite Excedido
-      if (totalAfterSelection > 10) {
-        const available = 10 - currentImages - currentSelected;
-        showModal({
-          title: '⚠️ Límite de Imágenes Excedido',
-          message: `Solo puedes agregar ${available} imagen(es) más.\n\nActuales en servidor: ${currentImages}\nYa seleccionadas: ${currentSelected}\nIntentando agregar: ${files.length}\n\nPor favor, selecciona menos archivos.`,
-          confirmText: 'Entendido',
-          // Usamos proyecto-error para la alerta de límite
-          confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
-          cancelText: '',
-          onConfirm: () => {}
-        });
-        e.target.value = null; 
-        return;
-      }
-      
-      files.forEach(file => {
-        if (file.type.startsWith('image/')) {
-          selectedFiles.push(file);
-        }
-      });
-      
-      updateImagePreview();
-      e.target.value = null; 
-      updateCounter();
-    });
+    imageInput.addEventListener('change', function(e) {
+      const files = Array.from(e.target.files);
+      const currentImages = parseInt(this.dataset.currentImages) || 0;
+      const currentSelected = selectedFiles.length;
+      const totalAfterSelection = currentImages + currentSelected + files.length;
+      
+      // Validar límite de cantidad
+      if (totalAfterSelection > 10) {
+        const available = 10 - currentImages - currentSelected;
+        showModal({
+          title: '⚠️ Límite de Imágenes Excedido',
+          message: `Solo puedes agregar ${available} imagen(es) más.\n\nActuales en servidor: ${currentImages}\nYa seleccionadas: ${currentSelected}\nIntentando agregar: ${files.length}\n\nPor favor, selecciona menos archivos.`,
+          confirmText: 'Entendido',
+          confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
+          cancelText: '',
+          onConfirm: () => {}
+        });
+        imageInput.value = '';
+        return;
+      }
+      
+      // VALIDACIONES DE FORMATO Y TAMAÑO
+      const validFormats = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      const maxSize = 10 * 1024 * 1024; // 10 MB en bytes
+      
+      for (const file of files) {
+        // Validar formato
+        if (!validFormats.includes(file.type)) {
+          showModal({
+            title: '⚠️ Formato No Válido',
+            message: `La imagen "${file.name}" no es un formato válido.\n\n<strong>Formatos permitidos:</strong> JPEG, PNG, GIF, WebP`,
+            confirmText: 'Entendido',
+            confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90',
+            cancelText: '',
+            onConfirm: () => {}
+          });
+          imageInput.value = '';
+          return;
+        }
+        
+        // Validar tamaño
+        if (file.size > maxSize) {
+          const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+          showModal({
+            title: '⚠️ Archivo Demasiado Grande',
+            message: `La imagen "${file.name}" es demasiado grande (<strong>${sizeMB} MB</strong>).\n\n<strong>Tamaño máximo:</strong> 10 MB por imagen.`,
+            confirmText: 'Entendido',
+            confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90',
+            cancelText: '',
+            onConfirm: () => {}
+          });
+          imageInput.value = '';
+          return;
+        }
+      }
+      
+      // Si pasa todas las validaciones, agregar los archivos
+      files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+          selectedFiles.push(file);
+        }
+      });
+      
+      updateImagePreview();
+      updateCounter();
+      imageInput.value = '';
+    });
 
-    function updateImagePreview() {
-      newImagesGrid.innerHTML = '';
-      
-      if (selectedFiles.length === 0) {
-        newImagesPreview.classList.add('hidden');
-        return;
-      }
-      
-      newImagesPreview.classList.remove('hidden');
-      
-      selectedFiles.forEach((file, index) => {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          // Contenedor de imagen previa con borde primary para diferenciar
-          const imageContainer = document.createElement('div');
-          imageContainer.className = 'border border-proyecto-primary rounded-xl overflow-hidden shadow-lg relative group';
-          imageContainer.innerHTML = `
-            <img src="${e.target.result}" class="object-cover w-full h-28 sm:h-36" alt="Preview">
-            <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-              <button type="button" 
-                      data-index="${index}"
-                      class="remove-new-image bg-proyecto-error/90 hover:bg-proyecto-error text-white p-1.5 rounded-full shadow-md flex items-center justify-center transition backdrop-blur-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div class="absolute bottom-1 left-1 bg-proyecto-primary/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
-              Nueva
-            </div>
-          `;
-          
-          newImagesGrid.appendChild(imageContainer);
-        };
-        
-        reader.readAsDataURL(file);
-      });
-      
-      setTimeout(() => {
-        document.querySelectorAll('.remove-new-image').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const index = parseInt(this.dataset.index);
-            removeImage(index);
-          });
-        });
-      }, 100);
-    }
+    function updateImagePreview() {
+      newImagesGrid.innerHTML = '';
+      
+      if (selectedFiles.length === 0) {
+        newImagesPreview.classList.add('hidden');
+        return;
+      }
+      
+      newImagesPreview.classList.remove('hidden');
+      
+      selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const imageContainer = document.createElement('div');
+          imageContainer.className = 'border border-proyecto-primary rounded-xl overflow-hidden shadow-lg relative group';
+          imageContainer.innerHTML = `
+            <img src="${e.target.result}" class="object-cover w-full h-28 sm:h-36" alt="Preview">
+            <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+              <button type="button" 
+                      data-index="${index}"
+                      class="remove-new-image bg-proyecto-error/90 hover:bg-proyecto-error text-white p-1.5 rounded-full shadow-md flex items-center justify-center transition backdrop-blur-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div class="absolute bottom-1 left-1 bg-proyecto-primary/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
+              Nueva
+            </div>
+          `;
+          
+          newImagesGrid.appendChild(imageContainer);
+        };
+        
+        reader.readAsDataURL(file);
+      });
+      
+      setTimeout(() => {
+        document.querySelectorAll('.remove-new-image').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const index = parseInt(this.dataset.index);
+            removeImage(index);
+          });
+        });
+      }, 100);
+    }
 
-    function removeImage(index) {
-      selectedFiles.splice(index, 1);
-      updateImagePreview();
-      updateCounter();
-      updateFileInput();
-    }
+    function removeImage(index) {
+      selectedFiles.splice(index, 1);
+      updateImagePreview();
+      updateCounter();
+      updateFileInput();
+    }
 
-    function updateCounter() {
-      const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
-      const totalImages = currentImages + selectedFiles.length;
-      const remaining = 10 - totalImages;
-      
-      currentCountSpan.textContent = totalImages;
-      remainingCountSpan.textContent = remaining;
-    }
+    function updateCounter() {
+      const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
+      const totalImages = currentImages + selectedFiles.length;
+      const remaining = 10 - totalImages;
+      
+      currentCountSpan.textContent = totalImages;
+      remainingCountSpan.textContent = remaining;
+    }
 
-    function updateFileInput() {
-      const dataTransfer = new DataTransfer();
-      selectedFiles.forEach(file => {
-        dataTransfer.items.add(file);
-      });
-      imageInput.files = dataTransfer.files;
-    }
+    function updateFileInput() {
+      const dataTransfer = new DataTransfer();
+      selectedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+      });
+      imageInput.files = dataTransfer.files;
+    }
 
-    const form = imageInput.closest('form');
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        updateFileInput();
-      });
-    }
+    const form = imageInput.closest('form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        updateFileInput();
+      });
+    }
 
-    updateCounter();
-  }
+    updateCounter();
+  }
 });
 </script>

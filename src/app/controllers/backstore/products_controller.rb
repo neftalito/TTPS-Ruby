@@ -110,21 +110,35 @@ module Backstore
         end
       end
 
+      # Actualizar atributos básicos
       if @product.update(update_hash)
         
-        # Si cambió de usado a nuevo, eliminamos el audio existente
+        # Manejar eliminación de audio al cambiar de usado a nuevo
         if previous_condition == "used" && @product.condition == "new" && @product.audio.attached?
           @product.audio.purge
         end
 
-        # Si es usado y hay un nuevo archivo de audio, lo adjuntamos
+        # Adjuntar audio si es usado y hay un nuevo archivo
         if @product.condition == "used" && params[:product][:audio].present?
           @product.audio.attach(params[:product][:audio])
+          
+          # Verificar validaciones del audio
+          unless @product.valid?
+            render :edit, status: :unprocessable_entity
+            return
+          end
         end
 
-        # Si hay nuevas imágenes, las adjuntamos
+        # Adjuntar nuevas imágenes
         if params[:product][:images].present?
-          @product.images.attach(params[:product][:images])
+          new_images = params[:product][:images].reject(&:blank?)
+          @product.images.attach(new_images)
+          
+          # Verificar validaciones de las imágenes
+          unless @product.valid?
+            render :edit, status: :unprocessable_entity
+            return
+          end
         end
 
         redirect_to backstore_product_path(@product), notice: 'Producto actualizado'
