@@ -14,8 +14,16 @@ class Product < ApplicationRecord
   scope :available_products, -> { kept.includes(:category).order(created_at: :desc) }
   
   validates :author, presence: true
-  validates :inventory_entered_at, :last_modified_at, presence: true
+  validates :last_modified_at, presence: true
   validates :stock, numericality: { greater_than_or_equal_to: 0 }
+  validates :release_year, 
+            presence: true,
+            numericality: { 
+              only_integer: true, 
+              greater_than: 1900, 
+              less_than_or_equal_to: Date.current.year,
+              message: "debe ser un año válido entre 1901 y el año actual" 
+            }
 
   validate :must_have_at_least_one_image
   validate :audio_only_for_used_products

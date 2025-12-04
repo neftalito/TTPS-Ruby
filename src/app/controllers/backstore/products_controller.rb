@@ -69,9 +69,9 @@ module Backstore
       end
 
       @product = Product.new(initial_params)
-      
-      # Asignamos fecha manualmente ya q es un campo personalizado obligatorio
-      @product.last_modified_at = Time.current 
+    
+      # En el método create del controlador:
+      @product.last_modified_at = Time.current
 
       if @product.save
         redirect_to backstore_product_path(@product), notice: 'Producto creado'
@@ -226,7 +226,7 @@ module Backstore
     def product_params
       params.require(:product).permit(
         :name, :author, :category_id, :price, :stock,
-        :product_type, :condition, :inventory_entered_at, :description,
+        :product_type, :condition, :release_year, :description,
         :audio,
         images: []
       )
