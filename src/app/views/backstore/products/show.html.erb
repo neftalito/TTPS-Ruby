@@ -23,10 +23,6 @@
           <span class="inline-block px-3 py-1 text-sm font-semibold bg-gray-100 text-gray-800 rounded">
             <%= type_label %>
           </span>
-          <%# muestra el valor crudo para debugging si difiere del label reconocido %>
-          <% if raw_type.present? && raw_type.downcase != type_label.downcase %>
-            <span class="ml-2 text-xs text-gray-500">(<%= @product[:product_type].to_s %>)</span>
-          <% end %>
         </p>
       <% end %>
     </div>
