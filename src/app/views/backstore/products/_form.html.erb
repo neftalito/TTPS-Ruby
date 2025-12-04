@@ -526,7 +526,6 @@ document.addEventListener('turbo:load', () => {
           cancelText: '',
           onConfirm: () => {}
         });
-        imageInput.value = '';
         return;
       }
       
@@ -545,7 +544,6 @@ document.addEventListener('turbo:load', () => {
             cancelText: '',
             onConfirm: () => {}
           });
-          imageInput.value = '';
           return;
         }
         
@@ -560,7 +558,6 @@ document.addEventListener('turbo:load', () => {
             cancelText: '',
             onConfirm: () => {}
           });
-          imageInput.value = '';
           return;
         }
       }
@@ -574,7 +571,11 @@ document.addEventListener('turbo:load', () => {
       
       updateImagePreview();
       updateCounter();
-      imageInput.value = '';
+
+      if (e.target.files.length > 0) {
+        e.target.files = new DataTransfer().files;
+      }
+
     });
 
     function updateImagePreview() {
@@ -625,12 +626,6 @@ document.addEventListener('turbo:load', () => {
       }, 100);
     }
 
-    function removeImage(index) {
-      selectedFiles.splice(index, 1);
-      updateImagePreview();
-      updateCounter();
-      updateFileInput();
-    }
 
     function updateCounter() {
       const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
@@ -647,6 +642,13 @@ document.addEventListener('turbo:load', () => {
         dataTransfer.items.add(file);
       });
       imageInput.files = dataTransfer.files;
+    }
+
+    function removeImage(index) {
+      selectedFiles.splice(index, 1);
+      updateImagePreview();
+      updateCounter();
+      updateFileInput();
     }
 
     const form = imageInput.closest('form');
