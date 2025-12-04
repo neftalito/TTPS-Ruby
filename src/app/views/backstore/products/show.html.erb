@@ -1,4 +1,4 @@
-<div class="max-w-6xl mx-auto p-6">
+<div class="max-w-6xl mx-auto p-6" data-turbo-cache="false">
   <div class="flex items-center justify-between mb-6">
     <div>
       <%= link_to backstore_products_path, class: "inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200" do %>
@@ -15,12 +15,8 @@
       <%# Tipo robusto: intenta el accessor del enum, si falla usa el valor crudo y normaliza variantes %>
       <% raw_type = @product.respond_to?(:product_type) ? @product.product_type : @product[:product_type] %>
       <% raw_type = raw_type.to_s.strip.downcase %>
-      <% type_label = case raw_type
-          when 'vinyl', 'viniyl' then 'Vinilo'
-          when 'cd' then 'CD'
-          when '' then nil
-          else raw_type.capitalize
-          end %>
+      <%# CORRECCIÓN DE SINTAXIS (una línea) %>
+      <% type_label = case raw_type; when 'vinyl', 'viniyl' then 'Vinilo'; when 'cd' then 'CD'; when '' then nil; else raw_type.capitalize; end %>
 
       <% if type_label.present? %>
         <p class="mt-2">
@@ -38,20 +34,19 @@
 
   <div class="flex flex-col md:flex-row gap-6">
     <div class="md:w-1/2">
-      <%# CARRUSEL DE IMÁGENES CON FLOWBITE %>
+      <%# CARRUSEL DE IMÁGENES CON FLOWBITE (Corrección de clase 'active' incluida) %>
       <div id="product-carousel" class="relative w-full" data-carousel="slide">
-        <!-- Carousel wrapper -->
         <div class="relative h-96 overflow-hidden rounded-lg bg-gray-50">
           <% if @product.images.attached? %>
             <% @product.images.each_with_index do |img, index| %>
-              <div class="hidden duration-700 ease-in-out" data-carousel-item="<%= index == 0 ? 'active' : '' %>">
+              <div class="hidden duration-700 ease-in-out <%= 'active' if index == 0 %>" data-carousel-item>
                 <div class="flex items-center justify-center h-full p-4">
                   <%= image_tag url_for(img), class: "max-h-full max-w-full object-contain" %>
                 </div>
               </div>
             <% end %>
           <% else %>
-            <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
+            <div class="hidden duration-700 ease-in-out active" data-carousel-item>
               <div class="flex items-center justify-center h-full text-gray-500">
                 Sin imágenes
               </div>
@@ -60,7 +55,6 @@
         </div>
 
         <% if @product.images.attached? && @product.images.count > 1 %>
-          <!-- Slider controls -->
           <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
             <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
               <svg class="w-4 h-4 text-white rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
@@ -78,7 +72,6 @@
             </span>
           </button>
 
-          <!-- Slider indicators -->
           <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
             <% @product.images.count.times do |i| %>
               <button type="button" class="w-3 h-3 rounded-full" aria-current="<%= i == 0 ? 'true' : 'false' %>" aria-label="Slide <%= i + 1 %>" data-carousel-slide-to="<%= i %>"></button>
@@ -142,7 +135,15 @@
           </audio>
         </div>
       <% end %>
-      
     </div>
   </div>
 </div>
+
+<%# Inicialización de Flowbite para que el carrusel funcione en entornos como Turbo Drive %>
+<script>
+  document.addEventListener('turbo:load', function() {
+    if (typeof initFlowbite === 'function' && document.querySelector('[data-carousel="slide"]')) {
+      initFlowbite();
+    }
+  });
+</script>
