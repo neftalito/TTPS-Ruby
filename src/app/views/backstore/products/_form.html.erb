@@ -111,17 +111,17 @@
           </div>
         </div>
 
-        <%# SECCIÓN 3: Detalles del producto - Subtítulo y acentos de focus en Primary %>
-        <div class="p-8 border **border-proyecto-text/10** rounded-xl **bg-proyecto-bg/50** shadow-sm">
+        <%# SECCIÓN 3: Detalles del producto %>
+        <div class="p-8 border border-proyecto-text/10 rounded-xl bg-proyecto-bg/50 shadow-sm">
           <h2 class="text-2xl font-semibold text-proyecto-primary mb-6 border-b border-gray-300 pb-3">
             Detalles del producto
           </h2>
           
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             
             <%# Campo: Formato %>
             <div>
-              <%= f.label :product_type, "Formato", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
+              <%= f.label :product_type, "Formato", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
               <% product_types_es = [["Vinilo", "vinyl"], ["CD", "cd"]] %>
               <%= f.select :product_type, product_types_es, {}, 
                 class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
@@ -131,7 +131,7 @@
 
             <%# Campo: Condición del Producto %>
             <div>
-              <%= f.label :condition, "Condición del Producto", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
+              <%= f.label :condition, "Condición del Producto", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
               <% product_conditions_es = [["Nuevo", "new"], ["Usado", "used"]] %>
               <%= f.select :condition, product_conditions_es, {}, 
                 class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
@@ -140,8 +140,8 @@
                 id: "product_condition" %>
             </div>
             
-            <div>
-              <%= f.label :release_year, "Año de Lanzamiento", 
+            <div>
+              <%= f.label :release_year, "Año de Lanzamiento", 
                   class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
                   
               <%= f.number_field :release_year, 
@@ -149,9 +149,9 @@
                   min: 1901,
                   max: Date.current.year 
               %>
-            </div>
+            </div>
           </div>
-          
+
           <%# Bloque de subida de audio: Color de archivo en primary %>
           <div id="audio_upload_block" class="mt-8" style="display: none; opacity: 0; transition: all 0.5s ease;">
             <label for="product_audio" class="block text-sm font-medium text-proyecto-primary mb-1">
