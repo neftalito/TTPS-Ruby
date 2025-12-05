@@ -85,23 +85,23 @@
         </div>
 
         <div class="bg-gray-50 p-4 rounded">
-          <p class="text-base font-semibold text-gray-800">Estado</p>
-          <p class="mt-1 text-lg font-medium text-gray-900"><%= @product.condition.to_s == 'used' ? 'Usado' : 'Nuevo' %></p>
-        </div>
+          <p class="text-base font-semibold text-gray-800">Año de lanzamiento</p>
+          <p class="mt-1 text-lg font-medium text-gray-900">
+            <%= @product.release_year || "—" %>
+          </p>
+        </div>
 
-          <div class="bg-gray-50 p-4 rounded">
-            <p class="text-base font-semibold text-gray-800">Año de lanzamiento</p>
-            <p class="mt-1 text-lg font-medium text-gray-900">
-              <%= @product.release_year || "—" %>
-            </p>
-          </div>
+        <div class="bg-gray-50 p-4 rounded">
+          <p class="text-base font-semibold text-gray-800">Estado</p>
+          <p class="mt-1 text-lg font-medium text-gray-900"><%= @product.condition.to_s == 'used' ? 'Usado' : 'Nuevo' %></p>
+        </div>
 
         <div class="bg-gray-50 p-4 rounded">
           <p class="text-base font-semibold text-gray-800">Precio</p>
           <p class="mt-1 text-lg font-semibold text-indigo-600"><%= number_to_currency(@product.price || 0, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></p>
         </div>
 
-        <div class="bg-gray-50 p-4 rounded">
+        <div class="bg-gray-50 p-4 rounded col-span-2">
           <p class="text-base font-semibold text-gray-800">Stock disponible</p>
           <p class="mt-1 text-lg font-semibold <%= (@product.try(:stock) || 0).to_i > 0 ? 'text-green-600' : 'text-red-600' %>">
             <%= @product.try(:stock) || 0 %>
@@ -127,6 +127,7 @@
       <% end %>
       
     </div>
+    
   </div>
 
   <% if @related_products.present? %>
