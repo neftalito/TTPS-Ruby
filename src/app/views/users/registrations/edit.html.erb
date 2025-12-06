@@ -87,12 +87,17 @@
 
       <!-- Botones -->
       <div class="flex justify-between items-center mt-6">
-        <%= link_to "Cancelar",
-                    backstore_root_path,
-                    class: "px-4 py-2 rounded-lg bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg" %>
+        <%= link_to backstore_root_path,
+                    class: "inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg" do %>
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Cancelar</span>
+        <% end %>
 
-        <%= f.submit "Guardar cambios",
-                     class: "px-5 py-2 rounded-lg bg-proyecto-primary hover:bg-proyecto-accent text-proyecto-bg font-semibold" %>
+        <%= f.button type: :submit,
+                     class: "inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-proyecto-primary hover:bg-proyecto-accent text-proyecto-bg font-semibold" do %>
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span>Guardar cambios</span>
+        <% end %>
       </div>
 
     <% end %>

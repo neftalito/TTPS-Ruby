@@ -56,11 +56,19 @@
   </div>
 
   <div class="pt-6 border-t border-proyecto-text/10 flex flex-col sm:flex-row justify-end gap-4">
-    <%= link_to "Cancelar",
-                backstore_users_path,
-                class: "px-8 py-3 border border-proyecto-text/20 rounded-lg text-proyecto-text hover:bg-proyecto-secondary/20 transition duration-200 font-medium text-center" %>
+    <% submit_label = @user.new_record? ? "Crear Usuario" : "Guardar Cambios" %>
+    <% submit_icon = @user.new_record? ? "fa-user-plus" : "fa-floppy-disk" %>
 
-    <%= f.submit @user.new_record? ? "Crear Usuario" : "Guardar Cambios",
-                 class: "px-8 py-3 bg-proyecto-primary text-proyecto-bg rounded-lg font-bold hover:bg-proyecto-accent transition duration-200 cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center" %>
+    <%= link_to backstore_users_path,
+                class: "inline-flex items-center justify-center gap-2 px-8 py-3 border border-proyecto-text/20 rounded-lg text-proyecto-text hover:bg-proyecto-secondary/20 transition duration-200 font-medium text-center" do %>
+      <i class="fa-solid fa-arrow-left"></i>
+      <span>Cancelar</span>
+    <% end %>
+
+    <%= f.button type: :submit,
+                 class: "inline-flex items-center justify-center gap-2 px-8 py-3 bg-proyecto-primary text-proyecto-bg rounded-lg font-bold hover:bg-proyecto-accent transition duration-200 cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center" do %>
+      <i class="fa-solid <%= submit_icon %>"></i>
+      <span><%= submit_label %></span>
+    <% end %>
   </div>
 <% end %>

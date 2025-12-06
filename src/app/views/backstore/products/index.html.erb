@@ -6,9 +6,11 @@
   </div>
 
   <% if can? :create, Product %>
-    <%= link_to "Nuevo producto",
-                new_backstore_product_path,
-                class: "px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent w-full sm:w-auto text-center" %>
+    <%= link_to new_backstore_product_path,
+                class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent w-full sm:w-auto justify-center" do %>
+      <i class="fa-solid fa-circle-plus"></i>
+      <span>Nuevo producto</span>
+    <% end %>
   <% end %>
 </header>
 
@@ -67,13 +69,18 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-md">
-      <%= f.submit "Filtrar",
-                    name: nil,
-                    class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" %>
+      <%= f.button type: :submit,
+                   name: nil,
+                   class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" do %>
+        <i class="fa-solid fa-filter"></i>
+        <span>Filtrar</span>
+      <% end %>
 
-      <%= link_to "Limpiar filtros",
-                    backstore_products_path,
-                    class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+      <%= link_to backstore_products_path,
+                  class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" do %>
+        <i class="fa-solid fa-eraser"></i>
+        <span>Limpiar filtros</span>
+      <% end %>
     </div>
 
   <% end %>
@@ -120,7 +127,7 @@
       link_to "Restaurar",
               restore_backstore_product_path(product),
               data: { turbo_method: :patch, turbo_confirm: "¿Seguro que querés restaurar este producto?" },
-              class: "px-3 py-2 bg-proyecto-success text-white hover:bg-proyecto-success/80 rounded-md text-sm w-full sm:w-auto text-center"
+              class: "px-3 py-2 bg-proyecto-success text-white hover:bg-proyecto-success/90 rounded-md text-sm w-full sm:w-auto text-center"
     end
   else
     buttons = []
@@ -129,7 +136,7 @@
       buttons << link_to(
         "Ver",
         backstore_product_path(product),
-        class: "px-3 py-2 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm w-full sm:w-auto text-center"
+        class: "px-3 py-2 bg-proyecto-info text-proyecto-bg hover:bg-proyecto-info/90 rounded-md text-sm w-full sm:w-auto text-center"
       )
     end
 
@@ -137,7 +144,7 @@
       buttons << link_to(
         "Editar",
         edit_backstore_product_path(product),
-        class: "px-3 py-2 bg-proyecto-primary/10 text-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg rounded-md text-sm w-full sm:w-auto text-center"
+        class: "px-3 py-2 bg-proyecto-primary text-proyecto-bg hover:bg-proyecto-primary/90 rounded-md text-sm w-full sm:w-auto text-center"
       )
     end
 
@@ -146,7 +153,7 @@
         "Eliminar",
         backstore_product_path(product),
         data: { turbo_method: :delete, turbo_confirm: "¿Seguro que querés eliminar este producto?" },
-        class: "px-3 py-2 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm w-full sm:w-auto text-center"
+        class: "px-3 py-2 bg-proyecto-error text-proyecto-bg hover:bg-proyecto-error/90 rounded-md text-sm w-full sm:w-auto text-center"
       )
     end
 
