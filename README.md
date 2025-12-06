@@ -24,6 +24,7 @@
 - Además, se tomó la decisión de limitar la cantidad de imágenes totales que un producto puede tener a 10; que los formatos permitidos sean JPG, PNG, GIF, WEBP; y que el tamaño máximo sea de 10Mb
 - En los audios, para los productos usados, decidimos que el límite de tamaño sea de 15Mb y que los formatos permitidos sean MP3, WAV, OGG, M4A y FLAC
 - También se tomó la decisión de que la imágen de portada de un producto va a ser la primer imágen que fue subida. En caso de ser eliminada, la siguiente imágen pasará a ser la portada
+- Otra decisión de diseño tomada es que el nombre con el que se va a identificar al usuario (es decir, la forma en la que se mostrará qué usuario está con su sesión iniciada) será tomado automáticamente del correo electrónico utilizado durante el inicio de sesión. Específicamente, se extrae la parte antes del @ en un correo. Por ejemplo, si tuvieramos el correo "ttps@ruby.com", el nombre "ttps" va a ser utilizado para ser mostrado en el navbar y en el dashboard del usuario. Para no mostrar el email completo.
 
 # Notas para desarrolladores
 ## Instalación de dependencias del Gemfile
