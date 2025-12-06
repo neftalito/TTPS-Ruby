@@ -1,10 +1,9 @@
 module Backstore
   class ReportsController < BaseController
     def index
+      @range = params[:range] || "month"
 
-      @range = params[:range] || 'month' 
-
-      if @range == 'all'
+      if @range == "all"
         @start_date = nil
         @end_date   = nil
         @sales_scope = Sale.where(cancelled_at: nil)
@@ -13,7 +12,7 @@ module Backstore
         @end_date   = params[:end_date].presence ? Date.parse(params[:end_date]) : Date.current
 
         @start_date, @end_date = @end_date, @start_date if @start_date && @end_date && @start_date > @end_date
-        
+
         @sales_scope = Sale.where(cancelled_at: nil).where(created_at: @start_date.beginning_of_day..@end_date.end_of_day)
       end
 
@@ -23,14 +22,11 @@ module Backstore
       @total_items   = SaleItem.where(sale: @sales_scope).sum(:quantity)
       @average_ticket = @total_sales > 0 ? (@total_revenue / @total_sales) : 0
 
-
       ranking_hash = SaleItem.where(sale: @sales_scope).group(:product_id).sum(:quantity)
-      
 
       sorted_ranking = ranking_hash.sort_by { |_id, qty| -qty }
 
       per_page = params[:per_page] == "all" ? 1000 : (params[:per_page] || 25).to_i
-      
 
       @paginated_ranking = Kaminari.paginate_array(sorted_ranking)
                                    .page(params[:page])
@@ -41,7 +37,7 @@ module Backstore
                              .includes(:category, images_attachments: :blob)
                              .find(current_page_ids)
                              .index_by(&:id)
-      
+
       @products_for_view = @paginated_ranking.map do |product_id, quantity|
         product = products_hash[product_id]
         if product
@@ -60,8 +56,8 @@ module Backstore
         end
 
         format.pdf do
-          @top_products = @products_for_view 
-          
+          @top_products = @products_for_view
+
           render pdf: "reporte_ventas_#{Date.today}",
                  layout: "pdf",
                  orientation: "Landscape",

@@ -11,5 +11,4 @@ class SaleItem < ApplicationRecord
   def set_unit_price
     self.unit_price = product.price if unit_price.blank?
   end
-  
 end

@@ -27,7 +27,7 @@ module App
     #
     config.i18n.default_locale = :es
     config.i18n.available_locales = %i[es en]
-    config.time_zone = 'Buenos Aires'
+    config.time_zone = "Buenos Aires"
 
   end
 end
