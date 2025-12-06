@@ -6,10 +6,16 @@ module Storefront
       @categories = Category.all
       @products = Product.available_products
 
-      # Filtro por búsqueda
-      if params[:search].present?
-        q = "%#{params[:search]}%"
-        @products = @products.where("name LIKE :q OR author LIKE :q", q: q)
+      # Búsqueda por Nombre del Disco
+      if params[:name_q].present?
+        query = "%#{params[:name_q].downcase}%"
+        @products = @products.where("LOWER(name) LIKE ?", query)
+      end
+
+      # Búsqueda por Nombre del Artista
+      if params[:author_q].present?
+        query = "%#{params[:author_q].downcase}%"
+        @products = @products.where("LOWER(author) LIKE ?", query)
       end
 
       # Filtro por categoría

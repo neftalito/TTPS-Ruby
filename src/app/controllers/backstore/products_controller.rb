@@ -21,11 +21,18 @@ module Backstore
         @products = @products.where(category_id: params[:category_id])
       end
 
-      # Búsqueda por nombre o autor
-      if params[:q].present?
-        query = "%#{params[:q].downcase}%"
-        @products = @products.where("LOWER(name) LIKE ? OR LOWER(author) LIKE ?", query, query)
+      # Búsqueda por Nombre del Disco
+      if params[:name_q].present?
+        query = "%#{params[:name_q].downcase}%"
+        @products = @products.where("LOWER(name) LIKE ?", query)
       end
+
+      # Búsqueda por Nombre del Artista
+      if params[:author_q].present?
+        query = "%#{params[:author_q].downcase}%"
+        @products = @products.where("LOWER(author) LIKE ?", query)
+      end
+
       # Filtro por condición
       if params[:condition].present? && params[:condition] != 'all'
         @products = @products.where(condition: params[:condition])
@@ -54,10 +61,17 @@ module Backstore
     end
 
     def create
-      @product = Product.new(product_params)
+      # Clonamos los parámetros para modificar el stock si es necesario
+      initial_params = product_params.to_h 
       
-      # Asignamos fecha manualmente ya q es un campo personalizado obligatorio
-      @product.last_modified_at = Time.current 
+      if initial_params['condition'] == 'used'
+        initial_params['stock'] = 1
+      end
+
+      @product = Product.new(initial_params)
+    
+      # En el método create del controlador:
+      @product.last_modified_at = Time.current
 
       if @product.save
         redirect_to backstore_product_path(@product), notice: 'Producto creado'
@@ -70,25 +84,61 @@ module Backstore
     def update
       # Guardamos el estado anterior para comparar
       previous_condition = @product.condition
-      
-      # Actualizamos los parámetros excepto las imágenes y el audio
-      update_params = product_params.except(:images, :audio)
 
-      if @product.update(update_params)
+      # Clonamos los parámetros permitidos para poder modificarlos si es necesario
+      permitted_params = product_params.except(:images, :audio)
+      
+      # Convertimos a hash de Ruby para poder modificar la clave 'stock'
+      update_hash = permitted_params.to_h
+
+      if update_hash['condition'] == 'used'
+        # Si la condición es 'used', forzamos el stock a 1, ya que el campo estaba deshabilitado 
+        update_hash['stock'] = 1
+      end
+
+      # Validar límite de imágenes ANTES de intentar actualizar
+      if params[:product][:images].present?
+        new_images = params[:product][:images].reject(&:blank?)
+        new_images_count = new_images.size
+        current_images_count = @product.images.count
+        total_images = current_images_count + new_images_count
         
-        # Si cambió de usado a nuevo, eliminamos el audio existente
+        if total_images > 10
+          flash.now[:alert] = "No puedes subir #{new_images_count} imagen(es) nueva(s). Ya tienes #{current_images_count} imagen(es) y el límite es 10."
+          render :edit, status: :unprocessable_entity
+          return
+        end
+      end
+
+      # Actualizar atributos básicos
+      if @product.update(update_hash)
+        
+        # Manejar eliminación de audio al cambiar de usado a nuevo
         if previous_condition == "used" && @product.condition == "new" && @product.audio.attached?
           @product.audio.purge
         end
 
-        # Si es usado y hay un nuevo archivo de audio, lo adjuntamos
+        # Adjuntar audio si es usado y hay un nuevo archivo
         if @product.condition == "used" && params[:product][:audio].present?
           @product.audio.attach(params[:product][:audio])
+          
+          # Verificar validaciones del audio
+          unless @product.valid?
+            render :edit, status: :unprocessable_entity
+            return
+          end
         end
 
-        # Si hay nuevas imágenes, las adjuntamos
+        # Adjuntar nuevas imágenes
         if params[:product][:images].present?
-          @product.images.attach(params[:product][:images])
+          new_images = params[:product][:images].reject(&:blank?)
+          @product.images.attach(new_images)
+          
+          # Verificar validaciones de las imágenes
+          unless @product.valid?
+            render :edit, status: :unprocessable_entity
+            return
+          end
         end
 
         redirect_to backstore_product_path(@product), notice: 'Producto actualizado'
@@ -176,7 +226,7 @@ module Backstore
     def product_params
       params.require(:product).permit(
         :name, :author, :category_id, :price, :stock,
-        :product_type, :condition, :inventory_entered_at, :description,
+        :product_type, :condition, :release_year, :description,
         :audio,
         images: []
       )

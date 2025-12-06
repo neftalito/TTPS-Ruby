@@ -87,8 +87,9 @@ conditions = Product.conditions.keys
   category = categories.sample
   condition = conditions.sample
   product_type = product_types.sample
-  inventory_entered_at = Faker::Time.between(from: 18.months.ago, to: 3.months.ago)
-  last_modified_at = Faker::Time.between(from: inventory_entered_at, to: Time.current)
+  release_year = Faker::Number.between(from: 1950, to: Date.current.year)
+  base_time = Faker::Time.between(from: 18.months.ago, to: 3.months.ago)
+  last_modified_at = Faker::Time.between(from: base_time, to: Time.current)
   deactivated_at = rand < 0.15 ? Faker::Time.between(from: last_modified_at, to: Time.current) : nil
 
   product = Product.new(
@@ -101,11 +102,11 @@ conditions = Product.conditions.keys
     product_type: product_type,
     condition: condition,
     audio_sample_url: condition == "used" ? audio_samples.sample : nil,
-    inventory_entered_at: inventory_entered_at,
+    release_year: release_year,
     last_modified_at: last_modified_at,
     deactivated_at: deactivated_at,
     published: deactivated_at.nil?,
-    created_at: inventory_entered_at,
+    created_at: base_time,
     updated_at: last_modified_at
   )
 

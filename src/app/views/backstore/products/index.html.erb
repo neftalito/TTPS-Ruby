@@ -20,31 +20,34 @@
 
     <div class="flex flex-wrap gap-4 items-center">
 
-      <!-- Buscar por nombre o autor -->
       <div>
-        <%= f.label :q, "Buscar", class: "block text-sm font-medium text-proyecto-primary" %>
-        <%= f.text_field :q,
-                         value: params[:q],
-                         placeholder: "Nombre o autor",
-                         class: "mt-1 px-3 py-1 border rounded-md w-48" %>
+        <%= f.label :name_q, "Nombre del Disco", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.text_field :name_q, value: params[:name_q], # <--- Corrección de sintaxis aquí
+                             placeholder: "Título del álbum",
+                             class: "mt-1 px-3 py-1 border rounded-md w-48" %>
       </div>
 
-      <!-- Filtrar por categoría -->
+      <div>
+        <%= f.label :author_q, "Nombre del Artista", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.text_field :author_q, value: params[:author_q], # <--- Corrección de sintaxis aquí
+                             placeholder: "Autor o banda",
+                             class: "mt-1 px-3 py-1 border rounded-md w-48" %>
+      </div>
+
       <div>
         <%= f.label :category_id, "Categoría", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :category_id,
-                     [["Todas", ""]] + Category.all.map { |c| [c.name, c.id] },
-                     { selected: params[:category_id] },
-                     class: "mt-1 px-3 py-1 border rounded-md" %>
+                      [["Todas", ""]] + Category.all.map { |c| [c.name, c.id] },
+                      { selected: params[:category_id] },
+                      class: "mt-1 px-3 py-1 border rounded-md" %>
       </div>
 
-      <!-- Filtrar por estado -->
       <div>
         <%= f.label :status, "Estado", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :status,
-                     [["Activos", ""], ["Eliminados", "deleted"], ["Todos", "all"]],
-                     { selected: params[:status] },
-                     class: "mt-1 px-3 py-1 border rounded-md" %>
+                      [["Activos", ""], ["Eliminados", "deleted"], ["Todos", "all"]],
+                      { selected: params[:status] },
+                      class: "mt-1 px-3 py-1 border rounded-md" %>
       </div>
       <div>
         <%= f.label :product_type, "Tipo", class: "block text-sm font-medium text-proyecto-primary" %>
@@ -65,12 +68,12 @@
 
     <div class="flex flex-col items-center justify-center gap-2">
       <%= f.submit "Filtrar",
-                   name: nil,
-                   class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+                    name: nil,
+                    class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
 
       <%= link_to "Limpiar filtros",
-                  backstore_products_path,
-                  class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+                    backstore_products_path,
+                    class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
     </div>
 
   <% end %>
@@ -153,11 +156,11 @@ end %>
 
 <div class="w-full overflow-x-auto shadow border border-proyecto-secondary rounded-lg bg-white">
   <%= render "backstore/shared/resource_table",
-             collection: @products,
-             columns: product_columns,
-             row_class: ->(product) { product.deleted? ? "bg-proyecto-secondary/20" : nil },
-             empty_message: "No hay productos para mostrar.",
-             actions: product_actions %>
+              collection: @products,
+              columns: product_columns,
+              row_class: ->(product) { product.deleted? ? "bg-proyecto-secondary/20" : nil },
+              empty_message: "No hay productos para mostrar.",
+              actions: product_actions %>
 </div>
 
 <%= render "shared/pagination", collection: @products, params: request.query_parameters %>

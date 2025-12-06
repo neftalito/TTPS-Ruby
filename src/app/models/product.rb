@@ -14,14 +14,27 @@ class Product < ApplicationRecord
   scope :available_products, -> { kept.includes(:category).order(created_at: :desc) }
   
   validates :author, presence: true
-  validates :inventory_entered_at, :last_modified_at, presence: true
+  validates :last_modified_at, presence: true
+  validates :stock, numericality: { greater_than_or_equal_to: 0 }
+  validates :release_year, 
+            presence: true,
+            numericality: { 
+              only_integer: true, 
+              greater_than: 1900, 
+              less_than_or_equal_to: Date.current.year,
+              message: "debe ser un año válido entre 1901 y el año actual" 
+            }
 
   validate :must_have_at_least_one_image
   validate :audio_only_for_used_products
-  validates :stock, numericality: { greater_than_or_equal_to: 0 }
+  validate :validate_images_format_and_size
+  validate :validate_audio_format_and_size
+
+
 
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
+  before_validation :force_stock_to_one_if_used, if: -> { self.condition_used? }
   before_discard :reset_stock
   
 
@@ -86,6 +99,56 @@ class Product < ApplicationRecord
 
   def reset_stock
     self.update_column(:stock, 0)
+  end
+
+  def force_stock_to_one_if_used
+    # Esto asegura que si la condición es 'used', el stock no puede ser otro valor.
+    self.stock = 1
+  end
+
+  def validate_images_format_and_size
+    return unless images.attached?
+    
+    # Validar cantidad máxima (10 imágenes)
+    if images.count > 10
+      errors.add(:images, "no puede exceder las 10 imágenes")
+      return
+    end
+    
+    valid_formats = %w[image/jpeg image/jpg image/png image/gif image/webp]
+    max_size = 10.megabytes
+    
+    images.each do |image|
+      # Validar formato
+      unless valid_formats.include?(image.content_type)
+        errors.add(:images, "#{image.filename} no es un formato válido. Formatos permitidos: JPEG, PNG, GIF, WebP")
+      end
+      
+      # Validar tamaño
+      if image.byte_size > max_size
+        size_mb = (image.byte_size.to_f / 1.megabyte).round(2)
+        errors.add(:images, "#{image.filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 10 MB por imagen")
+      end
+    end
+  end
+
+
+  def validate_audio_format_and_size
+    return unless audio.attached?
+    
+    valid_formats = %w[audio/mpeg audio/mp3 audio/wav audio/ogg audio/m4a audio/flac audio/x-m4a]
+    max_size = 15.megabytes
+    
+    # Validar formato
+    unless valid_formats.include?(audio.content_type)
+      errors.add(:audio, "#{audio.filename} no es un formato válido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC")
+    end
+    
+    # Validar tamaño
+    if audio.byte_size > max_size
+      size_mb = (audio.byte_size.to_f / 1.megabyte).round(2)
+      errors.add(:audio, "#{audio.filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 15 MB")
+    end
   end
 
 end

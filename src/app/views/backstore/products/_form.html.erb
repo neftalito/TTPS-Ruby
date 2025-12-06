@@ -1,20 +1,25 @@
-<div class="bg-gray-50 min-h-screen py-12">
-  <div class="max-w-4xl mx-auto p-12 bg-slate-900 rounded-3xl shadow-2xl border border-slate-700 font-sans text-gray-100">
+<div class="min-h-screen py-12 **bg-proyecto-bg**">
+  <div class="max-w-4xl mx-auto p-8 md:p-12 **bg-proyecto-secondary/10**   rounded-3xl **shadow-2xl border border-proyecto-text/10**   font-sans **text-proyecto-text**" data-turbo-cache="false">
     
-    <header class="mb-10 border-b border-slate-700 pb-5 text-center">
-      <%# TÍTULO DINÁMICO %>
-      <h1 class="text-4xl font-extrabold text-emerald-400 tracking-widest uppercase">
+    <header class="mb-10 border-b border-gray-300 pb-5 text-center">
+      <%# Título principal: Color primario del proyecto (proyecto-primary) %>
+      <h1 class="text-4xl font-extrabold text-proyecto-primary tracking-widest uppercase" id="form_title">
         <%= @product.persisted? ? "EDITAR PRODUCTO" : "NUEVO PRODUCTO" %> 📀
       </h1>
-      <p class="text-lg text-slate-400 mt-2 font-light">
+      <p class="text-lg text-gray-500 mt-2 font-light">
         <%= @product.persisted? ? "Realiza las modificaciones necesarias al registro." : "No te olvides de proporcionar la mayor información necesaria." %>
       </p>
       
-      <%# Mostrar errores de validación si existen %>
+      <%# Bloque de errores: Color de error del proyecto (proyecto-error) %>
       <% if @product.errors.any? %>
-        <div class="mt-4 p-4 rounded-lg bg-red-800/50 border border-red-700 text-red-300 text-left">
-          <h4 class="font-bold mb-2">Se encontraron <%= pluralize(@product.errors.count, "error") %>:</h4>
-          <ul class="list-disc list-inside text-sm">
+        <div class="mt-4 p-4 rounded-lg bg-proyecto-error/10 border border-proyecto-error/50 text-proyecto-error text-left animate-pulse">
+          <h4 class="font-bold mb-2 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            Se encontraron <%= pluralize(@product.errors.count, "error") %>:
+          </h4>
+          <ul class="list-disc list-inside text-sm ml-5">
             <% @product.errors.full_messages.each do |msg| %>
               <li><%= msg %></li>
             <% end %>
@@ -23,93 +28,156 @@
       <% end %>
     </header>
 
-    <%# FORMULARIO: Usa [:backstore, @product] para manejar las rutas correctamente %>
+    <%# Definición del formulario %>
     <%= form_with model: [:backstore, @product], local: true, html: { multipart: true } do |f| %>
       <div class="space-y-12">
 
-        <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
-          <h2 class="text-2xl font-semibold text-blue-400 mb-6 border-b border-slate-700 pb-3">Detalles Esenciales del Activo</h2>
+        <%# SECCIÓN 1: Detalles Esenciales del Activo - Subtítulo azul y acentos de focus en Primary %>
+        <div class="p-8 border **border-proyecto-text/10** rounded-xl **bg-proyecto-bg/50** shadow-sm">
+          <h2 class="text-2xl font-semibold text-proyecto-primary mb-6 border-b border-gray-300 pb-3">
+            Detalles Esenciales del Activo
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <%# Campo: Título %>
             <div>
-              <%= f.label :name, "Título del Álbum", class: "block text-sm font-medium text-blue-400 mb-1" %>
-              <%= f.text_field :name, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+              <div class="input-group">
+                <%= f.label :name, "Título del Álbum", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
+                <%= f.text_field :name, # <-- ¡COMA CORREGIDA AQUÍ!
+                    class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
+                            bg-white text-gray-900 placeholder-gray-400 
+                            focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
+              </div>
             </div>
+            <%# Campo: Autor %>
             <div>
-              <%= f.label :author, "Autor / Entidad Principal", class: "block text-sm font-medium text-blue-400 mb-1" %>
-              <%= f.text_field :author, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
-            </div>
+              <div class="input-group">
+                <%= f.label :author, "Autor / Entidad Principal", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
+                <%= f.text_field :author, class: "block w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-900 placeholder-gray-400 focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
+              </div>
+             </div>
           </div>
+          <%# Campo: Descripción %>
           <div class="mt-8">
-            <%= f.label :description, "Descripción y Metadatos Clave", class: "block text-sm font-medium text-emerald-400 mb-1" %>
-            <%= f.text_area :description, rows: 4, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+            <div class="input-group">
+              <%= f.label :description, "Descripción", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
+              <%= f.text_area :description, rows: 4, # <-- CORRECCIÓN APLICADA AQUÍ
+                  class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
+                          bg-white text-gray-900 placeholder-gray-400 
+                          focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
+            </div>
           </div>
         </div>
 
-        <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
-          <h2 class="text-2xl font-semibold text-emerald-400 mb-6 border-b border-slate-700 pb-3">Gestión Financiera e Inventario</h2>
+        <%# SECCIÓN 2: Gestión Financiera e Inventario - Subtítulo y acentos de focus en Primary %>
+        <div class="p-8 border **border-proyecto-text/10** rounded-xl **bg-proyecto-bg/50** shadow-sm">
+          <h2 class="text-2xl font-semibold text-proyecto-primary mb-6 border-b border-gray-300 pb-3">
+            Gestión Financiera e Inventario
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
+            <%# Campo: Precio de Venta %>
             <div>
-              <%= f.label :price, "Precio de Venta (AR$)", class: "block text-sm font-medium text-gray-300 mb-1" %>
+              <%= f.label :price, "Precio de Venta (AR$)", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
               <div class="relative mt-1 rounded-lg shadow-sm">
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <span class="text-emerald-400 sm:text-lg font-bold">$</span>
+                  <%# Icono de peso en primary color %>
+                  <span class="text-proyecto-primary sm:text-lg font-bold">$</span>
                 </div>
-                <%= f.number_field :price, step: 0.01, class: "block w-full rounded-lg border border-slate-700 pl-8 pr-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+                <%= f.number_field :price, step: 0.01, 
+                    class: "block w-full rounded-lg border border-gray-300 pl-8 pr-4 py-3 
+                            bg-white text-gray-900 placeholder-gray-400 
+                            focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
               </div>
             </div>
             
+            <%# Campo: Stock Disponible %>
             <div>
-              <%= f.label :stock, "Stock Disponible", class: "block text-sm font-medium text-gray-300 mb-1" %>
-              <%= f.number_field :stock, min: 0, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+              <%= f.label :stock, "Stock Disponible", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
+              <%= f.number_field :stock, min: 0, 
+                  class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
+                          bg-white text-gray-900 placeholder-gray-400 
+                          focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200", 
+                  id: "product_stock_field" %>
             </div>
             
+            <%# Campo: Clasificación (Género) %>
             <div>
-              <%= f.label :category_id, "Clasificación (Género)", class: "block text-sm text-gray-300 mb-1" %>
-              <%= f.select :category_id, Category.order(:name).pluck(:name, :id), { include_blank: "Seleccionar" }, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+              <%= f.label :category_id, "Género musical", class: "block text-sm **text-proyecto-text/80** mb-1" %>
+              <%= f.select :category_id, Category.order(:name).pluck(:name, :id), { include_blank: "Seleccionar" }, 
+                  class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
+                          bg-white text-gray-900 
+                          focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
             </div>
           </div>
         </div>
 
-        <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
-          <h2 class="text-2xl font-semibold text-blue-400 mb-6 border-b border-slate-700 pb-3">Detalles Físicos y Tracking</h2>
+        <%# SECCIÓN 3: Detalles del producto %>
+        <div class="p-8 border border-proyecto-text/10 rounded-xl bg-proyecto-bg/50 shadow-sm">
+          <h2 class="text-2xl font-semibold text-proyecto-primary mb-6 border-b border-gray-300 pb-3">
+            Detalles del producto
+          </h2>
           
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             
+            <%# Campo: Formato %>
             <div>
-              <%= f.label :product_type, "Formato", class: "block text-sm font-medium text-gray-300 mb-1" %>
-              <%= f.select :product_type, Product.product_types.keys.map { |k| [k.humanize, k] }, {}, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+              <%= f.label :product_type, "Formato", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
+              <% product_types_es = [["Vinilo", "vinyl"], ["CD", "cd"]] %>
+              <%= f.select :product_type, product_types_es, {}, 
+                class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
+                        bg-white text-gray-900 
+                        focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
             </div>
 
+            <%# Campo: Condición del Producto %>
             <div>
-              <%= f.label :condition, "Condición del Producto", class: "block text-sm font-medium text-gray-300 mb-1" %>
-              <%= f.select :condition, Product.conditions.keys.map { |k| [k.humanize, k] }, {}, 
-                  class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200",
-                  id: "product_condition" %>
+              <%= f.label :condition, "Condición del Producto", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
+              <% product_conditions_es = [["Nuevo", "new"], ["Usado", "used"]] %>
+              <%= f.select :condition, product_conditions_es, {}, 
+                class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
+                        bg-white text-gray-900 
+                        focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200",
+                id: "product_condition" %>
             </div>
             
             <div>
-              <%= f.label :inventory_entered_at, "Fecha de Ingreso", class: "block text-sm font-medium text-gray-300 mb-1" %>
-              <%= f.date_field :inventory_entered_at, class: "block w-full border border-slate-700 rounded-lg px-4 py-3 bg-slate-950 text-gray-100 placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" %>
+              <%= f.label :release_year, "Año de Lanzamiento", 
+                  class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
+                  
+              <%= f.number_field :release_year, 
+                  class: "block w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-900 focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200",
+                  min: 1901,
+                  max: Date.current.year 
+              %>
             </div>
           </div>
-          
-          <%# BLOQUE DE AUDIO: Se inicializa oculto con style="display: none;" para que JS lo muestre solo si es "usado" %>
-          <div id="audio_upload_block" class="mt-8" style="display: none;">
-            <label for="product_audio" class="block text-sm font-medium text-blue-400 mb-1">Muestra de Audio (Opcional, solo para discos usados)</label>
+
+          <%# Bloque de subida de audio: Color de archivo en primary %>
+          <div id="audio_upload_block" class="mt-8" style="display: none; opacity: 0; transition: all 0.5s ease;">
+            <label for="product_audio" class="block text-sm font-medium text-proyecto-primary mb-1">
+              Muestra de Audio (Opcional, solo para discos usados)
+            </label>
+            <p class="text-xs text-gray-500 mb-2">
+              📁 <strong>Formatos:</strong> MP3, WAV, OGG, M4A, FLAC. <strong>Tamaño máximo:</strong> 15 MB.
+            </p>
             <%= f.file_field :audio, accept: "audio/*", 
-                class: "mt-1 block w-full text-base text-gray-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-base file:font-semibold file:bg-blue-800 file:text-white hover:file:bg-blue-700 transition duration-200" %>
+              class: "mt-1 block w-full text-base **text-proyecto-text/80**
+                      file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 
+                      file:text-base file:font-semibold file:bg-proyecto-primary file:text-white 
+                      hover:file:bg-proyecto-primary/90 transition duration-200" %>
             
-            <%# Previsualización del audio adjunto (solo en modo edición) %>
+            <%# Muestra la previsualización del audio si ya está adjunto %>
             <% if @product.persisted? && @product.audio.attached? %>
-              <div class="bg-slate-950 border border-slate-700 rounded-lg p-4 mt-2">
-                <p class="text-xs text-emerald-400 font-mono mb-2 uppercase tracking-wider">Audio cargado:</p>
+              <div class="bg-white border border-gray-300 rounded-lg p-4 mt-2">
+                <%# Texto de audio cargado en Success color %>
+                <p class="text-xs text-proyecto-success font-mono mb-2 uppercase tracking-wider">Audio cargado:</p>
                 <audio controls class="w-full mb-2">
                   <source src="<%= url_for(@product.audio) %>" type="<%= @product.audio.content_type %>">
                 </audio>
+                <%# Botón de eliminar audio - Color de error del proyecto %>
                 <%= link_to delete_audio_attachment_backstore_product_path(@product),
                     data: { turbo_method: :delete},
-                    class: "inline-flex items-center gap-2 px-3 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-600/30 rounded-lg transition-all text-sm" do %>
+                    class: "inline-flex items-center gap-2 px-3 py-2 bg-proyecto-error/10 hover:bg-proyecto-error text-proyecto-error hover:text-white border border-proyecto-error/50 rounded-lg transition-all text-sm" do %>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                   </svg>
@@ -120,26 +188,79 @@
           </div>
         </div>
 
-        <div class="p-8 border border-slate-700 rounded-xl bg-slate-800 shadow-xl">
-          <h2 class="text-2xl font-semibold text-emerald-400 mb-6 border-b border-slate-700 pb-3">Archivos Multimedia de Masterización</h2>
+        <%# SECCIÓN 4: Archivos Multimedia %>
+        <div class="p-8 border **border-proyecto-text/10** rounded-xl **bg-proyecto-bg/50** shadow-sm">
+          <h2 class="text-2xl font-semibold text-proyecto-primary mb-6 border-b border-gray-300 pb-3">
+            Archivos Multimedia de Masterización
+          </h2>
           
           <div>
-            <%= f.label :images, "Imágenes de Alta Resolución", class: "block text-sm font-medium text-gray-300 mb-1" %>
-            <%= f.file_field :images, multiple: true, accept: "image/*", class: "mt-1 block w-full text-base text-gray-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-base file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 transition duration-200" %>
+            <%= f.label :images, "Imágenes de Alta Resolución", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
+            
+            <% current_images_count = @product.persisted? && @product.images.attached? ? @product.images.count : 0 %>
+            <% remaining_slots = 10 - current_images_count %>
+            
+            <%# Contador de imágenes: primary y success color %>
+            <div class="mb-3 p-3 bg-white border border-gray-300 rounded-lg" id="images-counter">
+              <p class="text-sm text-gray-600">
+                  Imágenes actuales: <span class="font-bold text-proyecto-primary" id="current-count"><%= current_images_count %></span> / 10
+                <span class="text-gray-400">|</span>
+                Puedes agregar: <span class="font-bold text-proyecto-success" id="remaining-count"><%= remaining_slots %></span> más
+              </p>
+            </div>
+            
+            <%# Input oculto %>
+            <input type="file" 
+                    id="image_upload_input" 
+                    name="product[images][]"
+                    multiple 
+                    accept="image/*"
+                    data-current-images="<%= current_images_count %>"
+                    style="display: none;">
+            
+            <%# Botón personalizado para subir imágenes - Color primario del proyecto %>
+            <button type="button" 
+                    id="upload_button" 
+                    class="w-full mt-1 px-6 py-4 bg-proyecto-primary hover:bg-proyecto-primary/90 text-white font-semibold rounded-xl 
+                            transition duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-xl">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              Seleccionar Imágenes
+            </button>
+            
+            <p class="text-xs text-gray-500 mt-2">
+              ⚠️ Máximo 10 imágenes por producto. <strong>Formatos:</strong> JPEG, PNG, GIF, WebP. <strong>Tamaño máximo:</strong> 10 MB por imagen.
+            </p>
+            
+            <%# Contenedor para vista previa de NUEVAS imágenes %>
+            <div id="new-images-preview" class="mt-6 hidden">
+              <%# Título de nuevas imágenes en primary color %>
+              <h3 class="text-lg font-medium text-proyecto-primary mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Nuevas imágenes a subir:
+              </h3>
+              <div id="new-images-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4"></div>
+            </div>
           </div>
 
-          <%# VISTA PREVIA: Solo se muestra si el producto ya está en la DB %>
+          <%# Vista previa de imágenes YA SUBIDAS %>
           <% if @product.persisted? && @product.images.attached? %>
             <div class="mt-8">
-              <h3 class="text-xl font-medium text-gray-300 mb-4">Visualización de Activos Actuales:</h3>
+              <h3 class="text-xl font-medium **text-proyecto-text/80** mb-4">Visualización de Activos Actuales:</h3>
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <% @product.images.each do |img| %>
-                  <div class="border border-slate-700 rounded-xl overflow-hidden shadow-lg relative group">
-                    <%= image_tag url_for(img.variant(resize_to_limit: [300, 300])), class: "object-cover w-full h-28 sm:h-36" %>
+                  <div class="border border-gray-300 rounded-xl overflow-hidden shadow-lg relative group">
+                    <%= image_tag url_for(img), class: "object-cover w-full h-28 sm:h-36" %>
+                    
+                    <%# Botón de eliminar imagen - Color de error del proyecto %>
                     <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
                       <%= link_to delete_image_attachment_backstore_product_path(@product, image_id: img.id),
                           data: { turbo_method: :delete, turbo_confirm: "¿Borrar imagen permanentemente?" },
-                          class: "bg-red-600/90 hover:bg-red-600 text-white p-1.5 rounded-full shadow-md flex items-center justify-center transition backdrop-blur-sm" do %>
+                          class: "bg-proyecto-error/90 hover:bg-proyecto-error text-white p-1.5 rounded-full shadow-md flex items-center justify-center transition backdrop-blur-sm" do %>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -152,12 +273,20 @@
           <% end %>
         </div>
 
-        <div class="pt-8 border-t border-slate-700 flex justify-end gap-4">
-          <%# Botón de Regreso %>
-          <%= link_to "Regresar a Panel", backstore_products_path, class: "px-8 py-3 border border-slate-700 rounded-lg text-gray-300 bg-slate-800 hover:bg-slate-700 transition duration-200 font-medium tracking-wide" %>
+        <%# BOTONES DE ACCIÓN %>
+        <div class="pt-8 border-t border-gray-300 flex flex-col sm:flex-row justify-end gap-4">
           
-          <%# Botón de Submit Dinámico %>
-          <%= f.submit (@product.persisted? ? "Guardar Cambios" : "Crear Producto"), class: "px-8 py-3 bg-emerald-400 text-slate-950 rounded-lg font-bold hover:bg-emerald-300 transition duration-200 cursor-pointer shadow-lg tracking-wider" %>
+          <%# Botón Secundario (Regresar/Cancelar) %>
+          <%= link_to "Regresar a Panel", @product.persisted? ? backstore_product_path(@product) : backstore_products_path, 
+                      class: "px-8 py-3 border border-gray-300 rounded-lg 
+                              **text-proyecto-text/80** bg-gray-100 hover:bg-gray-200 
+                              transition duration-200 font-medium text-center tracking-wide" %>
+          
+          <%# Botón Primario (Submit) - Color primario del proyecto %>
+          <%= f.submit (@product.persisted? ? "Guardar Cambios" : "Crear Producto"), 
+                      class: "px-8 py-3 bg-proyecto-primary text-white rounded-lg 
+                              font-bold hover:bg-proyecto-primary/90 transition duration-200 
+                              cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center tracking-wider" %>
         </div>
 
       </div>
@@ -165,29 +294,35 @@
   </div>
 </div>
 
-<%# BLOQUE DE JAVASCRIPT: Toggle audio y modales %>
 <script>
 document.addEventListener('turbo:load', () => {
-  // -----------------------
-  // Funciones auxiliares para modales
-  // -----------------------
-  function showModal({ title, message, confirmText, confirmClass, cancelText, onConfirm }) {
+  
+  // Función Modal
+  function showModal({ title, message, confirmText, confirmClass, cancelText, onConfirm, onCancel }) {
+    const existingModal = document.querySelector('.modal-overlay');
+    if (existingModal) {
+      existingModal.remove();
+    }
+
     const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50';
+    modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 modal-overlay';
     modal.style.animation = 'fadeIn 0.2s ease-out';
     
+    const cancelButton = cancelText 
+      ? `<button id="modal-cancel" class="px-6 py-2 bg-gray-200 text-proyecto-text/80 rounded-lg hover:bg-gray-300 transition border border-gray-300">${cancelText}</button>`
+      : '';
+    
     modal.innerHTML = `
-      <div class="bg-slate-800 border rounded-2xl p-8 max-w-md shadow-xl" style="animation: scaleIn 0.3s ease-out;">
-        <h3 class="text-2xl font-bold mb-4">${title}</h3>
-        <p class="text-gray-300 mb-6">${message}</p>
+      <div class="bg-white border border-gray-300 rounded-2xl p-8 max-w-md shadow-xl text-gray-800" style="animation: scaleIn 0.3s ease-out;">
+        <h3 class="text-2xl font-bold mb-4 text-proyecto-primary">${title}</h3>
+        <p class="text-gray-600 mb-6">${message.replace(/\n/g, '<br>')}</p>
         <div class="flex justify-end gap-3">
-          <button id="modal-cancel" class="px-6 py-2 bg-slate-700 text-gray-200 rounded-lg hover:bg-slate-600 transition">${cancelText}</button>
-          <button id="modal-confirm" class="px-6 py-2 ${confirmClass} text-white rounded-lg font-bold hover:opacity-90 transition">${confirmText}</button>
+          ${cancelButton}
+          <button id="modal-confirm" class="px-6 py-2 ${confirmClass} text-white rounded-lg font-bold transition">${confirmText}</button>
         </div>
       </div>
     `;
     
-    // Animaciones (solo agregar una vez)
     if (!document.getElementById('modal-animations')) {
       const style = document.createElement('style');
       style.id = 'modal-animations';
@@ -200,73 +335,334 @@ document.addEventListener('turbo:load', () => {
 
     document.body.appendChild(modal);
 
-    modal.querySelector('#modal-cancel').addEventListener('click', () => modal.remove());
+    const cancelBtn = modal.querySelector('#modal-cancel');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        modal.remove();
+        if (onCancel) onCancel();
+      });
+    }
+    
     modal.querySelector('#modal-confirm').addEventListener('click', () => {
       modal.remove();
       onConfirm();
     });
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.remove();
-    });
+    if (cancelText) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.remove();
+          if (onCancel) onCancel();
+        }
+      });
+    }
   }
 
-  // -----------------------
-  // Toggle audio block
-  // -----------------------
+  // ----------------------------------------------------
+  // LÓGICA DE CONDICIÓN Y STOCK
+  // ----------------------------------------------------
+
   const conditionSelect = document.getElementById('product_condition');
+  const stockInput = document.getElementById('product_stock_field');
   const audioBlock = document.getElementById('audio_upload_block');
+  const formTitle = document.getElementById('form_title');
+  const isEditing = formTitle ? formTitle.textContent.includes("EDITAR PRODUCTO") : false;
 
-  if (conditionSelect && audioBlock) {
-    function toggleAudioBlock() {
-      audioBlock.style.display = conditionSelect.value === 'used' ? 'block' : 'none';
-    }
+  if (conditionSelect && audioBlock && stockInput) {
+    if (!conditionSelect.dataset.listenerAttached) {
+        
+      conditionSelect.dataset.initialCondition = conditionSelect.value;
+      conditionSelect.dataset.initialStock = stockInput.value;
 
-    toggleAudioBlock();
-
-    conditionSelect.addEventListener('change', (e) => {
-      const newValue = e.target.value;
-      const audioPlayerExists = audioBlock.querySelector('audio') !== null;
-
-      if (newValue === 'new' && audioPlayerExists) {
-        showModal({
-          title: '⚠️ ADVERTENCIA',
-          message: 'Este producto tiene un audio asociado.\nSi cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
-          confirmText: 'Aceptar',
-          confirmClass: 'bg-emerald-500',
-          cancelText: 'Cancelar',
-          onConfirm: () => toggleAudioBlock()
-        });
-
-        // Resetear select a 'used' hasta que el usuario confirme
-        conditionSelect.value = 'used';
-        toggleAudioBlock();
-        return;
+      function toggleAudioBlockAndStock() {
+        const isUsed = conditionSelect.value === 'used';
+        
+        audioBlock.style.display = isUsed ? 'block' : 'none';
+        setTimeout(() => {
+            audioBlock.style.opacity = isUsed ? '1' : '0';
+        }, 10);
+        
+        if (isUsed) {
+          stockInput.value = 1;
+          stockInput.disabled = true;
+          stockInput.classList.add('opacity-70', 'cursor-not-allowed', 'bg-gray-100', 'text-gray-500');
+          stockInput.classList.remove('bg-white', 'text-gray-900');
+        } else {
+          if (stockInput.value === '1') {
+            stockInput.value = '';
+          }
+          stockInput.disabled = false;
+          stockInput.classList.remove('opacity-70', 'cursor-not-allowed', 'bg-gray-100', 'text-gray-500');
+          stockInput.classList.add('bg-white', 'text-gray-900');
+        }
       }
 
-      toggleAudioBlock();
-    });
+      toggleAudioBlockAndStock();
+
+      conditionSelect.addEventListener('change', function(e) {
+        const newCondition = e.target.value;
+        const audioPlayerExists = audioBlock.querySelector('audio') !== null;
+        const currentStockValue = stockInput.value;
+        
+        const previousCondition = conditionSelect.dataset.initialCondition;
+        conditionSelect.dataset.initialCondition = newCondition;
+
+        if (newCondition === 'used' && isEditing && currentStockValue !== '1') {
+          showModal({
+            title: '📦 Advertencia de Inventario',
+            message: `Estás cambiando la condición a 'Usado'. Esto hará que el stock se fije en 1 unidad. El campo de Stock será deshabilitado. ¿Confirmas el cambio?`,
+            confirmText: 'Sí, Confirmar',
+            confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
+            cancelText: 'Cancelar',
+            onConfirm: () => {
+              toggleAudioBlockAndStock();
+            },
+            onCancel: () => {
+              conditionSelect.value = previousCondition; 
+            }
+          });
+          return;
+        }
+        
+        if (newCondition !== 'used' && audioPlayerExists) {
+          showModal({
+            title: '⚠️ ADVERTENCIA de Audio',
+            message: 'Este producto tiene un audio asociado. Si cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
+            confirmText: 'Aceptar y Eliminar Audio',
+            confirmClass: 'bg-proyecto-primary hover:bg-proyecto-primary/90', 
+            cancelText: 'Cancelar y Mantener Usado',
+            onConfirm: () => {
+              toggleAudioBlockAndStock();
+            },
+            onCancel: () => {
+              conditionSelect.value = 'used';
+              toggleAudioBlockAndStock();
+            }
+          });
+          return;
+        }
+
+        toggleAudioBlockAndStock();
+      });
+      
+      conditionSelect.dataset.listenerAttached = 'true';
+    }
   }
 
-  // -----------------------
-  // Eliminar audio
-  // -----------------------
+  // ----------------------------------------------------
+  // Lógica para el botón de eliminar audio
+  // ----------------------------------------------------
+
   const deleteAudioLinks = document.querySelectorAll("a[data-turbo-method='delete'][href*='audio']");
 
   deleteAudioLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const url = link.getAttribute('href');
+    if (!link.dataset.listenerAttached) {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = link.getAttribute('href');
 
-      showModal({
-        title: 'Eliminar audio',
-        message: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.',
-        confirmText: 'Eliminar',
-        confirmClass: 'bg-red-500',
-        cancelText: 'Cancelar',
-        onConfirm: () => Turbo.visit(url, { action: 'replace', method: 'delete' })
+        showModal({
+          title: 'Eliminar audio',
+          message: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.',
+          confirmText: 'Eliminar',
+          confirmClass: 'bg-proyecto-error', 
+          cancelText: 'Cancelar',
+          onConfirm: () => Turbo.visit(url, { action: 'replace', method: 'delete' })
+        });
       });
-    });
+      link.dataset.listenerAttached = 'true';
+    }
   });
+
+  // ----------------------------------------------------
+  // GESTIÓN DE IMÁGENES MÚLTIPLES CON VALIDACIONES
+  // ----------------------------------------------------
+
+  const imageInput = document.getElementById('image_upload_input');
+  const uploadButton = document.getElementById('upload_button');
+  const newImagesPreview = document.getElementById('new-images-preview');
+  const newImagesGrid = document.getElementById('new-images-grid');
+  const currentCountSpan = document.getElementById('current-count');
+  const remainingCountSpan = document.getElementById('remaining-count');
+
+  let selectedFiles = [];
+
+  if (imageInput && uploadButton) {
+    
+    uploadButton.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    uploadButton.addEventListener('click', () => {
+      const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
+      const totalImages = currentImages + selectedFiles.length;
+      
+      if (totalImages >= 10) {
+        showModal({
+          title: '⚠️ Límite Alcanzado',
+          message: `Ya tienes el máximo de 10 imágenes permitidas.\n\nActuales: ${currentImages}\nNuevas seleccionadas: ${selectedFiles.length}\n\nDebes eliminar algunas imágenes antes de agregar más.`,
+          confirmText: 'Entendido',
+          confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
+          cancelText: '',
+          onConfirm: () => {}
+        });
+        return;
+      }
+      
+      imageInput.click();
+    });
+
+    imageInput.addEventListener('change', function(e) {
+      const files = Array.from(e.target.files);
+      const currentImages = parseInt(this.dataset.currentImages) || 0;
+      const currentSelected = selectedFiles.length;
+      const totalAfterSelection = currentImages + currentSelected + files.length;
+      
+      // Validar límite de cantidad
+      if (totalAfterSelection > 10) {
+        const available = 10 - currentImages - currentSelected;
+        showModal({
+          title: '⚠️ Límite de Imágenes Excedido',
+          message: `Solo puedes agregar ${available} imagen(es) más.\n\nActuales en servidor: ${currentImages}\nYa seleccionadas: ${currentSelected}\nIntentando agregar: ${files.length}\n\nPor favor, selecciona menos archivos.`,
+          confirmText: 'Entendido',
+          confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
+          cancelText: '',
+          onConfirm: () => {}
+        });
+        return;
+      }
+      
+      // VALIDACIONES DE FORMATO Y TAMAÑO
+      const validFormats = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      const maxSize = 10 * 1024 * 1024; // 10 MB en bytes
+      
+      for (const file of files) {
+        // Validar formato
+        if (!validFormats.includes(file.type)) {
+          showModal({
+            title: '⚠️ Formato No Válido',
+            message: `La imagen "${file.name}" no es un formato válido.\n\n<strong>Formatos permitidos:</strong> JPEG, PNG, GIF, WebP`,
+            confirmText: 'Entendido',
+            confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90',
+            cancelText: '',
+            onConfirm: () => {}
+          });
+          return;
+        }
+        
+        // Validar tamaño
+        if (file.size > maxSize) {
+          const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+          showModal({
+            title: '⚠️ Archivo Demasiado Grande',
+            message: `La imagen "${file.name}" es demasiado grande (<strong>${sizeMB} MB</strong>).\n\n<strong>Tamaño máximo:</strong> 10 MB por imagen.`,
+            confirmText: 'Entendido',
+            confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90',
+            cancelText: '',
+            onConfirm: () => {}
+          });
+          return;
+        }
+      }
+      
+      // Si pasa todas las validaciones, agregar los archivos
+      files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+          selectedFiles.push(file);
+        }
+      });
+      
+      updateImagePreview();
+      updateCounter();
+
+      if (e.target.files.length > 0) {
+        e.target.files = new DataTransfer().files;
+      }
+
+    });
+
+    function updateImagePreview() {
+      newImagesGrid.innerHTML = '';
+      
+      if (selectedFiles.length === 0) {
+        newImagesPreview.classList.add('hidden');
+        return;
+      }
+      
+      newImagesPreview.classList.remove('hidden');
+      
+      selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const imageContainer = document.createElement('div');
+          imageContainer.className = 'border border-proyecto-primary rounded-xl overflow-hidden shadow-lg relative group';
+          imageContainer.innerHTML = `
+            <img src="${e.target.result}" class="object-cover w-full h-28 sm:h-36" alt="Preview">
+            <div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+              <button type="button" 
+                      data-index="${index}"
+                      class="remove-new-image bg-proyecto-error/90 hover:bg-proyecto-error text-white p-1.5 rounded-full shadow-md flex items-center justify-center transition backdrop-blur-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div class="absolute bottom-1 left-1 bg-proyecto-primary/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
+              Nueva
+            </div>
+          `;
+          
+          newImagesGrid.appendChild(imageContainer);
+        };
+        
+        reader.readAsDataURL(file);
+      });
+      
+      setTimeout(() => {
+        document.querySelectorAll('.remove-new-image').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const index = parseInt(this.dataset.index);
+            removeImage(index);
+          });
+        });
+      }, 100);
+    }
+
+
+    function updateCounter() {
+      const currentImages = parseInt(imageInput.dataset.currentImages) || 0;
+      const totalImages = currentImages + selectedFiles.length;
+      const remaining = 10 - totalImages;
+      
+      currentCountSpan.textContent = totalImages;
+      remainingCountSpan.textContent = remaining;
+    }
+
+    function updateFileInput() {
+      const dataTransfer = new DataTransfer();
+      selectedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+      });
+      imageInput.files = dataTransfer.files;
+    }
+
+    function removeImage(index) {
+      selectedFiles.splice(index, 1);
+      updateImagePreview();
+      updateCounter();
+      updateFileInput();
+    }
+
+    const form = imageInput.closest('form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        updateFileInput();
+      });
+    }
+
+    updateCounter();
+  }
 });
 </script>

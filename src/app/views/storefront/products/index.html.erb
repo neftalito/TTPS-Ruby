@@ -1,5 +1,4 @@
 <section class="space-y-8">
-  <!-- Header -->
   <header class="text-center space-y-3 py-10">
     <p class="text-3xl md:text-4xl font-extrabold text-black drop-shadow-sm">
       Catálogo
@@ -12,13 +11,24 @@
     </p>
   </header>
 
-  <!-- Filtros -->
   <div class="flex flex-col md:flex-row md:items-center gap-4 justify-center mb-6">
     <%= form_with url: storefront_products_path, method: :get, local: true, class: "flex flex-col md:flex-row gap-4 items-center" do |f| %>
-      <%= f.text_field :search, value: params[:search], placeholder: "Buscar por nombre o autor", 
-            class: "px-4 py-2 border rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+      
+      <div>
+        <%= f.text_field :name_q, 
+                         value: params[:name_q], 
+                         placeholder: "Buscar por disco", 
+                         class: "px-4 py-2 border rounded-lg w-full md:w-48 focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+      </div>
 
-        <%= f.select :product_type, 
+      <div>
+        <%= f.text_field :author_q, 
+                         value: params[:author_q], 
+                         placeholder: "Buscar por artista", 
+                         class: "px-4 py-2 border rounded-lg w-full md:w-48 focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+      </div>
+
+      <%= f.select :product_type, 
             options_for_select([["Vinilos", "vinyl"], ["CDs", "cd"]], params[:product_type]), 
             { include_blank: "Todos los tipos" }, 
             class: "px-4 py-2 border rounded-lg w-full md:w-48 focus:outline-none focus:ring-2 focus:ring-blue-400" %>
@@ -39,29 +49,47 @@
     <% end %>
   </div>
 
-  <!-- Productos -->
   <% if @products.any? %>
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <% @products.each do |product| %>
-        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col transform transition-transform duration-200 hover:scale-105">
-          <!-- Imagen -->
+        
+        <%# Clase para deshabilitar el hover de escala si no hay stock %>
+        <% hover_class = product.stock.to_i <= 0 ? "hover:scale-100" : "hover:scale-105" %>
+        
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col transform transition-transform duration-200 <%= hover_class %>">
+          
+          <%# Clase condicional para aplicar atenuación (grayscale y opacidad) SOLO a la imagen %>
+          <% image_filter_class = product.stock.to_i <= 0 ? "grayscale opacity-75" : "" %>
+          
           <%= image_tag product.images.attached? ? url_for(product.images.first) : "https://via.placeholder.com/300x200?text=Sin+imagen", 
-                        class: "w-full h-48 object-cover" %>
+                          class: "w-full h-48 object-cover #{image_filter_class}" %>
 
           <div class="p-4 flex flex-col flex-grow">
+            <%# El texto ya no lleva clases de opacidad, por lo que siempre se ve claro %>
             <h2 class="text-lg font-semibold text-slate-800"><%= product.name %></h2>
             <p class="text-sm text-slate-500 mb-2"><%= product.author %></p>
             <p class="text-sm text-slate-700 flex-grow"><%= truncate(product.description, length: 80) %></p>
             <div class="mt-4 flex justify-between items-center">
-              <span class="font-bold text-emerald-600">$<%= product.price %></span>
-              <%= link_to "Ver detalle", storefront_product_path(product), class: "px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition duration-200 text-sm" %>
+              
+              <span class="font-bold text-emerald-600">
+                $<%= product.price %>
+                <%# Indicador "Sin Stock" (funciona como antes) %>
+                <% if product.stock.to_i <= 0 %>
+                  <span class="ml-2 px-2 py-0.5 bg-gray-400 text-white rounded-full text-xs font-semibold">SIN STOCK</span>
+                <% end %>
+              </span>
+              
+              <%# El estilo del botón sigue indicando indisponibilidad visualmente, pero es cliqueable %>
+              <% button_class = product.stock.to_i > 0 ? "bg-blue-600 hover:bg-blue-500" : "bg-gray-500 hover:bg-gray-500" %>
+              
+              <%= link_to "Ver detalle", storefront_product_path(product), 
+                          class: "px-3 py-1 text-white rounded-lg transition duration-200 text-sm #{button_class}" %>
             </div>
           </div>
         </div>
       <% end %>
     </div>
 
-    <!-- Paginación -->
     <div class="mt-6 flex justify-center">
       <%= paginate @products, theme: 'tailwind' %>
     </div>
