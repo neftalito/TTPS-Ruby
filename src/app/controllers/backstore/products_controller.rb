@@ -188,9 +188,9 @@ module Backstore
     def delete_audio_attachment
       if @product.audio.attached?
         @product.audio.purge
-        head :ok
+        redirect_to edit_backstore_product_path(@product), notice: 'Audio eliminado correctamente.'
       else
-        head :unprocessable_entity
+        redirect_to edit_backstore_product_path(@product), alert: 'No hay audio para eliminar.'
       end
     end
 
