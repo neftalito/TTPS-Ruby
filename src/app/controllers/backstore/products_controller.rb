@@ -1,10 +1,11 @@
 module Backstore
   class ProductsController < BaseController
-    before_action :authenticate_user!
+    before_action :authorize_product_collection!, only: [:index, :new, :create]
     before_action :set_product, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment restore]
+    before_action :authorize_product!, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment restore]
 
     def index
-      @products = Product.all
+      @products = Product.with_discarded.accessible_by(current_ability)
 
       # Filtro por estado (activos, eliminados, todos)
       case params[:status]
@@ -13,7 +14,7 @@ module Backstore
       when "all"
         @products = @products.with_deleted
       else
-        @products = Product.available_products
+        @products = @products.available_products
       end
 
       # Filtro por categoría
@@ -53,6 +54,7 @@ module Backstore
 
     # GET /backstore/products/new
     def new
+      authorize! :create, Product
       @product = Product.new
     end
 
@@ -61,8 +63,9 @@ module Backstore
     end
 
     def create
+      authorize! :create, Product
       # Clonamos los parámetros para modificar el stock si es necesario
-      initial_params = product_params.to_h 
+      initial_params = product_params.to_h
       
       if initial_params['condition'] == 'used'
         initial_params['stock'] = 1
@@ -167,7 +170,6 @@ module Backstore
 
 
     def delete_image_attachment
-      @product = Product.find(params[:id])
       image = @product.images.find(params[:image_id])
 
       if @product.images.count <= 1
@@ -219,8 +221,17 @@ module Backstore
 
     private
 
+    def authorize_product_collection!
+      required_permission = action_name.in?(%w[new create]) ? :create : :read
+      authorize! required_permission, Product
+    end
+
     def set_product
-      @product = Product.with_discarded.find(params[:id])
+      @product = Product.with_discarded.accessible_by(current_ability).find(params[:id])
+    end
+
+    def authorize_product!
+      authorize! :manage, @product
     end
 
     def product_params

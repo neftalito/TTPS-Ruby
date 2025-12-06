@@ -59,11 +59,7 @@ class Sale < ApplicationRecord
 
   def calculate_total
     self.total = sale_items.reduce(0) do |sum, item|
-      if item.unit_price.nil? && item.product.present?
-        item.unit_price = item.product.price
-      end
-
-      price = item.unit_price || 0
+      price = item.unit_price || item.product&.price || 0
       qty = item.quantity || 0
 
       sum + (price * qty)
