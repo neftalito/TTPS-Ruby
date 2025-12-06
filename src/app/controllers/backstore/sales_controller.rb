@@ -1,9 +1,13 @@
 module Backstore
   class SalesController < BaseController
+    before_action :authorize_sale_collection!, only: [:index, :new, :create]
     before_action :set_sale, only: [:show, :cancel]
+    before_action -> { authorize! :read, @sale }, only: :show
+    before_action -> { authorize! :update, @sale }, only: :cancel
+
     def index
       per_page = params[:per_page] == "all" ? Sale.count : (params[:per_page] || 25).to_i
-      @sales = Sale.includes(:user).order(created_at: :desc)
+      @sales = Sale.accessible_by(current_ability).includes(:user).order(created_at: :desc)
 
       if params[:q].present?
         query = "%#{params[:q].downcase}%"
@@ -23,6 +27,7 @@ module Backstore
     end
 
     def new
+      authorize! :create, Sale
       @sale = Sale.new
 
       @sale.sale_items.build 
@@ -31,6 +36,7 @@ module Backstore
     end
 
     def create
+      authorize! :create, Sale
       @sale = Sale.new(sale_params)
 
       @sale.user = current_user 
@@ -70,8 +76,13 @@ module Backstore
 
     private
 
+    def authorize_sale_collection!
+      required_permission = action_name.in?(%w[new create]) ? :create : :read
+      authorize! required_permission, Sale
+    end
+
     def set_sale
-      @sale = Sale.find(params[:id])
+      @sale = Sale.accessible_by(current_ability).find(params[:id])
     end
 
     def sale_params

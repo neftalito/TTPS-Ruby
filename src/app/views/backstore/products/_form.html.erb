@@ -4,10 +4,10 @@
     <header class="mb-10 border-b border-gray-300 pb-5 text-center">
       <%# Título principal: Color primario del proyecto (proyecto-primary) %>
       <h1 class="text-4xl font-extrabold text-proyecto-primary tracking-widest uppercase" id="form_title">
-        <%= @product.persisted? ? "EDITAR PRODUCTO" : "NUEVO PRODUCTO" %> 📀
+        <%= @product.persisted? ? "EDITAR PRODUCTO" : "NUEVO PRODUCTO" %>
       </h1>
       <p class="text-lg text-gray-500 mt-2 font-light">
-        <%= @product.persisted? ? "Realiza las modificaciones necesarias al registro." : "No te olvides de proporcionar la mayor información necesaria." %>
+        <%= @product.persisted? ? "Realiza las modificaciones necesarias al producto." : "No te olvides de proporcionar toda la información necesaria." %>
       </p>
       
       <%# Bloque de errores: Color de error del proyecto (proyecto-error) %>
