@@ -32,6 +32,9 @@ class Ability
       # No puede tocar administradores
       cannot [:update, :destroy], User, role: :admin
 
+      # Puede restaurar solo empleados
+      can :restore, User, role: :employee
+
     when :employee
       can :manage, Product
       can :manage, Sale

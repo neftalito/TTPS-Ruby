@@ -1,2 +1,132 @@
-<h1>Backstore::Sales#index</h1>
-<p>Find me in app/views/backstore/sales/index.html.erb</p>
+<header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+  <div>
+    <p class="text-sm uppercase tracking-widest text-proyecto-text/30">Ventas</p>
+    <h1 class="text-3xl font-bold text-proyecto-primary">Historial de ventas</h1>
+    <p class="text-proyecto-text/60">Consultá las órdenes generadas en la tienda y controlá su estado.</p>
+  </div>
+
+  <div class="flex flex-wrap gap-3">
+    <%= link_to backstore_reports_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors w-full sm:w-auto justify-center" do %>
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Reporte de Ventas</span>
+    <% end %>
+
+    <%= link_to new_backstore_sale_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors w-full sm:w-auto justify-center" do %>
+      <i class="fa-solid fa-cart-plus"></i>
+      <span>Nueva Venta</span>
+    <% end %>
+  </div>
+</header>
+
+<div class="bg-white p-4 mb-4 rounded-lg border border-proyecto-secondary shadow">
+  <%= form_with url: backstore_sales_path,
+                method: :get,
+                local: true,
+                class: "space-y-4" do |f| %>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <div class="w-full">
+        <%= f.label :q, "Buscar", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.text_field :q,
+                         value: params[:q],
+                         placeholder: "Nombre o email",
+                         class: "mt-1 px-3 py-1 border rounded-md w-full" %>
+      </div>
+
+      <div class="w-full">
+        <%= f.label :status, "Estado", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.select :status,
+                     [["Todos", ""], ["Confirmadas", "confirmed"], ["Canceladas", "cancelled"]],
+                     { selected: params[:status] },
+                     class: "mt-1 px-3 py-1 border rounded-md w-full" %>
+      </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-md">
+      <%= f.button type: :submit,
+                   name: nil,
+                   class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" do %>
+        <i class="fa-solid fa-filter"></i>
+        <span>Filtrar</span>
+      <% end %>
+
+      <%= link_to backstore_sales_path,
+                  class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" do %>
+        <i class="fa-solid fa-eraser"></i>
+        <span>Limpiar filtros</span>
+      <% end %>
+    </div>
+
+  <% end %>
+</div>
+
+<% sales_columns = [
+  { header: "ID", attribute: :id },
+  {
+    header: "Comprador",
+    value: ->(sale) { sale.buyer_name.presence || sale.user&.name || sale.user&.email }
+  },
+  {
+    header: "Email",
+    value: ->(sale) { sale.buyer_email.presence || sale.user&.email }
+  },
+  {
+    header: "Total",
+    cell_class: "px-6 py-4 whitespace-nowrap font-semibold text-proyecto-primary",
+    value: ->(sale) { number_to_currency(sale.total || 0, unit: "$", separator: ",", delimiter: ".", format:"%u%n") }
+  },
+  {
+    header: "Fecha",
+    value: ->(sale) { l(sale.created_at, format: :short) }
+  },
+  {
+    header: "Estado",
+    cell_class: "px-6 py-4 whitespace-nowrap",
+    value: ->(sale) do
+      if sale.cancelled_at.present?
+        content_tag(:span, "Cancelada", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-error/10 text-proyecto-error")
+      else
+        content_tag(:span, "Confirmada", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success")
+      end
+    end
+  }
+] %>
+
+<% sales_actions = lambda do |sale|
+  buttons = []
+
+  if can? :read, sale
+    buttons << link_to(
+      "Ver",
+      backstore_sale_path(sale),
+      class: "px-3 py-2 bg-proyecto-info text-proyecto-bg hover:bg-proyecto-info/90 rounded-md text-sm w-full sm:w-auto text-center"
+    )
+  end
+
+  if can?(:update, sale) && sale.cancelled_at.blank?
+    buttons << link_to(
+      "Cancelar",
+      cancel_backstore_sale_path(sale),
+      data: {
+        turbo_method: :patch,
+        turbo_confirm: "¿Seguro que querés cancelar esta venta?"
+      },
+      class: "px-3 py-2 bg-proyecto-error text-proyecto-bg hover:bg-proyecto-error/90 rounded-md text-sm w-full sm:w-auto text-center"
+    )
+  end
+
+  safe_join(buttons)
+end %>
+
+<div class="shadow border border-proyecto-secondary rounded-lg bg-white p-2 sm:p-4">
+  <%= render "backstore/shared/resource_table",
+             collection: @sales,
+             columns: sales_columns,
+             row_class: ->(sale) { sale.cancelled_at.present? ? "bg-proyecto-secondary/30" : nil },
+             empty_message: "No hay ventas registradas.",
+             actions: sales_actions %>
+</div>
+
+<%= render "shared/pagination", collection: @sales, params: request.query_parameters %>

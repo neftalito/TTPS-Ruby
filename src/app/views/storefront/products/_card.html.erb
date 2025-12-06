@@ -1,0 +1,49 @@
+<article class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden hover:shadow-md transition-shadow duration-300 h-full">
+  
+  <div class="h-48 bg-gray-100 relative overflow-hidden group">
+    <% if product.images.attached? %>
+      <%# Mostramos la primera imagen, ajustada para cubrir el espacio %>
+      <%= image_tag product.images.first, class: "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" %>
+    <% else %>
+      <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+        <span class="text-gray-400 text-3xl font-bold select-none">
+          <%= product.name.to_s.first(2).upcase %>
+        </span>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="p-5 flex-1 flex flex-col gap-2">
+    <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-gray-500">
+      <span><%= product.category&.name || "Sin categoría" %></span>
+      
+      <% if (product.stock || 0) > 0 %>
+        <span class="text-green-600">Stock: <%= product.stock %></span>
+      <% else %>
+        <span class="text-red-500">Agotado</span>
+      <% end %>
+    </div>
+
+    <h2 class="text-lg font-bold text-gray-900 leading-tight line-clamp-1" title="<%= product.name %>">
+      <%= product.name %>
+    </h2>
+
+    <h2 class="text-sm text-slate-500 mb-2" author="<%= product.author %>">
+      <%= product.author %>
+    </h2>
+    
+    <p class="text-sm text-gray-600 line-clamp-2 h-10 mb-2">
+      <%= product.description %>
+    </p>
+
+    <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
+      <span class="text-xl font-bold text-gray-900">
+        <%= number_to_currency(product.price || 0, unit: "$", format: "%u %n") %>
+      </span>
+
+      <%= link_to "Ver detalle",
+                  storefront_product_path(product),
+                  class: "px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm" %>
+    </div>
+  </div>
+</article>

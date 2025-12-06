@@ -1,2 +1,120 @@
-<h1>Storefront::Products#index</h1>
-<p>Find me in app/views/storefront/products/index.html.erb</p>
+<section class="space-y-8">
+  <header class="text-center space-y-3 py-10">
+    <p class="text-3xl md:text-4xl font-extrabold text-black drop-shadow-sm">
+      Catálogo
+    </p>
+    <h1 class="text-2xl md:text-3xl font-semibold text-proyecto-primary drop-shadow-sm">
+      Nuestros productos destacados
+    </h1>
+    <p class="text-black text-base md:text-lg max-w-3xl mx-auto drop-shadow-none">
+      Descubrí los nuevos ingresos y los favoritos del staff. Todo lo que buscás está aquí!
+    </p>
+  </header>
+
+  <div class="flex flex-col gap-4 mb-6">
+    <%= form_with url: storefront_products_path, method: :get, local: true, class: "w-full space-y-4" do |f| %>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <%= f.text_field :name_q,
+                         value: params[:name_q],
+                         placeholder: "Buscar por disco",
+                         class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+
+        <%= f.text_field :author_q,
+                         value: params[:author_q],
+                         placeholder: "Buscar por artista",
+                         class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+
+        <%= f.number_field :release_year,
+                           value: params[:release_year],
+                           placeholder: "Año de lanzamiento",
+                           min: 1900,
+                           max: Date.current.year,
+                           class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <%= f.select :product_type,
+                     options_for_select([["Vinilos", "vinyl"], ["CDs", "cd"]], params[:product_type]),
+                     { include_blank: "Todos los tipos" },
+                     class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+
+        <%= f.select :condition,
+                     options_for_select([["Nuevos", "new"], ["Usados", "used"]], params[:condition]),
+                     { include_blank: "Todos los estados" },
+                     class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+
+        <%= f.select :category,
+                     options_for_select(@categories&.map { |c| [c.name, c.id] } || [], params[:category]),
+                     { include_blank: "Todas las categorías" },
+                     class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
+      </div>
+
+      <div class="flex flex-col justify-center lg:flex-row items-center gap-4">
+        <%= f.button type: :submit,
+                     class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-lg hover:bg-proyecto-accent transition duration-200 w-full lg:w-auto" do %>
+          <i class="fa-solid fa-filter"></i>
+          <span>Filtrar</span>
+        <% end %>
+
+        <%= link_to storefront_products_path,
+                    class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-secondary text-proyecto-primary rounded-lg hover:bg-proyecto-accent hover:text-proyecto-bg transition duration-200 w-full lg:w-auto text-center" do %>
+          <i class="fa-solid fa-eraser"></i>
+          <span>Limpiar filtros</span>
+        <% end %>
+      </div>
+
+    <% end %>
+  </div>
+
+
+  <% if @products.any? %>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <% @products.each do |product| %>
+
+        <%# Clase para deshabilitar el hover de escala si no hay stock %>
+        <% hover_class = product.stock.to_i <= 0 ? "hover:scale-100" : "hover:scale-105" %>
+
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col transform transition-transform duration-200 <%= hover_class %>">
+
+          <%# Clase condicional para aplicar atenuación (grayscale y opacidad) SOLO a la imagen %>
+          <% image_filter_class = product.stock.to_i <= 0 ? "grayscale opacity-75" : "" %>
+
+          <%= image_tag product.images.attached? ? url_for(product.images.first) : "https://via.placeholder.com/300x200?text=Sin+imagen",
+                          class: "w-full h-48 object-cover #{image_filter_class}" %>
+
+          <div class="p-4 flex flex-col flex-grow">
+            <%# El texto ya no lleva clases de opacidad, por lo que siempre se ve claro %>
+            <h2 class="text-lg font-semibold text-slate-800"><%= product.name %></h2>
+            <p class="text-sm text-slate-500 mb-2"><%= product.author %></p>
+            <p class="text-sm text-slate-700 flex-grow"><%= truncate(product.description, length: 80) %></p>
+            <div class="mt-4 flex justify-between items-center">
+
+              <span class="font-bold text-emerald-600">
+                $<%= product.price %>
+                <%# Indicador "Sin Stock" (funciona como antes) %>
+                <% if product.stock.to_i <= 0 %>
+                  <span class="ml-2 px-2 py-0.5 bg-gray-400 text-white rounded-full text-xs font-semibold">SIN STOCK</span>
+                <% end %>
+              </span>
+
+              <%# El estilo del botón sigue indicando indisponibilidad visualmente, pero es cliqueable %>
+              <% button_class = product.stock.to_i > 0 ? "bg-blue-600 hover:bg-blue-500" : "bg-gray-500 hover:bg-gray-500" %>
+
+              <%= link_to "Ver detalle", storefront_product_path(product),
+                          class: "px-3 py-1 text-white rounded-lg transition duration-200 text-sm #{button_class}" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-6 flex justify-center">
+      <%= paginate @products, theme: 'tailwind' %>
+    </div>
+  <% else %>
+    <div class="bg-white border border-dashed border-proyecto-secondary/60 rounded-xl p-10 text-center">
+      <p class="text-lg text-proyecto-secondary">Todavía no hay productos publicados.</p>
+    </div>
+  <% end %>
+</section>

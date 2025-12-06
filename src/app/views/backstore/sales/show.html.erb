@@ -1,2 +1,124 @@
-<h1>Backstore::Sales#show</h1>
-<p>Find me in app/views/backstore/sales/show.html.erb</p>
+<div class="max-w-[95%] mx-auto mb-10">
+  
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-proyecto-primary">Venta #<%= @sale.id %></h1>
+      <p class="text-proyecto-text/60 mt-1">Registrada el <%= l(@sale.created_at, format: :long) %></p>
+      
+      <div class="mt-2">
+        <% if @sale.cancelled_at.present? %>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-proyecto-error/10 text-proyecto-error border border-proyecto-error/20">
+            Cancelada el <%= l(@sale.cancelled_at, format: :short) %>
+          </span>
+        <% else %>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-proyecto-success/10 text-proyecto-success border border-proyecto-success/20">
+            Confirmada
+          </span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <%= link_to "Volver al listado", backstore_sales_path, class: "px-4 py-2 border border-proyecto-text/20 text-proyecto-text hover:bg-proyecto-secondary/20 rounded-lg font-medium text-sm transition shadow-sm bg-white" %>
+      
+      <% if @sale.cancelled_at.nil? %>
+        <%= button_to "Cancelar Venta", 
+              cancel_backstore_sale_path(@sale), 
+              method: :patch, 
+              data: { turbo_confirm: "¿Estás seguro de cancelar esta venta? Se devolverá el stock." }, 
+              class: "px-4 py-2 border border-proyecto-error text-proyecto-error hover:bg-proyecto-error hover:text-white rounded-lg font-medium text-sm transition shadow-sm bg-transparent" %>
+      <% end %>
+      
+      <%= link_to "Descargar PDF", backstore_sale_path(@sale, format: :pdf), class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg hover:bg-proyecto-accent rounded-lg font-medium text-sm transition shadow-lg", target: "_blank" %>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 60px;">
+    <div class="bg-white shadow-lg rounded-xl overflow-hidden border border-proyecto-secondary/20">
+      
+      <div class="px-6 py-4 border-b border-proyecto-secondary/20 bg-proyecto-secondary/5">
+        <h3 class="text-lg font-medium text-proyecto-primary">Items de la Venta</h3>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-proyecto-secondary/20">
+          <thead class="bg-proyecto-secondary/10">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Producto</th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Precio Unit.</th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Cant.</th>
+              <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Subtotal</th>
+            </tr>
+          </thead>
+          
+          <tbody class="bg-white divide-y divide-proyecto-secondary/20">
+            <% @sale.sale_items.each do |item| %>
+              <tr>
+                <td class="px-6 py-4">
+                  <div class="text-sm font-medium text-proyecto-primary break-words"><%= item.product&.name || "Producto Eliminado" %></div>
+                  <div class="text-sm text-proyecto-text/60"><%= item.product&.author %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-proyecto-text/80">
+                  <%= number_to_currency(item.unit_price, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-proyecto-text/80">
+                  <%= item.quantity %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-proyecto-primary">
+                  <%= number_to_currency(item.unit_price * item.quantity, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+          
+          <tfoot class="bg-proyecto-secondary/5 border-t border-proyecto-secondary/20">
+            <tr>
+              <td colspan="3" class="px-6 py-4 text-right text-base font-bold text-proyecto-text">Total</td>
+              <td class="px-6 py-4 text-right text-xl font-bold text-proyecto-accent">
+                <%= number_to_currency(@sale.total, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    <div class="bg-white shadow-lg rounded-xl border border-proyecto-secondary/20 p-5">
+      <h3 class="text-sm font-bold text-proyecto-text/40 uppercase tracking-wider mb-4 border-b border-proyecto-secondary/20 pb-2">Datos del Comprador</h3>
+      <dl class="space-y-4 text-sm">
+        <div>
+          <dt class="text-xs text-proyecto-text/60">Nombre</dt>
+          <dd class="font-medium text-proyecto-primary mt-1"><%= @sale.buyer_name %></dd>
+        </div>
+        <div>
+          <dt class="text-xs text-proyecto-text/60">DNI</dt>
+          <dd class="font-medium text-proyecto-primary mt-1"><%= @sale.buyer_dni %></dd>
+        </div>
+        <div>
+          <dt class="text-xs text-proyecto-text/60">Email</dt>
+          <dd class="font-medium text-proyecto-primary mt-1 break-all"><%= @sale.buyer_email %></dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-xl border border-proyecto-secondary/20 p-5">
+      <h3 class="text-sm font-bold text-proyecto-text/40 uppercase tracking-wider mb-4 border-b border-proyecto-secondary/20 pb-2">Información Interna</h3>
+      <dl class="space-y-4 text-sm">
+        <div>
+          <dt class="text-xs text-proyecto-text/60">Vendedor (Empleado)</dt>
+          <dd class="font-medium text-proyecto-primary mt-1 break-all"><%= @sale.user&.email %></dd>
+        </div>
+        <div>
+          <dt class="text-xs text-proyecto-text/60">ID de Transacción</dt>
+          <dd class="font-mono text-xs text-proyecto-text/60 bg-proyecto-secondary/10 p-2 rounded mt-1 border border-proyecto-secondary/20 select-all">
+            <%= @sale.id %>
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+  </div>
+</div>

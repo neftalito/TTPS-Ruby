@@ -1,0 +1,189 @@
+<style>
+  .invoice-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
+  }
+  
+  .header {
+    background-color: #1f2937; 
+    color: #ffffff;
+    padding: 40px;
+    overflow: hidden;
+  }
+  .header-left { float: left; width: 60%; }
+  .header-right { float: right; width: 40%; text-align: right; }
+
+  .brand-name { font-size: 28px; font-weight: bold; margin: 0; letter-spacing: 1px; }
+  .brand-sub { font-size: 12px; opacity: 0.8; margin-top: 5px; }
+  
+  .invoice-title { font-size: 24px; font-weight: bold; margin: 0; color: #818cf8; }
+  
+  .invoice-details { margin-top: 5px; font-size: 13px; opacity: 0.9; }
+
+  .info-section { padding: 40px; overflow: hidden; }
+  .col-left { float: left; width: 50%; }
+  .col-right { float: right; width: 50%; text-align: right; }
+  
+  .section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #6b7280; 
+    font-weight: bold;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+    display: inline-block;
+    padding-bottom: 3px;
+  }
+  .client-name { font-size: 16px; font-weight: bold; margin-bottom: 4px; color: #111; }
+  .info-text { color: #4b5563; font-size: 13px; margin: 2px 0; }
+
+  .table-container { padding: 0 40px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+  
+  th {
+    text-align: left;
+    padding: 12px 10px;
+    background-color: #f3f4f6;
+    color: #374151;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  
+  td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+    color: #1f2937;
+  }
+  
+  .text-right { text-align: right; }
+  .item-name { font-weight: 600; display: block; }
+  .item-desc { font-size: 11px; color: #6b7280; }
+
+  .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  .totals-section {
+    float: right;
+    width: 40%;
+    padding-right: 40px;
+    margin-bottom: 50px;
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    color: #4b5563;
+  }
+  .total-row.final {
+    border-top: 2px solid #1f2937;
+    margin-top: 10px;
+    padding-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+  }
+  .total-label { float: left; }
+  .total-value { float: right; }
+  
+  .footer {
+    clear: both;
+    text-align: center;
+    padding: 30px;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    font-size: 11px;
+    color: #9ca3af;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+</style>
+
+<div class="invoice-container">
+  <div class="header">
+    <div class="header-left">
+      <h1 class="brand-name">RecordAR TTPS</h1>
+      <p class="brand-sub">Música, Vinilos & Pasión.</p>
+    </div>
+    <div class="header-right">
+      <h2 class="invoice-title">FACTURA</h2>
+      <div class="invoice-details">
+        <p>Nº <%= @sale.id.to_s.rjust(8, '0') %></p>
+        <p><%= l(@sale.created_at, format: :long) %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <div class="col-left">
+      <div class="section-title">Facturar a</div>
+      <div class="client-name"><%= @sale.buyer_name %></div>
+      <p class="info-text">DNI: <%= @sale.buyer_dni %></p>
+      <p class="info-text"><%= @sale.buyer_email %></p>
+    </div>
+    
+    <div class="col-right">
+      <div class="section-title">Emitido por</div>
+      <div class="client-name">RecordAR TTPS S.A.</div>
+      <p class="info-text">Av. 7 y 50, La Plata</p>
+      <p class="info-text">Vendedor: <%= @sale.user&.email %></p>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th width="50%">Producto / Artista</th>
+          <th width="20%" class="text-right">Precio Unit.</th>
+          <th width="10%" class="text-right">Cant.</th>
+          <th width="20%" class="text-right">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @sale.sale_items.each do |item| %>
+          <tr>
+            <td>
+              <span class="item-name"><%= item.product&.try(:label_for_sale) || item.product&.name %></span>
+              <span class="item-desc"><%= item.product&.author %></span>
+            </td>
+            <td class="text-right"><%= number_to_currency(item.unit_price, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></td>
+            <td class="text-right"><%= item.quantity %></td>
+            <td class="text-right" style="font-weight: bold;"><%= number_to_currency(item.unit_price * item.quantity, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="clearfix">
+    <div class="totals-section">
+      <div class="total-row">
+        <span class="total-label">Total Items:</span>
+        <span class="total-value"><%= @sale.sale_items.sum(:quantity) %></span>
+      </div>
+      
+      <div class="total-row final">
+        <span class="total-label">TOTAL A PAGAR</span>
+        <span class="total-value"><%= number_to_currency(@sale.total, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>Gracias por confiar en nosotros. Este documento sirve como comprobante de venta no fiscal para fines educativos.</p>
+  <p>www.ttps-disqueria.com | info@ttps-disqueria.com</p>
+</div>

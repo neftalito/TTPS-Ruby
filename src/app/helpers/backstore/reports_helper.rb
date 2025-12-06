@@ -1,0 +1,2 @@
+module Backstore::ReportsHelper
+end

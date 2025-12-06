@@ -87,3 +87,23 @@ gem "faker"
 
 # Para usar vite
 gem "vite_rails", "~> 3.0"
+
+# Para paginar
+gem "kaminari"
+
+# Para soft_deletes
+gem "discard"
+
+# Para .env
+gem 'dotenv'
+
+gem 'kaminari-tailwind'
+
+# Para generar PDFs y csvs
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
+gem "csv"
+
+# Para graficos
+gem "chartkick"
+gem "groupdate"

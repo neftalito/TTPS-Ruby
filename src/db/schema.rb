@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_15_151631) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_05_120000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -64,17 +64,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_151631) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "order_items", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "order_id", null: false
-    t.decimal "price"
-    t.integer "product_id", null: false
-    t.integer "quantity"
-    t.datetime "updated_at", null: false
-    t.index ["order_id"], name: "index_order_items_on_order_id"
-    t.index ["product_id"], name: "index_order_items_on_product_id"
-  end
-
   create_table "pickup_points", force: :cascade do |t|
     t.string "address"
     t.string "city"
@@ -85,25 +74,27 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_151631) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "product_images", force: :cascade do |t|
-    t.string "alt"
-    t.datetime "created_at", null: false
-    t.integer "product_id", null: false
-    t.datetime "updated_at", null: false
-    t.string "url"
-    t.index ["product_id"], name: "index_product_images_on_product_id"
-  end
-
   create_table "products", force: :cascade do |t|
+    t.string "audio_file"
+    t.string "audio_sample_url"
+    t.string "author"
     t.integer "category_id", null: false
+    t.string "condition", default: "new", null: false
     t.datetime "created_at", null: false
+    t.datetime "deactivated_at"
+    t.datetime "deleted_at"
     t.text "description"
+    t.datetime "last_modified_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "name"
     t.decimal "price"
+    t.string "product_type", default: "vinyl", null: false
     t.boolean "published"
+    t.integer "release_year"
     t.integer "stock"
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["deleted_at"], name: "index_products_on_deleted_at"
+    t.index ["release_year"], name: "index_products_on_release_year"
   end
 
   create_table "sale_items", force: :cascade do |t|
@@ -131,16 +122,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_151631) do
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.datetime "deleted_at"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "name"
     t.datetime "remember_created_at"
-    t.datetime "reset_password_sent_at"
-    t.string "reset_password_token"
     t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["role"], name: "index_users_on_role"
   end
 
@@ -149,9 +138,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_15_151631) do
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "users"
-  add_foreign_key "order_items", "orders"
-  add_foreign_key "order_items", "products"
-  add_foreign_key "product_images", "products"
   add_foreign_key "products", "categories"
   add_foreign_key "sale_items", "products"
   add_foreign_key "sale_items", "sales"

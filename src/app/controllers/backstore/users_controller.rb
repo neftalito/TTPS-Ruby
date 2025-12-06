@@ -7,6 +7,30 @@ module Backstore
 
     def index
       @users = User.all
+
+      # Filtro por estado (activos, eliminados, todos)
+      case params[:status]
+      when "deleted"
+        @users = @users.only_deleted
+      when "all"
+        @users = @users.with_deleted
+      else
+        @users = @users.kept
+      end
+
+      # Filtro por rol
+      if params[:role].present?
+        @users = @users.where(role: params[:role])
+      end
+
+      # Búsqueda por email
+      if params[:q].present?
+        @users = @users.where("LOWER(email) LIKE ?", "%#{params[:q].downcase}%")
+      end
+
+      # Paginación con per_page dinámico
+      per_page = params[:per_page] == "all" ? @users.count : (params[:per_page] || 25).to_i
+      @users = @users.order(id: :asc).page(params[:page]).per(per_page)
     end
 
     def new
@@ -26,7 +50,15 @@ module Backstore
     def edit; end
 
     def update
-      if @user.update(user_params)
+      sanitized_params = user_params.dup
+
+      # Si password viene vacío, eliminarlo para que Devise NO lo valide
+      if sanitized_params[:password].blank?
+        sanitized_params.delete(:password)
+        sanitized_params.delete(:password_confirmation)
+      end
+
+      if @user.update(sanitized_params)
         redirect_to backstore_users_path, notice: "Usuario actualizado correctamente."
       else
         render :edit, status: :unprocessable_entity
@@ -41,6 +73,14 @@ module Backstore
 
       @user.destroy
       redirect_to backstore_users_path, notice: "Usuario eliminado correctamente."
+    end
+
+    def restore
+      if @user.restore
+        redirect_to backstore_users_path, notice: "Usuario restaurado correctamente."
+      else
+        redirect_to backstore_users_path, alert: "No se pudo restaurar el usuario."
+      end
     end
 
     private
