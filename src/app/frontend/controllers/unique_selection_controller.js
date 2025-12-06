@@ -40,11 +40,11 @@ export default class extends Controller {
         if (isSelectedElsewhere) {
 
           option.disabled = true
-          option.innerText = `⛔ ${option.text.replace("⛔ ", "")}` 
+          option.innerText = ` ${option.text.replace("", "")}` 
         } else {
 
           option.disabled = false
-          option.innerText = option.text.replace("⛔ ", "")
+          option.innerText = option.text.replace("", "")
         }
       })
     })
