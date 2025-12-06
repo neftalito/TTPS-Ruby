@@ -1,21 +1,21 @@
-<div class="max-w-6xl mx-auto p-6" data-turbo-cache="false">
-  <div class="flex items-center justify-between mb-6">
+<div class="w-full mx-auto p-4 sm:p-6 max-w-7xl" data-turbo-cache="false">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
     <div>
       <%= link_to backstore_products_path, class: "inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200" do %>
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0L2.586 11l3.707-3.707a1 1 0 011.414 1.414L5.414 11l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0L2.586 11l3.707-3.707a1 1 0 011.414 1.414L5.414 11l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+        </svg>
         Volver
       <% end %>
     </div>
 
-    <div class="text-right">
-      <p class="text-sm uppercase tracking-wider text-gray-500">Producto</p>
-      <h1 class="text-2xl font-semibold text-gray-800"><%= @product.name %></h1>
-      <p class="text-base text-gray-600"><%= @product.author %></p>
+    <div class="text-left sm:text-right w-full sm:w-auto">
+      <p class="text-xs sm:text-sm uppercase tracking-wider text-gray-500">Producto</p>
+      <h1 class="text-xl sm:text-2xl font-semibold text-gray-800"><%= @product.name %></h1>
+      <p class="text-sm sm:text-base text-gray-600"><%= @product.author %></p>
 
-      <%# Tipo robusto: intenta el accessor del enum, si falla usa el valor crudo y normaliza variantes %>
       <% raw_type = @product.respond_to?(:product_type) ? @product.product_type : @product[:product_type] %>
       <% raw_type = raw_type.to_s.strip.downcase %>
-      <%# CORRECCIÓN DE SINTAXIS (una línea) %>
       <% type_label = case raw_type; when 'vinyl', 'viniyl' then 'Vinilo'; when 'cd' then 'CD'; when '' then nil; else raw_type.capitalize; end %>
 
       <% if type_label.present? %>
@@ -28,11 +28,11 @@
     </div>
   </div>
 
-  <div class="flex flex-col md:flex-row gap-6">
-    <div class="md:w-1/2">
-      <%# CARRUSEL DE IMÁGENES CON FLOWBITE (Corrección de clase 'active' incluida) %>
+  <div class="flex flex-col lg:flex-row gap-6">
+    <div class="w-full lg:w-1/2">
+      <%# CARRUSEL DE IMÁGENES CON FLOWBITE %>
       <div id="product-carousel" class="relative w-full" data-carousel="slide">
-        <div class="relative h-96 overflow-hidden rounded-lg bg-gray-50">
+        <div class="relative h-64 sm:h-80 md:h-96 overflow-hidden rounded-lg bg-gray-50">
           <% if @product.images.attached? %>
             <% @product.images.each_with_index do |img, index| %>
               <div class="hidden duration-700 ease-in-out <%= 'active' if index == 0 %>" data-carousel-item>
@@ -77,53 +77,47 @@
       </div>
     </div>
 
-    <div class="md:w-1/2 space-y-6">
-      <div class="grid grid-cols-2 gap-4">
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="text-base font-semibold text-gray-800">Genero</p>
-          <p class="mt-1 text-lg font-medium text-gray-900"><%= @product.category&.name || "—" %></p>
+    <div class="w-full lg:w-1/2 space-y-4 sm:space-y-6">
+      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="bg-gray-50 p-3 sm:p-4 rounded">
+          <p class="text-sm sm:text-base font-semibold text-gray-800">Genero</p>
+          <p class="mt-1 text-base sm:text-lg font-medium text-gray-900"><%= @product.category&.name || "—" %></p>
         </div>
 
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="text-base font-semibold text-gray-800">Estado</p>
-          <p class="mt-1 text-lg font-medium text-gray-900">
-            <%= @product.condition.to_s == 'used' ? 'Usado' : 'Nuevo' %>
-          </p>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="text-base font-semibold text-gray-800">Año de lanzamiento</p>
-          <p class="mt-1 text-lg font-medium text-gray-900">
+        <div class="bg-gray-50 p-3 sm:p-4 rounded">
+          <p class="text-sm sm:text-base font-semibold text-gray-800">Año de lanzamiento</p>
+          <p class="mt-1 text-base sm:text-lg font-medium text-gray-900">
             <%= @product.release_year || "—" %>
           </p>
         </div>
 
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="text-base font-semibold text-gray-800">Precio</p>
-          <p class="mt-1 text-lg font-semibold text-indigo-600"><%= number_to_currency(@product.price || 0, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></p>
+        <div class="bg-gray-50 p-3 sm:p-4 rounded">
+          <p class="text-sm sm:text-base font-semibold text-gray-800">Estado</p>
+          <p class="mt-1 text-base sm:text-lg font-medium text-gray-900"><%= @product.condition.to_s == 'used' ? 'Usado' : 'Nuevo' %></p>
         </div>
 
-        <div class="bg-gray-50 p-4 rounded">
-          <p class="text-base font-semibold text-gray-800">Stock disponible</p>
-          <p class="mt-1 text-lg font-semibold <%= (@product.try(:stock) || 0).to_i > 0 ? 'text-green-600' : 'text-red-600' %>">
+        <div class="bg-gray-50 p-3 sm:p-4 rounded">
+          <p class="text-sm sm:text-base font-semibold text-gray-800">Precio</p>
+          <p class="mt-1 text-base sm:text-lg font-semibold text-indigo-600"><%= number_to_currency(@product.price || 0, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %></p>
+        </div>
+
+        <div class="bg-gray-50 p-3 sm:p-4 rounded col-span-2">
+          <p class="text-sm sm:text-base font-semibold text-gray-800">Stock disponible</p>
+          <p class="mt-1 text-base sm:text-lg font-semibold <%= (@product.try(:stock) || 0).to_i > 0 ? 'text-green-600' : 'text-red-600' %>">
             <%= @product.try(:stock) || 0 %>
           </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <div>
-          <%= link_to 'Editar', edit_backstore_product_path(@product), class: "px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700", aria: { label: "Editar producto" } if defined?(can?) ? can?(:update, @product) : true %>
-        </div>
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <%= link_to 'Editar', edit_backstore_product_path(@product), class: "px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 text-center", aria: { label: "Editar producto" } if defined?(can?) ? can?(:update, @product) : true %>
 
-        <div>
-          <%= button_to 'Dar de baja', backstore_product_path(@product), method: :delete, data: { confirm: 'Confirmar baja lógica?' }, class: "px-4 py-2 bg-red-600 text-white rounded-md shadow-sm hover:bg-red-700", form: { class: "inline-block" } if defined?(can?) ? can?(:destroy, @product) : true %>
-        </div>
+        <%= button_to 'Dar de baja', backstore_product_path(@product), method: :delete, data: { confirm: 'Confirmar baja lógica?' }, class: "px-4 py-2 bg-red-600 text-white rounded-md shadow-sm hover:bg-red-700 w-full sm:w-auto", form: { class: "w-full sm:w-auto" } if defined?(can?) ? can?(:destroy, @product) : true %>
       </div>
 
       <div>
-        <p class="text-base font-semibold text-gray-800">Descripción</p>
-        <div class="mt-2 prose max-w-none text-gray-800">
+        <p class="text-sm sm:text-base font-semibold text-gray-800">Descripción</p>
+        <div class="mt-2 prose prose-sm sm:prose max-w-none text-gray-800">
           <%= simple_format(@product.try(:description) || "") %>
         </div>
       </div>
@@ -131,7 +125,7 @@
       <%# AUDIO PREVIEW (Si es disco usado y tiene audio adjunto) %>
       <% if @product.condition == "used" && @product.audio.attached? %>
         <div class="bg-gray-100 p-4 rounded mt-4">
-          <p class="text-base font-semibold text-gray-800 mb-2">Muestra de Audio 🎧</p>
+          <p class="text-sm sm:text-base font-semibold text-gray-800 mb-2">Muestra de Audio 🎧</p>
           <audio controls class="w-full">
             <source src="<%= url_for(@product.audio) %>" type="<%= @product.audio.content_type %>">
             Tu navegador no soporta el elemento de audio.
