@@ -6,7 +6,7 @@ module Backstore
                               .sum(:total)
 
       @category_chart_data = SaleItem.joins(:product)
-                                     .group('products.category_id')
+                                     .group("products.category_id")
                                      .sum(:quantity)
                                      .transform_keys { |id| Category.find(id).name }
 

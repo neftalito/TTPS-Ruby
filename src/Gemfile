@@ -79,8 +79,8 @@ end
 
 # Localizaciones
 gem "rails-i18n", "~> 8.0"
-gem 'devise-i18n'
-gem 'devise-i18n-views'
+gem "devise-i18n"
+gem "devise-i18n-views"
 
 # Para generar datos falsos
 gem "faker"
@@ -95,13 +95,13 @@ gem "kaminari"
 gem "discard"
 
 # Para .env
-gem 'dotenv'
+gem "dotenv"
 
-gem 'kaminari-tailwind'
+gem "kaminari-tailwind"
 
 # Para generar PDFs y csvs
-gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
+gem "wicked_pdf"
+gem "wkhtmltopdf-binary"
 gem "csv"
 
 # Para graficos

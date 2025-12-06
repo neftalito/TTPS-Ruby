@@ -17,8 +17,8 @@ module Storefront
               end
 
       @products = scope
-                    .page(params[:page])
-                    .per(25)
+                  .page(params[:page])
+                  .per(25)
     end
   end
 end

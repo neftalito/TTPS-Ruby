@@ -1,5 +1,5 @@
 class PickupPointsController < ApplicationController
-  before_action :set_pickup_point, only: %i[ show edit update destroy ]
+  before_action :set_pickup_point, only: %i[show edit update destroy]
 
   # GET /pickup_points or /pickup_points.json
   def index
@@ -7,8 +7,7 @@ class PickupPointsController < ApplicationController
   end
 
   # GET /pickup_points/1 or /pickup_points/1.json
-  def show
-  end
+  def show; end
 
   # GET /pickup_points/new
   def new
@@ -16,8 +15,7 @@ class PickupPointsController < ApplicationController
   end
 
   # GET /pickup_points/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /pickup_points or /pickup_points.json
   def create
@@ -58,13 +56,14 @@ class PickupPointsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_pickup_point
-      @pickup_point = PickupPoint.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def pickup_point_params
-      params.expect(pickup_point: [ :name, :address, :city, :province, :enabled ])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_pickup_point
+    @pickup_point = PickupPoint.find(params.expect(:id))
+  end
+
+  # Only allow a list of trusted parameters through.
+  def pickup_point_params
+    params.expect(pickup_point: %i[name address city province enabled])
+  end
 end

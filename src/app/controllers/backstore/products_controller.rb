@@ -1,6 +1,6 @@
 module Backstore
   class ProductsController < BaseController
-    before_action :authorize_product_collection!, only: [:index, :new, :create]
+    before_action :authorize_product_collection!, only: %i[index new create]
     before_action :set_product, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment restore]
     before_action :authorize_product!, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment restore]
 
@@ -8,19 +8,17 @@ module Backstore
       @products = Product.with_discarded.accessible_by(current_ability)
 
       # Filtro por estado (activos, eliminados, todos)
-      case params[:status]
-      when "deleted"
-        @products = @products.only_deleted
-      when "all"
-        @products = @products.with_deleted
-      else
-        @products = @products.available_products
-      end
+      @products = case params[:status]
+                  when "deleted"
+                    @products.only_deleted
+                  when "all"
+                    @products.with_deleted
+                  else
+                    @products.available_products
+                  end
 
       # Filtro por categoría
-      if params[:category_id].present?
-        @products = @products.where(category_id: params[:category_id])
-      end
+      @products = @products.where(category_id: params[:category_id]) if params[:category_id].present?
 
       # Búsqueda por Nombre del Disco
       if params[:name_q].present?
@@ -35,13 +33,9 @@ module Backstore
       end
 
       # Filtro por condición
-      if params[:condition].present? && params[:condition] != 'all'
-        @products = @products.where(condition: params[:condition])
-      end
+      @products = @products.where(condition: params[:condition]) if params[:condition].present? && params[:condition] != "all"
       # Filtro por tipo de producto
-      if params[:product_type].present? && params[:product_type] != 'all'
-        @products = @products.where(product_type: params[:product_type])
-      end
+      @products = @products.where(product_type: params[:product_type]) if params[:product_type].present? && params[:product_type] != "all"
 
       # Paginación con per_page dinámico
       per_page = params[:per_page] == "all" ? @products.count : (params[:per_page] || 25).to_i
@@ -49,8 +43,7 @@ module Backstore
     end
 
     # GET /backstore/products/:id
-    def show
-    end
+    def show; end
 
     # GET /backstore/products/new
     def new
@@ -59,25 +52,22 @@ module Backstore
     end
 
     # GET /backstore/products/:id/edit
-    def edit
-    end
+    def edit; end
 
     def create
       authorize! :create, Product
       # Clonamos los parámetros para modificar el stock si es necesario
       initial_params = product_params.to_h
-      
-      if initial_params['condition'] == 'used'
-        initial_params['stock'] = 1
-      end
+
+      initial_params["stock"] = 1 if initial_params["condition"] == "used"
 
       @product = Product.new(initial_params)
-    
+
       # En el método create del controlador:
       @product.last_modified_at = Time.current
 
       if @product.save
-        redirect_to backstore_product_path(@product), notice: 'Producto creado'
+        redirect_to backstore_product_path(@product), notice: "Producto creado"
       else
         render :new, status: :unprocessable_entity
       end
@@ -90,13 +80,13 @@ module Backstore
 
       # Clonamos los parámetros permitidos para poder modificarlos si es necesario
       permitted_params = product_params.except(:images, :audio)
-      
+
       # Convertimos a hash de Ruby para poder modificar la clave 'stock'
       update_hash = permitted_params.to_h
 
-      if update_hash['condition'] == 'used'
-        # Si la condición es 'used', forzamos el stock a 1, ya que el campo estaba deshabilitado 
-        update_hash['stock'] = 1
+      if update_hash["condition"] == "used"
+        # Si la condición es 'used', forzamos el stock a 1, ya que el campo estaba deshabilitado
+        update_hash["stock"] = 1
       end
 
       # Validar límite de imágenes ANTES de intentar actualizar
@@ -105,9 +95,10 @@ module Backstore
         new_images_count = new_images.size
         current_images_count = @product.images.count
         total_images = current_images_count + new_images_count
-        
+
         if total_images > 10
-          flash.now[:alert] = "No puedes subir #{new_images_count} imagen(es) nueva(s). Ya tienes #{current_images_count} imagen(es) y el límite es 10."
+          flash.now[:alert] =
+            "No puedes subir #{new_images_count} imagen(es) nueva(s). Ya tienes #{current_images_count} imagen(es) y el límite es 10."
           render :edit, status: :unprocessable_entity
           return
         end
@@ -115,16 +106,14 @@ module Backstore
 
       # Actualizar atributos básicos
       if @product.update(update_hash)
-        
+
         # Manejar eliminación de audio al cambiar de usado a nuevo
-        if previous_condition == "used" && @product.condition == "new" && @product.audio.attached?
-          @product.audio.purge
-        end
+        @product.audio.purge if previous_condition == "used" && @product.condition == "new" && @product.audio.attached?
 
         # Adjuntar audio si es usado y hay un nuevo archivo
         if @product.condition == "used" && params[:product][:audio].present?
           @product.audio.attach(params[:product][:audio])
-          
+
           # Verificar validaciones del audio
           unless @product.valid?
             render :edit, status: :unprocessable_entity
@@ -136,7 +125,7 @@ module Backstore
         if params[:product][:images].present?
           new_images = params[:product][:images].reject(&:blank?)
           @product.images.attach(new_images)
-          
+
           # Verificar validaciones de las imágenes
           unless @product.valid?
             render :edit, status: :unprocessable_entity
@@ -144,12 +133,11 @@ module Backstore
           end
         end
 
-        redirect_to backstore_product_path(@product), notice: 'Producto actualizado'
+        redirect_to backstore_product_path(@product), notice: "Producto actualizado"
       else
         render :edit, status: :unprocessable_entity
       end
     end
-
 
     def destroy
       if @product.discard
@@ -167,8 +155,6 @@ module Backstore
       end
     end
 
-
-
     def delete_image_attachment
       image = @product.images.find(params[:image_id])
 
@@ -183,33 +169,30 @@ module Backstore
                     notice: "Imagen eliminada correctamente."
     end
 
-
     # DELETE /backstore/products/:id/delete_audio_attachment
     def delete_audio_attachment
       if @product.audio.attached?
         @product.audio.purge
-        redirect_to edit_backstore_product_path(@product), notice: 'Audio eliminado correctamente.'
+        redirect_to edit_backstore_product_path(@product), notice: "Audio eliminado correctamente."
       else
-        redirect_to edit_backstore_product_path(@product), alert: 'No hay audio para eliminar.'
+        redirect_to edit_backstore_product_path(@product), alert: "No hay audio para eliminar."
       end
     end
-
-
 
     # PATCH /backstore/products/:id/change_stock
     def change_stock
       stock_param = params.dig(:product, :stock)
       new_stock_value = stock_param.present? ? stock_param.to_i : nil
-      
+
       if new_stock_value.is_a?(Integer) && new_stock_value >= 0
         update_attributes = { stock: new_stock_value }
-        
+
         if @product.respond_to?(:last_modified_at) && @product.class.validators_on(:last_modified_at).any?
           update_attributes[:last_modified_at] = Time.current
         end
 
         if @product.update(update_attributes)
-          redirect_to backstore_product_path(@product), notice: 'Stock actualizado correctamente.'
+          redirect_to backstore_product_path(@product), notice: "Stock actualizado correctamente."
         else
           redirect_to backstore_product_path(@product), alert: "Error al actualizar stock: #{@product.errors.full_messages.join(', ')}"
         end
@@ -217,7 +200,6 @@ module Backstore
         redirect_to backstore_product_path(@product), alert: "El valor de stock ingresado no es válido."
       end
     end
-
 
     private
 
