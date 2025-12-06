@@ -45,7 +45,7 @@
       <% if user_signed_in? %>
             <span class="flex items-center gap-2 text-proyecto-text w-full justify-center text-right lg:w-auto lg:justify-start lg:text-left">
               <i class="fa-solid fa-user"></i>
-              <%= current_user.email %>
+              <%= current_user.email.split('@').first.capitalize %>
             </span>
 
         <%= link_to edit_backstore_user_path(current_user),

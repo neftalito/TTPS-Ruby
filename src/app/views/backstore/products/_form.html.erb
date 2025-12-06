@@ -146,7 +146,7 @@
                   
               <%= f.number_field :release_year, 
                   class: "block w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-900 focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200",
-                  min: 1901,
+                  min: 1900,
                   max: Date.current.year 
               %>
             </div>
@@ -154,17 +154,57 @@
 
           <%# Bloque de subida de audio: Color de archivo en primary %>
           <div id="audio_upload_block" class="mt-8" style="display: none; opacity: 0; transition: all 0.5s ease;">
-            <label for="product_audio" class="block text-sm font-medium text-proyecto-primary mb-1">
-              Muestra de Audio (Opcional, solo para discos usados)
-            </label>
-            <p class="text-xs text-gray-500 mb-2">
-              📁 <strong>Formatos:</strong> MP3, WAV, OGG, M4A, FLAC. <strong>Tamaño máximo:</strong> 15 MB.
-            </p>
-            <%= f.file_field :audio, accept: "audio/*", 
-              class: "mt-1 block w-full text-base **text-proyecto-text/80**
-                      file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 
-                      file:text-base file:font-semibold file:bg-proyecto-primary file:text-white 
-                      hover:file:bg-proyecto-primary/90 transition duration-200" %>
+            <div class="flex items-start gap-3 mb-3">
+              <div class="p-3 rounded-xl bg-proyecto-primary/10 text-proyecto-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 9l10.5-6v18L9 15m0-6v6m0-6L3 5.25v13.5L9 15" />
+                </svg>
+              </div>
+              <div>
+                <label for="product_audio" class="block text-sm font-semibold text-proyecto-primary">
+                  Muestra de Audio (Opcional, solo para discos usados)
+                </label>
+                <p class="text-xs text-gray-500 mt-1">
+                  <strong>Formatos:</strong> MP3, WAV, OGG, M4A, FLAC. <strong>Tamaño máximo:</strong> 15 MB.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative mt-1 group">
+              <div class="absolute inset-0 rounded-2xl border-2 border-dashed border-proyecto-primary/30 group-hover:border-proyecto-primary/60 transition"></div>
+              <div class="relative p-4 rounded-2xl bg-white shadow-sm flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3 text-left">
+                  <div class="p-2 rounded-lg bg-proyecto-primary/10 text-proyecto-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m0 0l6-6m-6 6l-6-6" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">Arrastra o selecciona tu audio</p>
+                    <p class="text-xs text-gray-500">Aceptamos archivos en alta calidad para que el comprador pueda escucharlos.</p>
+                  </div>
+                </div>
+                <%= f.file_field :audio, accept: "audio/*", id: "product_audio",
+                  class: "cursor-pointer block w-auto text-sm text-proyecto-primary font-semibold bg-proyecto-primary/10 border border-proyecto-primary/40 rounded-xl px-4 py-2
+                          file:hidden focus:outline-none focus:ring-2 focus:ring-proyecto-primary/50 hover:bg-proyecto-primary/20 transition" %>
+              </div>
+            </div>
+
+            <div id="audio_preview_container" class="hidden bg-white border border-gray-200 rounded-xl p-4 mt-6 shadow-sm">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2 text-proyecto-primary font-semibold text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                </svg>
+                  <span>Previsualización <span class="text-gray-500">(<span class="text-gray-600">Nota</span>: Recuerde guardar los cambios)</span></span>
+                </div>
+                <p id="audio_file_name" class="text-xs text-gray-500 truncate"></p>
+              </div>
+              <audio id="audio_live_preview" controls class="w-full">
+                Tu navegador no soporta la etiqueta de audio.
+              </audio>
+            </div>
+
             
             <%# Muestra la previsualización del audio si ya está adjunto %>
             <% if @product.persisted? && @product.audio.attached? %>
@@ -176,7 +216,10 @@
                 </audio>
                 <%# Botón de eliminar audio - Color de error del proyecto %>
                 <%= link_to delete_audio_attachment_backstore_product_path(@product),
-                    data: { turbo_method: :delete},
+                    data: {
+                      turbo_method: :delete,
+                      turbo_confirm: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.'
+                    },
                     class: "inline-flex items-center gap-2 px-3 py-2 bg-proyecto-error/10 hover:bg-proyecto-error text-proyecto-error hover:text-white border border-proyecto-error/50 rounded-lg transition-all text-sm" do %>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -230,7 +273,7 @@
             </button>
             
             <p class="text-xs text-gray-500 mt-2">
-              ⚠️ Máximo 10 imágenes por producto. <strong>Formatos:</strong> JPEG, PNG, GIF, WebP. <strong>Tamaño máximo:</strong> 10 MB por imagen.
+              Máximo 10 imágenes por producto. <strong>Formatos:</strong> JPEG, PNG, GIF, WebP. <strong>Tamaño máximo:</strong> 10 MB por imagen.
             </p>
             
             <%# Contenedor para vista previa de NUEVAS imágenes %>
@@ -358,6 +401,25 @@ document.addEventListener('turbo:load', () => {
     }
   }
 
+  // Confirmaciones con Turbo usando el modal personalizado
+  if (window.Turbo && !window._customTurboConfirmInstalled) {
+    window._customTurboConfirmInstalled = true;
+
+    Turbo.setConfirmMethod((message) => {
+      return new Promise((resolve) => {
+        showModal({
+          title: 'Confirmar acción',
+          message,
+          confirmText: 'Continuar',
+          confirmClass: 'bg-proyecto-primary hover:bg-proyecto-primary/90',
+          cancelText: 'Cancelar',
+          onConfirm: () => resolve(true),
+          onCancel: () => resolve(false)
+        });
+      });
+    });
+  }
+
   // ----------------------------------------------------
   // LÓGICA DE CONDICIÓN Y STOCK
   // ----------------------------------------------------
@@ -409,7 +471,7 @@ document.addEventListener('turbo:load', () => {
 
         if (newCondition === 'used' && isEditing && currentStockValue !== '1') {
           showModal({
-            title: '📦 Advertencia de Inventario',
+            title: 'Advertencia de Inventario',
             message: `Estás cambiando la condición a 'Usado'. Esto hará que el stock se fije en 1 unidad. El campo de Stock será deshabilitado. ¿Confirmas el cambio?`,
             confirmText: 'Sí, Confirmar',
             confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
@@ -426,10 +488,10 @@ document.addEventListener('turbo:load', () => {
         
         if (newCondition !== 'used' && audioPlayerExists) {
           showModal({
-            title: '⚠️ ADVERTENCIA de Audio',
+            title: 'ADVERTENCIA de Audio',
             message: 'Este producto tiene un audio asociado. Si cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
             confirmText: 'Aceptar y Eliminar Audio',
-            confirmClass: 'bg-proyecto-primary hover:bg-proyecto-primary/90', 
+            confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90',
             cancelText: 'Cancelar y Mantener Usado',
             onConfirm: () => {
               toggleAudioBlockAndStock();
@@ -450,29 +512,70 @@ document.addEventListener('turbo:load', () => {
   }
 
   // ----------------------------------------------------
-  // Lógica para el botón de eliminar audio
+  // PREVISUALIZACIÓN DE AUDIO PARA PRODUCTOS USADOS
   // ----------------------------------------------------
 
-  const deleteAudioLinks = document.querySelectorAll("a[data-turbo-method='delete'][href*='audio']");
+  const audioInput = document.getElementById('product_audio');
+  const audioPreviewContainer = document.getElementById('audio_preview_container');
+  const audioLivePreview = document.getElementById('audio_live_preview');
+  const audioFileName = document.getElementById('audio_file_name');
+  let audioObjectUrl = null;
 
-  deleteAudioLinks.forEach(link => {
-    if (!link.dataset.listenerAttached) {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const url = link.getAttribute('href');
+  if (audioInput && audioPreviewContainer && audioLivePreview && audioFileName) {
+    audioInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const maxSize = 15 * 1024 * 1024; // 15 MB
 
+      if (!file) {
+        audioPreviewContainer.classList.add('hidden');
+        audioLivePreview.pause();
+        audioLivePreview.removeAttribute('src');
+        if (audioObjectUrl) {
+          URL.revokeObjectURL(audioObjectUrl);
+          audioObjectUrl = null;
+        }
+        return;
+      }
+
+      if (!file.type.startsWith('audio/')) {
         showModal({
-          title: 'Eliminar audio',
-          message: '¿Seguro que deseas eliminar este archivo de audio? Esta acción es permanente.',
-          confirmText: 'Eliminar',
-          confirmClass: 'bg-proyecto-error', 
-          cancelText: 'Cancelar',
-          onConfirm: () => Turbo.visit(url, { action: 'replace', method: 'delete' })
+          title: '⚠️ Archivo no válido',
+          message: 'Por favor selecciona un archivo de audio (MP3, WAV, OGG, M4A o FLAC).',
+          confirmText: 'Entendido',
+          confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90',
+          cancelText: '',
+          onConfirm: () => {}
         });
-      });
-      link.dataset.listenerAttached = 'true';
-    }
-  });
+        event.target.value = '';
+        return;
+      }
+
+      if (file.size > maxSize) {
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        showModal({
+          title: '⚠️ Archivo demasiado grande',
+          message: `El archivo "${file.name}" pesa ${sizeMB} MB. El máximo permitido es 15 MB.`,
+          confirmText: 'Entendido',
+          confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90',
+          cancelText: '',
+          onConfirm: () => {}
+        });
+        event.target.value = '';
+        return;
+      }
+
+      if (audioObjectUrl) {
+        URL.revokeObjectURL(audioObjectUrl);
+      }
+
+      audioObjectUrl = URL.createObjectURL(file);
+
+      audioFileName.textContent = file.name;
+      audioLivePreview.src = audioObjectUrl;
+      audioLivePreview.load();
+      audioPreviewContainer.classList.remove('hidden');
+    });
+  }
 
   // ----------------------------------------------------
   // GESTIÓN DE IMÁGENES MÚLTIPLES CON VALIDACIONES

@@ -19,10 +19,10 @@ class Product < ApplicationRecord
   validates :release_year, 
             presence: true,
             numericality: { 
-              only_integer: true, 
-              greater_than: 1900, 
+              only_integer: true,
+              greater_than_or_equal_to: 1900,
               less_than_or_equal_to: Date.current.year,
-              message: "debe ser un año válido entre 1901 y el año actual" 
+              message: "debe ser un año válido entre 1900 y el año actual"
             }
 
   validate :must_have_at_least_one_image
@@ -66,12 +66,30 @@ class Product < ApplicationRecord
 
   def decrement_stock!(quantity)
     self.stock -= quantity
-    save! 
+    save!
   end
 
   def increment_stock!(quantity)
     self.stock += quantity
     save!
+  end
+
+  def discard
+    return false if discarded?
+
+    timestamp = Time.current
+
+    run_callbacks(:discard) do
+      update_columns(self.class.discard_column => timestamp, deactivated_at: timestamp, updated_at: timestamp)
+    end
+  end
+
+  def undiscard
+    return false unless discarded?
+
+    run_callbacks(:undiscard) do
+      update_columns(self.class.discard_column => nil, deactivated_at: nil, updated_at: Time.current)
+    end
   end
   private
 
@@ -121,7 +139,7 @@ class Product < ApplicationRecord
     images.each do |image|
       # Validar formato
       unless valid_formats.include?(image.content_type)
-        errors.add(:images, "#{image.filename} no es un formato válido. Formatos permitidos: JPEG, PNG, GIF, WebP")
+        errors.add(:images, "#{image.filename} no es un formato válido. Formatos permitidos: JPEG,JPG, PNG, GIF, WebP")
       end
       
       # Validar tamaño

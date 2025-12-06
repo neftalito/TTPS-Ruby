@@ -2,7 +2,7 @@
   
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-proyecto-primary">
-      Hola, <%= current_user.email%>
+      Hola, <%= current_user.email.split('@').first.capitalize %>
     </h1>
     <p class="text-proyecto-text/60">Aquí tienes un resumen de la actividad del negocio.</p>
   </div>

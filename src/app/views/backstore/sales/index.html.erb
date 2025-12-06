@@ -120,8 +120,7 @@ end %>
              columns: sales_columns,
              row_class: ->(sale) { sale.cancelled_at.present? ? "bg-proyecto-secondary/30" : nil },
              empty_message: "No hay ventas registradas.",
-             actions: sales_actions,
-             actions_header: "" %>
+             actions: sales_actions %>
 </div>
 
 <%= render "shared/pagination", collection: @sales, params: request.query_parameters %>
