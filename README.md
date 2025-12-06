@@ -5,7 +5,7 @@
 
 # Decisiones de diseño
 - Se tomó la decisión de eliminar la funcionalidad provista por Devise de recuperar la contraseña por mail, debido a que la configuración de un servidor smtp funcional es compleja y requiere de un gasto de dinero
-
+- Se decidió que todo modelo eliminable también puede ser recuperado
 
 
 # Notas para desarrolladores

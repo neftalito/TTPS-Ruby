@@ -2,13 +2,8 @@
 <% params_hash = local_assigns.fetch(:params, {}) %>
 <% return if collection.blank? %>
 
-<nav class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" aria-label="Paginación">
-  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-    <p class="text-sm text-proyecto-text">
-      Mostrando
-      <span class="font-semibold text-proyecto-primary"><%= pagination_results_range(collection) %></span>
-    </p>
-
+<nav class="mt-8 flex w-full flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left" aria-label="Paginación">
+  <div class="flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-6 md:justify-start">
     <!-- Selector de por página -->
     <div class="flex items-center gap-2">
       <label for="per_page" class="text-sm text-proyecto-text whitespace-nowrap">Por página:</label>
@@ -33,18 +28,25 @@
     </div>
   </div>
 
-  <% if collection.total_pages > 1 %>
-    <div class="flex items-center gap-3">
-      <%= pagination_button("Anterior", collection.prev_page, collection, disabled: collection.prev_page.nil?) %>
+  <div class="flex flex-col items-center gap-3 md:ml-auto md:flex-row md:items-center md:gap-6 md:justify-end md:text-right">
+    <p class="text-sm text-proyecto-text md:leading-tight">
+      Mostrando
+      <span class="font-semibold text-proyecto-primary"><%= pagination_results_range(collection) %></span>
+    </p>
 
-      <span class="text-sm text-proyecto-text">
-        Página
-        <span class="font-semibold text-proyecto-primary"><%= collection.current_page %></span>
-        de
-        <span class="font-semibold text-proyecto-primary"><%= collection.total_pages %></span>
-      </span>
+    <% if collection.total_pages > 1 %>
+      <div class="flex items-center justify-center gap-3 md:justify-end">
+        <%= pagination_button("Anterior", collection.prev_page, collection, disabled: collection.prev_page.nil?) %>
 
-      <%= pagination_button("Siguiente", collection.next_page, collection, disabled: collection.next_page.nil?) %>
-    </div>
-  <% end %>
+        <span class="text-sm text-proyecto-text">
+          Página
+          <span class="font-semibold text-proyecto-primary"><%= collection.current_page %></span>
+          de
+          <span class="font-semibold text-proyecto-primary"><%= collection.total_pages %></span>
+        </span>
+
+        <%= pagination_button("Siguiente", collection.next_page, collection, disabled: collection.next_page.nil?) %>
+      </div>
+    <% end %>
+  </div>
 </nav>

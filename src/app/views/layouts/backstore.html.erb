@@ -16,7 +16,7 @@
   <%= vite_javascript_tag 'application' %>
 </head>
 
-<body class="bg-proyecto-bg text-proyecto-text min-h-screen flex">
+<body class="bg-proyecto-bg text-proyecto-text min-h-screen flex flex-col md:flex-row">
 
 <!-- FLASH MODAL -->
 <%= flash_modal %>
@@ -26,56 +26,43 @@
   <%= render "backstore/shared/sidebar" %>
 </aside>
 
-<!-- MOBILE MENU BUTTON -->
-<button
-  class="md:hidden fixed top-4 left-4 z-50 bg-proyecto-primary text-proyecto-bg p-2 rounded shadow"
-  onclick="document.getElementById('mobileSidebar').classList.remove('hidden')">
-  <i class="fa-solid fa-bars"></i>
-</button>
-
-<!-- MOBILE SIDEBAR OVERLAY -->
-<div id="mobileSidebar"
-     class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-     onclick="this.classList.add('hidden')">
-
-  <aside class="w-64 bg-proyecto-primary text-proyecto-bg min-h-full py-6 px-4"
-         onclick="event.stopPropagation()">
-
-    <%= render "backstore/shared/sidebar" %>
-
-  </aside>
-</div>
-
 <!-- MAIN CONTENT -->
 <div class="flex-1 flex flex-col">
 
   <!-- TOP NAVBAR -->
-  <header class="w-full bg-proyecto-secondary shadow px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-semibold text-proyecto-primary">Panel Administrativo</h1>
+  <header class="w-full bg-proyecto-secondary shadow px-6 py-4 flex flex-wrap items-center justify-between gap-4 relative">
+    <div class="flex items-center gap-3">
+      <button
+        class="md:hidden bg-proyecto-primary text-proyecto-bg p-2 rounded shadow"
+        onclick="document.getElementById('mobileSidebar').classList.remove('hidden')">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <h1 class="text-xl font-semibold text-proyecto-primary">Panel Administrativo</h1>
+    </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex flex-col w-full gap-2 lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:justify-end">
 
       <% if user_signed_in? %>
-            <span class="flex items-center gap-2 text-proyecto-text">
+            <span class="flex items-center gap-2 text-proyecto-text w-full justify-center text-right lg:w-auto lg:justify-start lg:text-left">
               <i class="fa-solid fa-user"></i>
               <%= current_user.email %>
             </span>
 
         <%= link_to edit_backstore_user_path(current_user),
-                    class: "px-3 py-1 rounded bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg flex items-center gap-2" do %>
+                    class: "px-3 py-1 rounded bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg flex items-center gap-2 w-full justify-center lg:w-auto" do %>
           <i class="fa-solid fa-id-badge"></i>
           <span>Perfil</span>
         <% end %>
 
         <%= link_to root_path,
-                    class: "px-3 py-1 rounded bg-proyecto-bg text-proyecto-primary border border-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2" do %>
+                    class: "px-3 py-1 rounded bg-proyecto-bg text-proyecto-primary border border-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2 w-full justify-center lg:w-auto" do %>
           <i class="fa-solid fa-store"></i>
           <span>Volver a la tienda</span>
         <% end %>
 
         <%= button_to destroy_user_session_path,
                       method: :delete,
-                      class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg rounded hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2" do %>
+                      class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg rounded hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2 w-full justify-center lg:w-auto" do %>
           <i class="fa-solid fa-right-from-bracket"></i>
           Cerrar sesión
         <% end %>
@@ -95,6 +82,25 @@
   <main class="flex-1 p-6">
     <%= yield %>
   </main>
+
+  <!-- MOBILE SIDEBAR OVERLAY -->
+  <div id="mobileSidebar"
+       class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+       onclick="this.classList.add('hidden')">
+
+    <aside class="relative w-full bg-proyecto-primary text-proyecto-bg min-h-full py-6 px-4"
+           onclick="event.stopPropagation()">
+
+      <button
+        class="absolute top-4 right-4 text-proyecto-bg bg-proyecto-secondary/20 hover:bg-proyecto-secondary/40 rounded-full p-2"
+        onclick="document.getElementById('mobileSidebar').classList.add('hidden')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <%= render "backstore/shared/sidebar" %>
+
+    </aside>
+  </div>
 
 </div>
 </body>

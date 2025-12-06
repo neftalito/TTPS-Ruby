@@ -19,7 +19,6 @@ application.register("report-filters", ReportFiltersController)
 application.register("nested-form", NestedFormController)
 application.register("unique-selection", UniqueSelectionController)
 
-config.time_zone = 'Buenos Aires'
 // Inicializa Flowbite cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     initFlowbite();
