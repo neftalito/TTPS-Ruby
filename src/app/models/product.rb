@@ -66,12 +66,30 @@ class Product < ApplicationRecord
 
   def decrement_stock!(quantity)
     self.stock -= quantity
-    save! 
+    save!
   end
 
   def increment_stock!(quantity)
     self.stock += quantity
     save!
+  end
+
+  def discard
+    return false if discarded?
+
+    timestamp = Time.current
+
+    run_callbacks(:discard) do
+      update_columns(self.class.discard_column => timestamp, deactivated_at: timestamp, updated_at: timestamp)
+    end
+  end
+
+  def undiscard
+    return false unless discarded?
+
+    run_callbacks(:undiscard) do
+      update_columns(self.class.discard_column => nil, deactivated_at: nil, updated_at: Time.current)
+    end
   end
   private
 

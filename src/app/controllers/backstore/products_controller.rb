@@ -174,7 +174,7 @@ module Backstore
 
       if @product.images.count <= 1
         redirect_back fallback_location: edit_backstore_product_path(@product),
-                      alert: "⚠️ No se puede eliminar la última imagen. Debe quedar al menos una."
+                      alert: "No se puede eliminar la última imagen. Debe quedar al menos una."
         return
       end
 

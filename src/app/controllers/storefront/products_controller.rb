@@ -18,6 +18,10 @@ module Storefront
         @products = @products.where("LOWER(author) LIKE ?", query)
       end
 
+      if params[:release_year].present?
+        @products = @products.where(release_year: params[:release_year].to_i)
+      end
+
       # Filtro por categoría
       if params[:category].present?
         @products = @products.where(category_id: params[:category])
