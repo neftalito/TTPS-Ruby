@@ -125,7 +125,7 @@
       <%# AUDIO PREVIEW (Si es disco usado y tiene audio adjunto) %>
       <% if @product.condition == "used" && @product.audio.attached? %>
         <div class="bg-gray-100 p-4 rounded mt-4">
-          <p class="text-sm sm:text-base font-semibold text-gray-800 mb-2">Muestra de Audio 🎧</p>
+          <p class="text-sm sm:text-base font-semibold text-gray-800 mb-2">Muestra de Audio</p>
           <audio controls class="w-full">
             <source src="<%= url_for(@product.audio) %>" type="<%= @product.audio.content_type %>">
             Tu navegador no soporta el elemento de audio.

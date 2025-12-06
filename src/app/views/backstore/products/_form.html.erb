@@ -158,7 +158,7 @@
               Muestra de Audio (Opcional, solo para discos usados)
             </label>
             <p class="text-xs text-gray-500 mb-2">
-              📁 <strong>Formatos:</strong> MP3, WAV, OGG, M4A, FLAC. <strong>Tamaño máximo:</strong> 15 MB.
+              <strong>Formatos:</strong> MP3, WAV, OGG, M4A, FLAC. <strong>Tamaño máximo:</strong> 15 MB.
             </p>
             <%= f.file_field :audio, accept: "audio/*", 
               class: "mt-1 block w-full text-base **text-proyecto-text/80**
@@ -230,7 +230,7 @@
             </button>
             
             <p class="text-xs text-gray-500 mt-2">
-              ⚠️ Máximo 10 imágenes por producto. <strong>Formatos:</strong> JPEG, PNG, GIF, WebP. <strong>Tamaño máximo:</strong> 10 MB por imagen.
+              Máximo 10 imágenes por producto. <strong>Formatos:</strong> JPEG, PNG, GIF, WebP. <strong>Tamaño máximo:</strong> 10 MB por imagen.
             </p>
             
             <%# Contenedor para vista previa de NUEVAS imágenes %>
@@ -409,7 +409,7 @@ document.addEventListener('turbo:load', () => {
 
         if (newCondition === 'used' && isEditing && currentStockValue !== '1') {
           showModal({
-            title: '📦 Advertencia de Inventario',
+            title: 'Advertencia de Inventario',
             message: `Estás cambiando la condición a 'Usado'. Esto hará que el stock se fije en 1 unidad. El campo de Stock será deshabilitado. ¿Confirmas el cambio?`,
             confirmText: 'Sí, Confirmar',
             confirmClass: 'bg-proyecto-error hover:bg-proyecto-error/90', 
@@ -426,7 +426,7 @@ document.addEventListener('turbo:load', () => {
         
         if (newCondition !== 'used' && audioPlayerExists) {
           showModal({
-            title: '⚠️ ADVERTENCIA de Audio',
+            title: 'ADVERTENCIA de Audio',
             message: 'Este producto tiene un audio asociado. Si cambias la condición a "Nuevo", el audio se eliminará permanentemente al guardar.\n\n¿Deseas continuar?',
             confirmText: 'Aceptar y Eliminar Audio',
             confirmClass: 'bg-proyecto-primary hover:bg-proyecto-primary/90', 
