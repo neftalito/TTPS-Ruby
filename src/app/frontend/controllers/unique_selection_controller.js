@@ -7,17 +7,14 @@ export default class extends Controller {
     this.updateOptions()
   }
 
-
   selectTargetConnected() {
     this.updateOptions()
   }
-
 
   selectTargetDisconnected() {
     this.updateOptions()
   }
 
- 
   change(event) {
     this.updateOptions()
   }
@@ -28,23 +25,22 @@ export default class extends Controller {
       .map(select => select.value)
       .filter(value => value !== "")
 
-
     this.selectTargets.forEach(select => {
       Array.from(select.options).forEach(option => {
 
         if (option.value === "") return
 
-
         const isSelectedElsewhere = selectedValues.includes(option.value) && select.value !== option.value
 
         if (isSelectedElsewhere) {
 
+          option.hidden = true 
+          option.style.display = "none"
           option.disabled = true
-          option.innerText = ` ${option.text.replace("", "")}` 
         } else {
-
+          option.hidden = false
+          option.style.display = ""
           option.disabled = false
-          option.innerText = option.text.replace("", "")
         }
       })
     })
