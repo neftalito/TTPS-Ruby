@@ -6,48 +6,48 @@
   </div>
 
   <div class="flex flex-wrap gap-3">
-    <%= link_to backstore_reports_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors" do %>
+    <%= link_to backstore_reports_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors w-full sm:w-auto justify-center" do %>
       Registro Ventas
     <% end %>
 
-    <%= link_to new_backstore_sale_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors" do %>
+    <%= link_to new_backstore_sale_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors w-full sm:w-auto justify-center" do %>
       Nueva Venta
     <% end %>
   </div>
 </header>
 
 <div class="bg-white p-4 mb-4 rounded-lg border border-proyecto-secondary shadow">
-  <%= form_with url: backstore_sales_path, 
-                method: :get, 
-                local: true, 
-                class: "flex flex-wrap justify-between gap-4" do |f| %>
+  <%= form_with url: backstore_sales_path,
+                method: :get,
+                local: true,
+                class: "space-y-4" do |f| %>
 
-    <div class="flex flex-wrap gap-4 items-center">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
-      <div>
+      <div class="w-full">
         <%= f.label :q, "Buscar", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.text_field :q,
                          value: params[:q],
                          placeholder: "Nombre o email",
-                         class: "mt-1 px-3 py-1 border rounded-md w-64" %>
+                         class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
 
-      <div>
+      <div class="w-full">
         <%= f.label :status, "Estado", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :status,
                      [["Todos", ""], ["Confirmadas", "confirmed"], ["Canceladas", "cancelled"]],
                      { selected: params[:status] },
-                     class: "mt-1 px-3 py-1 border rounded-md w-48" %>
+                     class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
 
     </div>
 
-    <div class="flex flex-col items-center justify-center gap-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-md">
       <%= f.submit "Filtrar",
                    name: nil,
                    class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" %>
 
-      
+
         <%= link_to "Limpiar filtros",
                     backstore_sales_path,
                     class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
@@ -95,7 +95,7 @@
     buttons << link_to(
       "Ver",
       backstore_sale_path(sale),
-      class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm"
+      class: "px-3 py-2 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm w-full sm:w-auto text-center"
     )
   end
 
@@ -107,19 +107,21 @@
         turbo_method: :patch,
         turbo_confirm: "¿Seguro que querés cancelar esta venta?"
       },
-      class: "px-3 py-1 bg-proyecto-error/80 text-white hover:bg-proyecto-error rounded-md text-sm"
+      class: "px-3 py-2 bg-proyecto-error/80 text-white hover:bg-proyecto-error rounded-md text-sm w-full sm:w-auto text-center"
     )
   end
 
   safe_join(buttons)
 end %>
 
-<%= render "backstore/shared/resource_table",
-           collection: @sales,
-           columns: sales_columns,
-           row_class: ->(sale) { sale.cancelled_at.present? ? "bg-proyecto-secondary/30" : nil },
-           empty_message: "No hay ventas registradas.",
-           actions: sales_actions,
-           actions_header: "" %>
+<div class="shadow border border-proyecto-secondary rounded-lg bg-white p-2 sm:p-4">
+  <%= render "backstore/shared/resource_table",
+             collection: @sales,
+             columns: sales_columns,
+             row_class: ->(sale) { sale.cancelled_at.present? ? "bg-proyecto-secondary/30" : nil },
+             empty_message: "No hay ventas registradas.",
+             actions: sales_actions,
+             actions_header: "" %>
+</div>
 
 <%= render "shared/pagination", collection: @sales, params: request.query_parameters %>

@@ -8,7 +8,7 @@
   <% if can? :create, User %>
     <%= link_to "Nuevo usuario",
                 new_backstore_user_path,
-                class: "px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent" %>
+                class: "px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent w-full sm:w-auto text-center" %>
   <% end %>
 </header>
 
@@ -16,45 +16,45 @@
   <%= form_with url: backstore_users_path,
                 method: :get,
                 local: true,
-                class: "flex flex-wrap justify-between gap-4" do |f| %>
+                class: "space-y-4" do |f| %>
 
     <!-- Filtros a la izquierda -->
-    <div class="flex flex-wrap gap-4 items-center">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
       <!-- Buscar por email -->
-      <div>
+      <div class="w-full">
         <%= f.label :q, "Buscar email", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.text_field :q,
                          value: params[:q],
                          placeholder: "Ingrese email",
-                         class: "mt-1 px-3 py-1 border rounded-md w-48" %>
+                         class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
 
       <!-- Filtrar por rol -->
-      <div>
+      <div class="w-full">
         <%= f.label :role, "Rol", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :role,
                      [["Todos", ""], ["Administrador", :admin], ["Manager", :manager], ["Empleado", :employee]],
                      { selected: params[:role] },
-                     class: "mt-1 px-3 py-1 border rounded-md" %>
+                     class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
 
       <!-- Filtrar eliminados -->
-      <div>
+      <div class="w-full">
         <%= f.label :status, "Estado", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :status,
                      [["Activos", ""], ["Eliminados", "deleted"], ["Todos", "all"]],
                      { selected: params[:status] },
-                     class: "mt-1 px-3 py-1 border rounded-md" %>
+                     class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
 
     </div>
 
     <!-- Botones a la derecha, centrados, uno debajo del otro -->
-    <div class="flex flex-col items-center justify-center gap-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-md">
       <%= f.submit "Filtrar",
                    name: nil,
-                   class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+                   class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" %>
 
       <%= link_to "Limpiar filtros",
                   backstore_users_path,
@@ -102,7 +102,7 @@
                 turbo_method: :patch,
                 turbo_confirm: "¿Seguro que querés restaurar este usuario?"
               },
-              class: "px-3 py-1 bg-proyecto-success text-white hover:bg-proyecto-success/80 rounded-md text-sm"
+              class: "px-3 py-2 bg-proyecto-success text-white hover:bg-proyecto-success/80 rounded-md text-sm w-full sm:w-auto text-center"
     end
   else
     buttons = []
@@ -111,7 +111,7 @@
       buttons << link_to(
         "Editar",
         edit_backstore_user_path(user),
-        class: "px-3 py-1 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm"
+        class: "px-3 py-2 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm w-full sm:w-auto text-center"
       )
     end
 
@@ -123,7 +123,7 @@
           turbo_method: :delete,
           turbo_confirm: "¿Seguro que querés eliminar este usuario?"
         },
-        class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm"
+        class: "px-3 py-2 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm w-full sm:w-auto text-center"
       )
     end
 
@@ -131,12 +131,14 @@
   end
 end %>
 
-<%= render "backstore/shared/resource_table",
-           collection: @users,
-           columns: user_columns,
-           row_class: ->(user) { user.deleted? ? "bg-proyecto-secondary/30 opacity-70" : nil },
-           empty_message: "No hay usuarios para mostrar.",
-           actions: user_actions %>
+<div class="shadow border border-proyecto-secondary rounded-lg bg-white p-2 sm:p-4">
+  <%= render "backstore/shared/resource_table",
+             collection: @users,
+             columns: user_columns,
+             row_class: ->(user) { user.deleted? ? "bg-proyecto-secondary/30 opacity-70" : nil },
+             empty_message: "No hay usuarios para mostrar.",
+             actions: user_actions %>
+</div>
 
 
 <%= render "shared/pagination", collection: @users, params: request.query_parameters %>
