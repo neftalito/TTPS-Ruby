@@ -13,9 +13,12 @@ class Product < ApplicationRecord
   
   scope :available_products, -> { kept.includes(:category).order(created_at: :desc) }
   
+  validates :name, presence: true
+  validates :description, presence: true
   validates :author, presence: true
+  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :stock, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :last_modified_at, presence: true
-  validates :stock, numericality: { greater_than_or_equal_to: 0 }
   validates :release_year, 
             presence: true,
             numericality: { 

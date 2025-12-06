@@ -7,11 +7,13 @@
 
   <div class="flex flex-wrap gap-3">
     <%= link_to backstore_reports_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors w-full sm:w-auto justify-center" do %>
-      Reporte de Ventas
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Reporte de Ventas</span>
     <% end %>
 
     <%= link_to new_backstore_sale_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors w-full sm:w-auto justify-center" do %>
-      Nueva Venta
+      <i class="fa-solid fa-cart-plus"></i>
+      <span>Nueva Venta</span>
     <% end %>
   </div>
 </header>
@@ -43,14 +45,18 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-md">
-      <%= f.submit "Filtrar",
+      <%= f.button type: :submit,
                    name: nil,
-                   class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" %>
+                   class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" do %>
+        <i class="fa-solid fa-filter"></i>
+        <span>Filtrar</span>
+      <% end %>
 
-
-        <%= link_to "Limpiar filtros",
-                    backstore_sales_path,
-                    class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+      <%= link_to backstore_sales_path,
+                  class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" do %>
+        <i class="fa-solid fa-eraser"></i>
+        <span>Limpiar filtros</span>
+      <% end %>
     </div>
 
   <% end %>
@@ -95,7 +101,7 @@
     buttons << link_to(
       "Ver",
       backstore_sale_path(sale),
-      class: "px-3 py-2 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm w-full sm:w-auto text-center"
+      class: "px-3 py-2 bg-proyecto-info text-proyecto-bg hover:bg-proyecto-info/90 rounded-md text-sm w-full sm:w-auto text-center"
     )
   end
 
@@ -107,7 +113,7 @@
         turbo_method: :patch,
         turbo_confirm: "¿Seguro que querés cancelar esta venta?"
       },
-      class: "px-3 py-2 bg-proyecto-error/80 text-white hover:bg-proyecto-error rounded-md text-sm w-full sm:w-auto text-center"
+      class: "px-3 py-2 bg-proyecto-error text-proyecto-bg hover:bg-proyecto-error/90 rounded-md text-sm w-full sm:w-auto text-center"
     )
   end
 

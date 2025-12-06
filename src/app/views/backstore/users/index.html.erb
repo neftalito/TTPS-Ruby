@@ -6,9 +6,11 @@
   </div>
 
   <% if can? :create, User %>
-    <%= link_to "Nuevo usuario",
-                new_backstore_user_path,
-                class: "px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent w-full sm:w-auto text-center" %>
+    <%= link_to new_backstore_user_path,
+                class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent w-full sm:w-auto justify-center" do %>
+      <i class="fa-solid fa-user-plus"></i>
+      <span>Nuevo usuario</span>
+    <% end %>
   <% end %>
 </header>
 
@@ -52,13 +54,18 @@
 
     <!-- Botones a la derecha, centrados, uno debajo del otro -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-md">
-      <%= f.submit "Filtrar",
+      <%= f.button type: :submit,
                    name: nil,
-                   class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" %>
+                   class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" do %>
+        <i class="fa-solid fa-filter"></i>
+        <span>Filtrar</span>
+      <% end %>
 
-      <%= link_to "Limpiar filtros",
-                  backstore_users_path,
-                  class: "px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" %>
+      <%= link_to backstore_users_path,
+                  class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" do %>
+        <i class="fa-solid fa-eraser"></i>
+        <span>Limpiar filtros</span>
+      <% end %>
     </div>
 
   <% end %>
@@ -102,7 +109,7 @@
                 turbo_method: :patch,
                 turbo_confirm: "¿Seguro que querés restaurar este usuario?"
               },
-              class: "px-3 py-2 bg-proyecto-success text-white hover:bg-proyecto-success/80 rounded-md text-sm w-full sm:w-auto text-center"
+              class: "px-3 py-2 bg-proyecto-success text-white hover:bg-proyecto-success/90 rounded-md text-sm w-full sm:w-auto text-center"
     end
   else
     buttons = []
@@ -111,7 +118,7 @@
       buttons << link_to(
         "Editar",
         edit_backstore_user_path(user),
-        class: "px-3 py-2 bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg rounded-md text-sm w-full sm:w-auto text-center"
+        class: "px-3 py-2 bg-proyecto-primary text-proyecto-bg hover:bg-proyecto-primary/90 rounded-md text-sm w-full sm:w-auto text-center"
       )
     end
 
@@ -123,7 +130,7 @@
           turbo_method: :delete,
           turbo_confirm: "¿Seguro que querés eliminar este usuario?"
         },
-        class: "px-3 py-2 bg-proyecto-accent text-proyecto-bg hover:bg-proyecto-primary rounded-md text-sm w-full sm:w-auto text-center"
+        class: "px-3 py-2 bg-proyecto-error text-proyecto-bg hover:bg-proyecto-error/90 rounded-md text-sm w-full sm:w-auto text-center"
       )
     end
 

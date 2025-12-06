@@ -24,6 +24,7 @@
 - Además, se tomó la decisión de limitar la cantidad de imágenes totales que un producto puede tener a 10; que los formatos permitidos sean JPG, PNG, GIF, WEBP; y que el tamaño máximo sea de 10Mb
 - En los audios, para los productos usados, decidimos que el límite de tamaño sea de 15Mb y que los formatos permitidos sean MP3, WAV, OGG, M4A y FLAC
 - También se tomó la decisión de que la imágen de portada de un producto va a ser la primer imágen que fue subida. En caso de ser eliminada, la siguiente imágen pasará a ser la portada
+- tambien se decidió que el precio del producto al agregarlo en una venta, se obtiene automáticamente por el precio actual del producto, debido a que no se especifica si hay descuentos o cupones
 
 # Notas para desarrolladores
 ## Instalación de dependencias del Gemfile

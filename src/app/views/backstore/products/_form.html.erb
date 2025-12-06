@@ -318,18 +318,22 @@
 
         <%# BOTONES DE ACCIÓN %>
         <div class="pt-8 border-t border-gray-300 flex flex-col sm:flex-row justify-end gap-4">
-          
+          <% primary_label = @product.persisted? ? "Guardar Cambios" : "Crear Producto" %>
+          <% primary_icon = @product.persisted? ? "fa-floppy-disk" : "fa-circle-plus" %>
+
           <%# Botón Secundario (Regresar/Cancelar) %>
-          <%= link_to "Regresar a Panel", @product.persisted? ? backstore_product_path(@product) : backstore_products_path, 
-                      class: "px-8 py-3 border border-gray-300 rounded-lg 
-                              **text-proyecto-text/80** bg-gray-100 hover:bg-gray-200 
-                              transition duration-200 font-medium text-center tracking-wide" %>
-          
+          <%= link_to @product.persisted? ? backstore_product_path(@product) : backstore_products_path,
+                      class: "inline-flex items-center justify-center gap-2 px-8 py-3 border border-gray-300 rounded-lg text-proyecto-text/80 bg-gray-100 hover:bg-gray-200 transition duration-200 font-medium text-center tracking-wide" do %>
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Cancelar</span>
+          <% end %>
+
           <%# Botón Primario (Submit) - Color primario del proyecto %>
-          <%= f.submit (@product.persisted? ? "Guardar Cambios" : "Crear Producto"), 
-                      class: "px-8 py-3 bg-proyecto-primary text-white rounded-lg 
-                              font-bold hover:bg-proyecto-primary/90 transition duration-200 
-                              cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center tracking-wider" %>
+          <%= f.button type: :submit,
+                       class: "inline-flex items-center justify-center gap-2 px-8 py-3 bg-proyecto-primary text-white rounded-lg font-bold hover:bg-proyecto-primary/90 transition duration-200 cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center tracking-wider" do %>
+            <i class="fa-solid <%= primary_icon %>"></i>
+            <span><%= primary_label %></span>
+          <% end %>
         </div>
 
       </div>

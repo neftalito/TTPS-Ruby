@@ -9,14 +9,13 @@ class Sale < ApplicationRecord
 
   accepts_nested_attributes_for :sale_items, allow_destroy: true
 
+  before_save :calculate_total
+  after_create :decrement_stock_from_products
   before_destroy :prevent_destruction
 
   validate :validate_stock_availability, on: :create
   validate :must_have_at_least_one_item
 
-  before_save :calculate_total
-
-  after_create :decrement_stock_from_products
   def discard
     errors.add(:base, SALES_IMMUTABLE_MESSAGE)
     false
@@ -27,24 +26,21 @@ class Sale < ApplicationRecord
   end
 
   def self.delete_all(*args)
-    if Rails.env.development? && ENV["SKIP_SALE_PROTECTION"] == "1"
-      super
-    else
-      raise ActiveRecord::ReadOnlyRecord, SALES_IMMUTABLE_MESSAGE
-    end
+    raise ActiveRecord::ReadOnlyRecord, SALES_IMMUTABLE_MESSAGE unless Rails.env.development? && ENV["SKIP_SALE_PROTECTION"] == "1"
+
+    super
   end
 
   class << self
     alias destroy_all delete_all
   end
 
-  
   def cancel!
     return if cancelled?
 
     ActiveRecord::Base.transaction do
       update!(cancelled_at: Time.current)
-      
+
       sale_items.each do |item|
         item.product.increment_stock!(item.quantity)
       end
@@ -54,8 +50,8 @@ class Sale < ApplicationRecord
   def cancelled?
     cancelled_at.present?
   end
-  private
 
+  private
 
   def calculate_total
     self.total = sale_items.reduce(0) do |sum, item|
@@ -69,7 +65,8 @@ class Sale < ApplicationRecord
   def validate_stock_availability
     sale_items.each do |item|
       if item.product && !item.product.has_stock?(item.quantity)
-        errors.add(:base, "No hay suficiente stock para el producto: #{item.product.label_for_select}, solicitado: #{item.quantity}, disponible: #{item.product.stock}")
+        errors.add(:base,
+                   "No hay suficiente stock para el producto: #{item.product.label_for_select}, solicitado: #{item.quantity}, disponible: #{item.product.stock}")
       end
     end
   end
@@ -86,8 +83,8 @@ class Sale < ApplicationRecord
   end
 
   def must_have_at_least_one_item
-    if sale_items.reject(&:marked_for_destruction?).empty?
-      errors.add(:base, "Debes agregar al menos un producto a la venta.")
-    end
+    return unless sale_items.reject(&:marked_for_destruction?).empty?
+
+    errors.add(:base, "Debes agregar al menos un producto a la venta.")
   end
 end

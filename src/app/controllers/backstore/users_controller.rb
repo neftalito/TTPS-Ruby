@@ -3,30 +3,26 @@ module Backstore
     load_and_authorize_resource
 
     before_action :prevent_self_role_change, only: :update
-    before_action :prevent_manager_assign_admin, only: [:create, :update]
+    before_action :prevent_manager_assign_admin, only: %i[create update]
 
     def index
       @users = User.all
 
       # Filtro por estado (activos, eliminados, todos)
-      case params[:status]
-      when "deleted"
-        @users = @users.only_deleted
-      when "all"
-        @users = @users.with_deleted
-      else
-        @users = @users.kept
-      end
+      @users = case params[:status]
+               when "deleted"
+                 @users.only_deleted
+               when "all"
+                 @users.with_deleted
+               else
+                 @users.kept
+               end
 
       # Filtro por rol
-      if params[:role].present?
-        @users = @users.where(role: params[:role])
-      end
+      @users = @users.where(role: params[:role]) if params[:role].present?
 
       # Búsqueda por email
-      if params[:q].present?
-        @users = @users.where("LOWER(email) LIKE ?", "%#{params[:q].downcase}%")
-      end
+      @users = @users.where("LOWER(email) LIKE ?", "%#{params[:q].downcase}%") if params[:q].present?
 
       # Paginación con per_page dinámico
       per_page = params[:per_page] == "all" ? @users.count : (params[:per_page] || 25).to_i
@@ -37,6 +33,8 @@ module Backstore
       @user = User.new
     end
 
+    def edit; end
+
     def create
       @user = User.new(user_params)
 
@@ -46,8 +44,6 @@ module Backstore
         render :new, status: :unprocessable_entity
       end
     end
-
-    def edit; end
 
     def update
       sanitized_params = user_params.dup
@@ -89,20 +85,20 @@ module Backstore
     def prevent_self_role_change
       return unless @user == current_user
 
-      if params[:user][:role] && params[:user][:role] != @user.role
-        redirect_to backstore_users_path,
-                    alert: "No podés cambiar tu propio rol."
-      end
+      return unless params[:user][:role] && params[:user][:role] != @user.role
+
+      redirect_to backstore_users_path,
+                  alert: "No podés cambiar tu propio rol."
     end
 
     # Un gerente NO puede asignar ni cambiar un rol a administrador
     def prevent_manager_assign_admin
       return unless current_user.manager?
 
-      if params[:user][:role] == "admin"
-        redirect_to backstore_users_path,
-                    alert: "Un gerente no puede asignar el rol de administrador."
-      end
+      return unless params[:user][:role] == "admin"
+
+      redirect_to backstore_users_path,
+                  alert: "Un gerente no puede asignar el rol de administrador."
     end
 
     def user_params

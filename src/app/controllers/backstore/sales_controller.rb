@@ -1,7 +1,7 @@
 module Backstore
   class SalesController < BaseController
-    before_action :authorize_sale_collection!, only: [:index, :new, :create]
-    before_action :set_sale, only: [:show, :cancel]
+    before_action :authorize_sale_collection!, only: %i[index new create]
+    before_action :set_sale, only: %i[show cancel]
     before_action -> { authorize! :read, @sale }, only: :show
     before_action -> { authorize! :update, @sale }, only: :cancel
 
@@ -26,11 +26,24 @@ module Backstore
       @sales = @sales.page(params[:page]).per(per_page)
     end
 
+    def show
+      respond_to do |format|
+        format.html
+        format.pdf do
+          render pdf: "factura_#{@sale.id}",
+                 template: "backstore/sales/invoice",
+                 layout: "pdf",
+                 formats: [:html],
+                 disposition: "attachment"
+        end
+      end
+    end
+
     def new
       authorize! :create, Sale
       @sale = Sale.new
 
-      @sale.sale_items.build 
+      @sale.sale_items.build
 
       @products = Product.available_products
     end
@@ -39,7 +52,7 @@ module Backstore
       authorize! :create, Sale
       @sale = Sale.new(sale_params)
 
-      @sale.user = current_user 
+      @sale.user = current_user
 
       if @sale.save
 
@@ -51,22 +64,7 @@ module Backstore
       end
     end
 
-    def show
-      respond_to do |format|
-        format.html
-        format.pdf do
-          render pdf: "factura_#{@sale.id}", 
-                 template: "backstore/sales/invoice", 
-                 layout: "pdf",
-                 formats: [:html],
-                 disposition: "attachment"
-        end
-      end
-    end
-
     def cancel
-
-
       if @sale.cancel!
         redirect_to backstore_sales_path, notice: "Venta cancelada y stock restaurado."
       else
@@ -87,10 +85,10 @@ module Backstore
 
     def sale_params
       params.require(:sale).permit(
-        :buyer_name, 
-        :buyer_email, 
+        :buyer_name,
+        :buyer_email,
         :buyer_dni,
-        sale_items_attributes: [:product_id, :quantity, :_destroy]
+        sale_items_attributes: %i[product_id quantity _destroy]
       )
     end
   end

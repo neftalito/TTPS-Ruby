@@ -1,5 +1,5 @@
 class CartsController < ApplicationController
-  before_action :set_cart, only: %i[ show edit update destroy ]
+  before_action :set_cart, only: %i[show edit update destroy]
 
   # GET /carts or /carts.json
   def index
@@ -7,8 +7,7 @@ class CartsController < ApplicationController
   end
 
   # GET /carts/1 or /carts/1.json
-  def show
-  end
+  def show; end
 
   # GET /carts/new
   def new
@@ -16,8 +15,7 @@ class CartsController < ApplicationController
   end
 
   # GET /carts/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /carts or /carts.json
   def create
@@ -58,13 +56,14 @@ class CartsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_cart
-      @cart = Cart.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def cart_params
-      params.expect(cart: [ :user_id, :status ])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_cart
+    @cart = Cart.find(params.expect(:id))
+  end
+
+  # Only allow a list of trusted parameters through.
+  def cart_params
+    params.expect(cart: %i[user_id status])
+  end
 end

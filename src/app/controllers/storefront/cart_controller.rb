@@ -1,6 +1,5 @@
 module Storefront
   class CartController < BaseController
-    def show
-    end
+    def show; end
   end
 end
