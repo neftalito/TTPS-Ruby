@@ -22,49 +22,49 @@
     <div class="min-w-full">
       <table class="w-full table-auto divide-y divide-proyecto-secondary">
         <thead class="bg-proyecto-secondary/80">
-          <tr>
-            <% columns.each do |column| %>
-              <% header_title = column[:header] || column[:attribute].to_s.humanize %>
-              <% header_class = column[:header_class] || default_header_class %>
-              <th class="<%= header_class %>"><%= header_title %></th>
-            <% end %>
-            <% if actions.present? %>
-              <th class="<%= default_header_class.gsub('text-left', 'text-center') %>"><%= actions_header %></th>
-            <% end %>
-          </tr>
+        <tr>
+          <% columns.each do |column| %>
+            <% header_title = column[:header] || column[:attribute].to_s.humanize %>
+            <% header_class = column[:header_class] || default_header_class %>
+            <th class="<%= header_class %>"><%= header_title %></th>
+          <% end %>
+          <% if actions.present? %>
+            <th class="<%= default_header_class.gsub('text-left', 'text-center') %>"><%= actions_header %></th>
+          <% end %>
+        </tr>
         </thead>
         <tbody class="divide-y divide-proyecto-secondary/70">
-          <% if collection.any? %>
-            <% collection.each do |record| %>
-              <% row_classes = row_class.respond_to?(:call) ? row_class.call(record) : row_class %>
-              <tr class="<%= row_classes %>">
-                <% columns.each do |column| %>
-                  <% cell_class = column[:cell_class] || default_cell_class %>
-                  <% value = if column[:value].respond_to?(:call)
-                               column[:value].call(record)
-                             elsif column[:attribute]
-                               record.public_send(column[:attribute])
-                             else
-                               ""
-                             end %>
-                  <td class="<%= cell_class %>"><%= value %></td>
-                <% end %>
-                <% if actions.present? %>
-                  <td class="px-6 py-4 whitespace-normal break-words">
-                    <div class="flex flex-col sm:justify-end items-stretch sm:items-center gap-2 sm:gap-3">
-                      <%= actions.call(record) %>
-                    </div>
-                  </td>
-                <% end %>
-              </tr>
-            <% end %>
-          <% else %>
-            <tr>
-              <td colspan="<%= columns.size + (actions.present? ? 1 : 0) %>" class="px-6 py-10 text-center text-proyecto-text text-lg opacity-70">
-                <%= empty_message %>
-              </td>
+        <% if collection.any? %>
+          <% collection.each do |record| %>
+            <% row_classes = row_class.respond_to?(:call) ? row_class.call(record) : row_class %>
+            <tr class="<%= row_classes %>">
+              <% columns.each do |column| %>
+                <% cell_class = column[:cell_class] || default_cell_class %>
+                <% value = if column[:value].respond_to?(:call)
+                             column[:value].call(record)
+                           elsif column[:attribute]
+                             record.public_send(column[:attribute])
+                           else
+                             ""
+                           end %>
+                <td class="<%= cell_class %>"><%= value %></td>
+              <% end %>
+              <% if actions.present? %>
+                <td class="px-6 py-4 whitespace-normal break-words">
+                  <div class="flex flex-col gap-2 w-full">
+                    <%= actions.call(record).to_s.gsub('class="', 'class="w-full ').html_safe %>
+                  </div>
+                </td>
+              <% end %>
             </tr>
           <% end %>
+        <% else %>
+          <tr>
+            <td colspan="<%= columns.size + (actions.present? ? 1 : 0) %>" class="px-6 py-10 text-center text-proyecto-text text-lg opacity-70">
+              <%= empty_message %>
+            </td>
+          </tr>
+        <% end %>
         </tbody>
       </table>
     </div>
@@ -94,8 +94,8 @@
           <% if actions.present? %>
             <% actions_output = actions.call(record) %>
             <% if actions_output.present? %>
-              <div class="pt-1 flex flex-col gap-2">
-                <%= actions_output %>
+              <div class="pt-1 flex flex-col gap-2 items-center w-full">
+                <%= actions_output.to_s.gsub('class="', 'class="w-full ').html_safe %>
               </div>
             <% end %>
           <% end %>
