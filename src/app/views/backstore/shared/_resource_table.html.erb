@@ -29,7 +29,7 @@
               <th class="<%= header_class %>"><%= header_title %></th>
             <% end %>
             <% if actions.present? %>
-              <th class="<%= default_header_class.gsub('text-left', 'text-right') %>"><%= actions_header %></th>
+              <th class="<%= default_header_class.gsub('text-left', 'text-center') %>"><%= actions_header %></th>
             <% end %>
           </tr>
         </thead>
@@ -51,7 +51,7 @@
                 <% end %>
                 <% if actions.present? %>
                   <td class="px-6 py-4 whitespace-normal break-words">
-                    <div class="flex flex-col sm:flex-row sm:justify-end items-stretch sm:items-center gap-2 sm:gap-3">
+                    <div class="flex flex-col sm:justify-end items-stretch sm:items-center gap-2 sm:gap-3">
                       <%= actions.call(record) %>
                     </div>
                   </td>

@@ -121,7 +121,7 @@ class Product < ApplicationRecord
     images.each do |image|
       # Validar formato
       unless valid_formats.include?(image.content_type)
-        errors.add(:images, "#{image.filename} no es un formato válido. Formatos permitidos: JPEG, PNG, GIF, WebP")
+        errors.add(:images, "#{image.filename} no es un formato válido. Formatos permitidos: JPEG,JPG, PNG, GIF, WebP")
       end
       
       # Validar tamaño
