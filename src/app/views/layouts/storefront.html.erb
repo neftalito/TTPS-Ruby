@@ -1,104 +1,148 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Disquería</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="App">
-    <meta name="mobile-web-app-capable" content="yes">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>RecordAR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="App">
+  <meta name="mobile-web-app-capable" content="yes">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= yield :head %>
+  <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+  <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+  <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="icon" href="/icon.png" type="image/png">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon.png">
 
-    <%= vite_client_tag %>
-    <%= vite_javascript_tag 'application' %>
-  </head>
+  <%= vite_client_tag %>
+  <%= vite_javascript_tag 'application' %>
+</head>
 
-  <body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="bg-proyecto-bg text-proyecto-text min-h-screen flex flex-col">
 
-    <!-- NAVBAR -->
-    <nav class="bg-white shadow sticky top-0 z-30">
-      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<!-- NAVBAR -->
+<nav class="bg-proyecto-primary text-white shadow sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        <!-- LOGO -->
-        <%= link_to root_path, class: "text-2xl font-bold text-gray-800 hover:text-gray-600" do %>
-          Disquería
+    <!-- LOGO -->
+    <%= link_to root_path, class: "text-2xl font-bold text-white hover:text-proyecto-secondary" do %>
+      RecordAR
+    <% end %>
+
+    <!-- NAV LINKS (desktop) -->
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+      <%= link_to root_path,
+                  class: "text-proyecto-secondary hover:text-proyecto-accent transition flex items-center gap-2" do %>
+        <i class="fa-solid fa-house"></i>
+        <span>Inicio</span>
+      <% end %>
+
+      <%= link_to storefront_products_path,
+                  class: "text-proyecto-secondary hover:text-proyecto-accent transition flex items-center gap-2" do %>
+        <i class="fa-solid fa-compact-disc"></i>
+        <span>Catálogo</span>
+      <% end %>
+
+      <% if user_signed_in? %>
+        <%= link_to backstore_root_path,
+                    class: "text-proyecto-secondary hover:text-proyecto-accent transition flex items-center gap-2" do %>
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Panel de administración</span>
         <% end %>
+      <% else %>
+        <%= link_to new_user_session_path,
+                    class: "text-proyecto-secondary hover:text-proyecto-accent transition flex items-center gap-2" do %>
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Iniciar Sesión</span>
+        <% end %>
+      <% end %>
+    </div>
 
-        <!-- NAV LINKS (desktop) -->
-        <div class="hidden md:flex items-center gap-6">
-          <%= link_to "Inicio", root_path, class: "hover:text-blue-600 transition" %>
-          <%= link_to "Catálogo", storefront_products_path, class: "hover:text-blue-600 transition" %>
-          <%= link_to "Buscar", storefront_search_path, class: "hover:text-blue-600 transition" %>
-          <%= link_to "Iniciar Sesión", new_user_session_path, class: "hover:text-blue-600 transition" %>
-        </div>
+    <!-- MOBILE MENU BUTTON -->
+    <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')"
+            class="md:hidden text-proyecto-secondary text-2xl">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
 
-        <!-- MOBILE MENU BUTTON -->
-        <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')"
-                class="md:hidden text-gray-700 text-2xl">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-      </div>
+  <!-- MOBILE MENU -->
+  <div id="mobileMenu" class="hidden md:hidden bg-proyecto-primary border-t border-proyecto-secondary/40 shadow px-6 py-3 text-white">
+    <div class="flex flex-col divide-y divide-proyecto-secondary/30">
 
-      <!-- MOBILE MENU -->
-      <div id="mobileMenu" class="hidden md:hidden bg-white border-t shadow px-6 py-3">
-        <div class="flex flex-col gap-3">
+      <%= link_to root_path,
+                  class: "py-3 flex items-center gap-3 hover:text-proyecto-accent" do %>
+        <i class="fa-solid fa-house"></i>
+        <span>Inicio</span>
+      <% end %>
 
-          <%= link_to "Inicio", root_path, class: "py-2 border-b hover:text-blue-600" %>
-          <%= link_to "Catálogo", storefront_products_path, class: "py-2 border-b hover:text-blue-600" %>
-          <%= link_to "Buscar", storefront_search_path, class: "py-2 border-b hover:text-blue-600" %>
+      <%= link_to storefront_products_path,
+                  class: "py-3 flex items-center gap-3 hover:text-proyecto-accent" do %>
+        <i class="fa-solid fa-compact-disc"></i>
+        <span>Catálogo</span>
+      <% end %>
 
-        </div>
-      </div>
-    </nav>
+      <% if user_signed_in? %>
+        <%= link_to backstore_root_path,
+                    class: "py-3 flex items-center gap-3 hover:text-proyecto-accent" do %>
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Panel de administración</span>
+        <% end %>
+      <% else %>
+        <%= link_to new_user_session_path,
+                    class: "py-3 flex items-center gap-3 hover:text-proyecto-accent" do %>
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Iniciar Sesión</span>
+        <% end %>
+      <% end %>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 max-w-7xl mx-auto px-6 py-6">
-      <%= yield %>
-    </main>
+    </div>
+  </div>
+</nav>
 
-    <!-- FOOTER -->
-    <footer class="bg-gray-900 text-white py-6 mt-10">
-      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- MAIN CONTENT -->
+<main class="flex-1 w-full">
+  <div class="max-w-7xl mx-auto px-6 py-6">
+    <%= yield %>
+  </div>
+</main>
 
-        <div>
-          <h3 class="text-lg font-semibold mb-2">Disquería</h3>
-          <p class="text-sm text-gray-300">
-            La mejor música, en vinilo y CD, nuevos y usados.
-          </p>
-        </div>
+<!-- FOOTER -->
+<footer class="bg-proyecto-primary text-white py-6 mt-10">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <div>
-          <h3 class="text-lg font-semibold mb-2">Navegación</h3>
-          <ul class="text-sm text-gray-300 space-y-1">
-            <li><%= link_to "Inicio", root_path, class: "hover:text-white" %></li>
-            <li><%= link_to "Catálogo", storefront_products_path, class: "hover:text-white" %></li>
-            <li><%= link_to "Buscar", storefront_search_path, class: "hover:text-white" %></li>
-          </ul>
-        </div>
+    <div>
+      <h3 class="text-lg font-semibold mb-2 text-proyecto-secondary">RecordAR</h3>
+      <p class="text-sm text-proyecto-secondary">
+        La mejor música, en vinilo y CD, nuevos y usados.
+      </p>
+    </div>
 
-        <div>
-          <h3 class="text-lg font-semibold mb-2">Contacto</h3>
-          <p class="text-sm text-gray-300">
-            podcast@example.com<br>
-            +54 11 5555-5555
-          </p>
-        </div>
+    <div>
+      <h3 class="text-lg font-semibold mb-2 text-proyecto-secondary">Navegación</h3>
+      <ul class="text-sm text-proyecto-secondary space-y-1">
+        <li><%= link_to "Inicio", root_path, class: "hover:text-proyecto-accent" %></li>
+        <li><%= link_to "Catálogo", storefront_products_path, class: "hover:text-proyecto-accent" %></li>
+      </ul>
+    </div>
 
-      </div>
+    <div>
+      <h3 class="text-lg font-semibold mb-2 text-proyecto-secondary">Contacto</h3>
+      <p class="text-sm text-proyecto-secondary">
+        recordar@example.com<br>
+        +54 11 5555-5555
+      </p>
+    </div>
 
-      <div class="text-center text-gray-500 text-sm mt-6">
-        © <%= Time.current.year %> Disquería. Todos los derechos reservados.
-      </div>
-    </footer>
+  </div>
 
-  </body>
+  <div class="text-center text-proyecto-secondary text-sm mt-6">
+    © <%= Time.current.year %> RecordAR. Todos los derechos reservados.
+  </div>
+</footer>
+
+</body>
 </html>

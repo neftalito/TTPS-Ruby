@@ -1,2 +1,63 @@
-<h1>Storefront::Home#index</h1>
-<p>Find me in app/views/storefront/home/index.html.erb</p>
+<section class="relative py-16 px-4 lg:px-16">
+
+  <!-- Fondo gris borroso que cubre toda la página -->
+  <div class="fixed inset-0 bg-gray-300/25 backdrop-blur-sm -z-10"></div>
+
+  <div class="max-w-screen-xl mx-auto lg:grid lg:grid-cols-2 gap-16 items-start relative z-10">
+
+    <!-- Texto en recuadro semitransparente con fade-in -->
+    <div class="bg-white/90 p-10 rounded-xl shadow-xl font-light text-gray-900 sm:text-lg opacity-0 animate-fadeIn">
+      <h1 class="text-5xl font-extrabold mb-4 tracking-tight">
+        <span class="text-indigo-600 animate-pulse">RecordAR</span>
+      </h1>
+
+      <h2 class="mb-6 text-3xl tracking-tight font-semibold text-gray-800">
+        Décadas conectando generaciones a través de la música
+      </h2>
+
+      <p class="mb-4">
+        En <strong>RecordsAR</strong> llevamos años conectando generaciones a través de la música. Desde vinilos clásicos hasta los discos más modernos, nuestro catálogo celebra cada época, cada artista y cada historia que la música tiene para contar.
+      </p>
+
+      <p>
+        Creemos que la música no solo se escucha, se vive. Nuestro compromiso es preservar la experiencia única de coleccionar y disfrutar de cada obra, haciendo que cada disco sea más que un producto: un viaje a la memoria y la pasión de quienes amamos la música.
+      </p>
+    </div>
+
+    <!-- Columna de imágenes con alturas distintas -->
+    <div class="flex flex-col gap-6 mt-8 lg:mt-0">
+
+      <div class="overflow-hidden rounded-lg" style="height: 380px;">
+        <img 
+          class="w-full h-full object-cover transform transition-transform duration-500 hover:scale-105" 
+          src="https://i.pinimg.com/736x/5f/05/8f/5f058f57923be672aeeb68121762f115.jpg" 
+          alt="Nuestro local"
+          draggable="false"
+        >
+      </div>
+
+      <div class="overflow-hidden rounded-lg" style="height: 280px;">
+        <img 
+          class="w-full h-full object-cover transform transition-transform duration-500 hover:scale-105" 
+          src="https://i.pinimg.com/736x/d9/c8/c9/d9c8c94b45725ec604114d40c8472c43.jpg" 
+          alt="Discos clásicos"
+          draggable="false"
+        >
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Animaciones fade-in -->
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 1s forwards;
+  }
+</style>

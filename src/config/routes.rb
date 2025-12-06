@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, skip: [:registrations]
+  devise_for :users, skip: [:registrations, :passwords]
 
   get "up" => "rails/health#show", as: :rails_health_check
 
@@ -10,14 +10,26 @@ Rails.application.routes.draw do
 
   namespace :backstore, path: "/admin" do
     root "dashboard#index"
+    get 'reports', to: 'reports#index', as: 'reports'
+    resources :products do
+      member do
+        patch :change_stock
+        patch :restore
+        delete :delete_image_attachment
+        delete :delete_audio_attachment
+      end
+    end
 
-    resources :products
     resources :sales do
       member do
         patch :cancel
       end
     end
-    resources :users
+    resources :users do
+      member do
+        patch :restore
+      end
+    end
     resources :categories
     resources :orders
   end
