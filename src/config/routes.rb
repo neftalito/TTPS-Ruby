@@ -31,13 +31,10 @@ Rails.application.routes.draw do
       end
     end
     resources :categories
-    resources :orders
   end
 
   namespace :storefront, path: "/" do
     resources :products, only: %i[index show]
-    resource :cart, only: %i[show]
-    resources :checkout, only: %i[index create]
     get "search", to: "search#index"
   end
 
