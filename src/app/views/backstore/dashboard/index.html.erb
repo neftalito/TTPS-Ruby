@@ -96,32 +96,50 @@
       <div class="px-6 py-4 bg-proyecto-secondary/5 border-b border-proyecto-secondary/20">
         <h3 class="font-bold text-proyecto-primary">Últimas Ventas</h3>
       </div>
-      
-      <div class="p-0">
-        <%= render "backstore/shared/resource_table", 
-            collection: @recent_sales,
-            empty_message: "No hay ventas recientes.",
-            columns: [
-              { 
-                header: "ID", 
-                value: ->(sale) { link_to "##{sale.id}", backstore_sale_path(sale), class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors font-mono" } 
-              },
-              { 
-                header: "Vendedor", 
-                value: ->(sale) { sale.user.email } 
-              },
-              { 
-                header: "Fecha", 
-                value: ->(sale) { time_ago_in_words(sale.created_at) } 
-              },
-              { 
-                header: "Total", 
-                header_class: "px-6 py-3 text-right text-xs font-medium text-proyecto-primary uppercase tracking-wider",
-                cell_class: "px-6 py-4 text-right font-bold text-proyecto-primary text-sm whitespace-nowrap",
-                value: ->(sale) { number_to_currency(sale.total, unit: "$", separator: ",", delimiter: ".", format: "%u%n") } 
-              }
-            ]
-        %>
+
+      <% if @recent_sales.any? %>
+        <table class="w-full text-sm text-left">
+          <thead class="bg-gray-50 text-gray-500 uppercase font-bold text-xs">
+          <tr>
+            <th class="px-6 py-3">ID</th>
+            <th class="px-6 py-3">Vendedor</th>
+            <th class="px-6 py-3 text-left">Fecha</th>
+            <th class="px-6 py-3 text-right">Total</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+          <% @recent_sales.each do |sale| %>
+            <tr class="hover:bg-gray-50 transition-colors group">
+              <td class="px-6 py-3 font-mono">
+                <%= link_to "##{sale.id}", backstore_sale_path(sale), class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors" %>
+              </td>
+
+              <td class="px-6 py-3 text-gray-600">
+                <%= sale.user.email %>
+              </td>
+
+              <td class="px-6 py-3 text-gray-500 text-left">
+                <%= time_ago_in_words(sale.created_at) %>
+              </td>
+
+              <td class="px-6 py-3 text-right font-bold text-proyecto-primary">
+                <%= number_to_currency(sale.total, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div class="flex flex-col items-center justify-center flex-1 py-12 text-center">
+          <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <p class="text-gray-500 font-medium">No hay ventas recientes</p>
+          <p class="text-xs text-gray-400 mt-1">Las nuevas ventas aparecerán aquí.</p>
+        </div>
+      <% end %>
       </div>
     </div>
 
