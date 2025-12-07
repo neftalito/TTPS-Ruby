@@ -8,23 +8,23 @@
 - Se decidió que todo modelo eliminable también puede ser recuperado
 - Se tomó la decisión de que los productos que no tienen stock se vean con un filtro de escala de grises en el frontstore
 - También se decidió que el stock sea visible desde el frontstore, para facilitar en la muestra del trabajo la actualización del mismo
-- Dashboard: Se decidió a mostrar informacion util en el Dashboard del backstore mostrando:
-  - Las cantidad de ventas y las ganancias generadas del empleado con le sesion iniciada,
-  - Botones de acceso directo a: creacion de venta, inventario de discos, y reportes de ventas,
+- Dashboard: Se decidió a mostrar información útil en el Dashboard del backstore mostrando:
+  - Las cantidad de ventas y las ganancias generadas del empleado con la sesion iniciada,
+  - Botones de acceso directo a: creación de venta, inventario de discos, y reportes de ventas,
   - Tablas relacionadas con las ventas totales del negocio (ultimos 7 dias y por genero),
-  - Tabla de stock critico, que muestra cuales son los discos (no usados) que tengan un stock <=5 y que al tocar en el titulo del disco te rediriga a la vista del mismo,
-  - Tabla que muestra las ultimas ventas (no canceladas) que se hicieron y que al tocar el id de venta te rediriga a la vista de la venta
-- Reportes de ventas: se decidio crear un apartado de reportes de ventas que muestra la inforamcion util de las ventas filtradas por espacio de tiempo (hoy, esta semana, este mes, este año, historico, y un personalizado que te permite elegir entre 2 fechas), mostrando:
+  - Tabla de stock crítico, que muestra cuáles son los discos (no usados) que tengan un stock menor o igual a 5; y que al tocar en el título del disco te redirija a la vista del mismo,
+  - Tabla que muestra las últimas ventas (no canceladas) que se hicieron; y que al tocar el id de venta te redirija a la vista de la venta
+- Reportes de ventas: se decidió crear un apartado de reportes de ventas que muestra la información útil de las ventas filtradas por rango de fechas (hoy, esta semana, este mes, este año, historico, y un personalizado que te permite elegir entre 2 fechas), mostrando:
   - Ingresos totales de las ventas
   - Cantidad de ventas confirmadas
   - Precio promedio por venta
   - Cantidad de discos vendidos
-  - Ademas de un listado de los discos mas vendidos de la pagina que puede ser paginado en 5, 10, 25, 50, 100, todos
-  - Ademas de poder exportar esa informacion filtrada en formato CSV y PDF
+  - Ademas de un listado de los discos más vendidos de la pagina que puede ser paginado en 5, 10, 25, 50, 100 o todos
+  - Ademas de poder exportar esa información filtrada en formato CSV y/o PDF
 - Además, se tomó la decisión de limitar la cantidad de imágenes totales que un producto puede tener a 10; que los formatos permitidos sean JPG, PNG, GIF, WEBP; y que el tamaño máximo sea de 10Mb
 - En los audios, para los productos usados, decidimos que el límite de tamaño sea de 15Mb y que los formatos permitidos sean MP3, WAV, OGG, M4A y FLAC
 - También se tomó la decisión de que la imágen de portada de un producto va a ser la primer imágen que fue subida. En caso de ser eliminada, la siguiente imágen pasará a ser la portada
-- Tambien se decidió que el precio del producto, al agregarlo en una venta, se obtiene automáticamente por el precio actual del producto, debido a que no se especifica si hay descuentos o cupones
+- También se decidió que el precio del producto, al agregarlo en una venta, se obtiene automáticamente por el precio actual del producto, debido a que no se especifica si hay descuentos o cupones
 - Otra decisión de diseño tomada es que el nombre con el que se va a identificar al usuario (es decir, la forma en la que se mostrará qué usuario está con su sesión iniciada) será tomado automáticamente del correo electrónico utilizado durante el inicio de sesión. Específicamente, se extrae la parte antes del @ en un correo. Por ejemplo, si tuvieramos el correo "ttps@ruby.com", el nombre "ttps" va a ser utilizado para ser mostrado en el navbar y en el dashboard del usuario. Para no mostrar el email completo.
 
 # Notas para desarrolladores
