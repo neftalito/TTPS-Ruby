@@ -37,9 +37,9 @@
       </div>
 
       <div class="w-full">
-        <%= f.label :category_id, "Categoría", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.label :category_id, "Género", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :category_id,
-                      [["Todas", ""]] + Category.all.map { |c| [c.name, c.id] },
+                      [["Todos los géneros", ""]] + Category.all.map { |c| [c.name, c.id] },
                       { selected: params[:category_id] },
                       class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
@@ -54,7 +54,7 @@
       <div class="w-full">
         <%= f.label :product_type, "Tipo", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :product_type,
-                      [["Todos", "all"], ["Vinilos", "vinyl"], ["CDs", "cd"]],
+                      [["Todos los tipos", "all"], ["Vinilos", "vinyl"], ["CDs", "cd"]],
                       { selected: params[:product_type] || "all" },
                       class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
@@ -62,7 +62,7 @@
       <div class="w-full">
         <%= f.label :condition, "Condición", class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :condition,
-                      [["Todos", "all"], ["Nuevos", "new"], ["Usados", "used"]],
+                      [["Todas las condiciones", "all"], ["Nuevos", "new"], ["Usados", "used"]],
                       { selected: params[:condition] || "all" },
                       class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>

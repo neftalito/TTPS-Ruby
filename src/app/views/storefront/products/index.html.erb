@@ -17,12 +17,12 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <%= f.text_field :name_q,
                          value: params[:name_q],
-                         placeholder: "Buscar por disco",
+                         placeholder: "Título del álbum",
                          class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
 
         <%= f.text_field :author_q,
                          value: params[:author_q],
-                         placeholder: "Buscar por artista",
+                         placeholder: "Autor o banda",
                          class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
 
         <%= f.number_field :release_year,
@@ -41,12 +41,12 @@
 
         <%= f.select :condition,
                      options_for_select([["Nuevos", "new"], ["Usados", "used"]], params[:condition]),
-                     { include_blank: "Todos los estados" },
+                     { include_blank: "Todas las condiciones" },
                      class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
 
         <%= f.select :category,
                      options_for_select(@categories&.map { |c| [c.name, c.id] } || [], params[:category]),
-                     { include_blank: "Todas las categorías" },
+                     { include_blank: "Todos los géneros" },
                      class: "px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" %>
       </div>
 

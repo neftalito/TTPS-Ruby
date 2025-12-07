@@ -35,8 +35,9 @@ class Product < ApplicationRecord
 
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
-  before_validation :force_stock_to_one_if_used, if: -> { condition_used? }
+  before_validation :force_stock_to_one_if_used, if: :should_force_stock_to_one?
   before_discard :reset_stock
+  validate :used_stock_cannot_exceed_one
 
   def label_for_select
     condicion = condition_new? ? "NUEVO" : "USADO"
@@ -119,9 +120,19 @@ class Product < ApplicationRecord
     update_column(:stock, 0)
   end
 
+  def should_force_stock_to_one?
+    condition_used? && (new_record? || will_save_change_to_condition?)
+  end
+
   def force_stock_to_one_if_used
-    # Esto asegura que si la condición es 'used', el stock no puede ser otro valor.
+    # Esto asegura que si la condición es 'used' al crear o cambiar el estado, el stock se normalice.
     self.stock = 1
+  end
+
+  def used_stock_cannot_exceed_one
+    return unless condition_used? && stock.present? && stock > 1
+
+    errors.add(:stock, "no puede ser mayor a 1 para productos usados")
   end
 
   def validate_images_format_and_size

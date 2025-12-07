@@ -1,5 +1,5 @@
 <div class="max-w-[95%] mx-auto mb-10">
-  
+
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-proyecto-primary">
       Hola, <%= current_user.email.split('@').first.capitalize %>
@@ -58,7 +58,7 @@
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    
+
     <div class="bg-white rounded-xl shadow-sm border border-red-200 overflow-hidden flex flex-col h-full">
       <div class="px-6 py-4 bg-red-50 border-b border-red-100 flex items-center justify-between">
         <h3 class="font-bold text-red-800 flex items-center gap-2">
@@ -73,7 +73,7 @@
             <% @low_stock_products.each do |product| %>
               <li class="flex justify-between items-center text-sm border-b border-red-50 last:border-0 pb-2 last:pb-0">
                 <%= link_to product.name, backstore_product_path(product), class: "text-gray-700 truncate max-w-[180px] hover:text-red-700 hover:underline transition-colors", title: product.name %>
-                
+
                 <span class="font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100"><%= product.stock %> u.</span>
               </li>
             <% end %>
@@ -96,39 +96,74 @@
       <div class="px-6 py-4 bg-proyecto-secondary/5 border-b border-proyecto-secondary/20">
         <h3 class="font-bold text-proyecto-primary">Últimas Ventas</h3>
       </div>
-      
+
       <% if @recent_sales.any? %>
-        <table class="w-full text-sm text-left">
-          <thead class="bg-gray-50 text-gray-500 uppercase font-bold text-xs">
+        <div class="space-y-4 p-4 sm:hidden">
+          <% @recent_sales.each do |sale| %>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+
+              <div class="flex justify-between mb-2">
+                <p class="text-xs text-gray-500 font-semibold">ID</p>
+                <%= link_to "##{sale.id}", backstore_sale_path(sale),
+                            class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors" %>
+              </div>
+
+              <div class="flex flex-col justify-between mb-2">
+                <p class="text-xs text-gray-500 font-semibold">Vendedor</p>
+                <p class="text-gray-700 text-left"><%= sale.user.email %></p>
+              </div>
+
+              <div class="flex flex-col justify-between mb-2">
+                <p class="text-xs text-gray-500 font-semibold">Fecha</p>
+                <p class="text-gray-600 text-left"><%= time_ago_in_words(sale.created_at) %></p>
+              </div>
+
+              <div class="flex flex-col justify-between">
+                <p class="text-xs text-gray-500 font-semibold">Total</p>
+                <p class="font-bold text-proyecto-primary">
+                  <%= number_to_currency(sale.total, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
+                </p>
+              </div>
+
+            </div>
+          <% end %>
+        </div>
+
+        <div class="hidden sm:block">
+          <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-500 uppercase font-bold text-xs">
             <tr>
               <th class="px-6 py-3">ID</th>
               <th class="px-6 py-3">Vendedor</th>
               <th class="px-6 py-3 text-left">Fecha</th>
               <th class="px-6 py-3 text-right">Total</th>
             </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
+            </thead>
+
+            <tbody class="divide-y divide-gray-100">
             <% @recent_sales.each do |sale| %>
               <tr class="hover:bg-gray-50 transition-colors group">
                 <td class="px-6 py-3 font-mono">
-                  <%= link_to "##{sale.id}", backstore_sale_path(sale), class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors" %>
+                  <%= link_to "##{sale.id}", backstore_sale_path(sale),
+                              class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors" %>
                 </td>
-                
+
                 <td class="px-6 py-3 text-gray-600">
                   <%= sale.user.email %>
                 </td>
-                
+
                 <td class="px-6 py-3 text-gray-500 text-left">
                   <%= time_ago_in_words(sale.created_at) %>
                 </td>
-                
+
                 <td class="px-6 py-3 text-right font-bold text-proyecto-primary">
                   <%= number_to_currency(sale.total, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
                 </td>
               </tr>
             <% end %>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       <% else %>
         <div class="flex flex-col items-center justify-center flex-1 py-12 text-center">
           <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-3">
@@ -140,7 +175,8 @@
           <p class="text-xs text-gray-400 mt-1">Las nuevas ventas aparecerán aquí.</p>
         </div>
       <% end %>
-    </div>
 
+    </div>
   </div>
+
 </div>
