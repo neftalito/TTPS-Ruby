@@ -72,6 +72,7 @@ class Product < ApplicationRecord
 
   def increment_stock!(quantity)
     self.stock += quantity
+    self.stock = 1 if condition_used? && stock > 1
     save!
   end
 
