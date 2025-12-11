@@ -92,6 +92,8 @@ conditions = Product.conditions.keys
   last_modified_at = Faker::Time.between(from: base_time, to: Time.current)
   deactivated_at = rand < 0.15 ? Faker::Time.between(from: last_modified_at, to: Time.current) : nil
 
+  selected_audio_path = condition == "used" ? Rails.root.join(audio_samples.sample) : nil
+
   product = Product.new(
     name: Faker::Music.album,
     description: Faker::Lorem.paragraph(sentence_count: 4),
@@ -120,6 +122,14 @@ conditions = Product.conditions.keys
     )
   end
 
+  if selected_audio_path
+    product.audio.attach(
+      io: File.open(selected_audio_path),
+      filename: File.basename(selected_audio_path),
+      content_type: Marcel::MimeType.for(Pathname.new(selected_audio_path))
+    )
+  end
+
   product.save!
 end
 puts "Creando ventas..."
@@ -132,8 +142,9 @@ raise "No hay usuarios para crear ventas" if all_users.empty?
 150.times do
   # Volvemos a consultar productos en cada vuelta por si se agotó el stock
   all_products = Product.where(published: true).where("stock > 0").to_a
-  
-  break if all_products.empty?
+  available_stock = all_products.index_with(&:stock)
+
+  break if available_stock.empty?
   
   user = all_users.sample
   created_at = Faker::Time.between(from: 12.months.ago, to: Time.current)
@@ -151,13 +162,16 @@ raise "No hay usuarios para crear ventas" if all_users.empty?
 
   # SaleItems
   rand(1..5).times do
-    product = all_products.sample
-    product.reload # Recargar stock actual del producto
-    
-    max_quantity = [product.stock, 3].min
+    eligible_products = available_stock.select { |_, stock| stock > 0 }.keys
+    break if eligible_products.empty?
+
+    product = eligible_products.sample
+    max_quantity = [available_stock[product], 3].min
     next if max_quantity < 1
-    
+
     quantity = rand(1..max_quantity)
+
+    available_stock[product] -= quantity
 
     sale.sale_items.build(
       product: product,
