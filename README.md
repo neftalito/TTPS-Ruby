@@ -64,6 +64,7 @@ npm install
 rails db:create db:migrate db:seed
 ```
 Si necesitás reiniciar todo desde cero, podés usar `bin/rails db:reset` (NOTA: esto también corre los seeds)
+
 6. Ejecutar la aplicación con Foreman
 Desde la carpeta `/src` ejecutar:
 ```bash
