@@ -1,4 +1,4 @@
-<div class="min-h-screen py-12 **bg-proyecto-bg**">
+<div class="min-h-screen py-12 **bg-proyecto-bg**" data-product-form-root>
   <div class="max-w-4xl mx-auto p-8 md:p-12 **bg-proyecto-secondary/10**   rounded-3xl **shadow-2xl border border-proyecto-text/10**   font-sans **text-proyecto-text**" data-turbo-cache="false">
     
     <header class="mb-10 border-b border-gray-300 pb-5 text-center">
@@ -42,7 +42,7 @@
             <div>
               <div class="input-group">
                 <%= f.label :name, "Título del Álbum", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
-                <%= f.text_field :name,
+                <%= f.text_field :name, placeholder: "Ingrese el título",
                     class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
                             bg-white text-gray-900 placeholder-gray-400 
                             focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
@@ -52,7 +52,7 @@
             <div>
               <div class="input-group">
                 <%= f.label :author, "Autor / Entidad Principal", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
-                <%= f.text_field :author, class: "block w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-900 placeholder-gray-400 focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
+                <%= f.text_field :author, placeholder: "Ingrese el autor o entidad principal", class: "block w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-900 placeholder-gray-400 focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
               </div>
              </div>
           </div>
@@ -60,7 +60,7 @@
           <div class="mt-8">
             <div class="input-group">
               <%= f.label :description, "Descripción", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
-              <%= f.text_area :description, rows: 4, # <-- CORRECCIÓN APLICADA AQUÍ
+              <%= f.text_area :description, rows: 4, placeholder: "Ingrese una descripción",
                   class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
                           bg-white text-gray-900 placeholder-gray-400 
                           focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
@@ -83,7 +83,7 @@
                   <%# Icono de peso en primary color %>
                   <span class="text-proyecto-primary sm:text-lg font-bold">$</span>
                 </div>
-                <%= f.number_field :price, step: 0.01, 
+                <%= f.number_field :price, step: 0.01, placeholder: "50.00",
                     class: "block w-full rounded-lg border border-gray-300 pl-8 pr-4 py-3 
                             bg-white text-gray-900 placeholder-gray-400 
                             focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200" %>
@@ -93,10 +93,10 @@
             <%# Campo: Stock Disponible %>
             <div>
               <%= f.label :stock, "Stock Disponible", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
-              <%= f.number_field :stock, min: 0, 
-                  class: "block w-full border border-gray-300 rounded-lg px-4 py-3 
-                          bg-white text-gray-900 placeholder-gray-400 
-                          focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200", 
+              <%= f.number_field :stock, min: 0, value: f.object.stock || 0,
+                  class: "block w-full border border-gray-300 rounded-lg px-4 py-3
+                          bg-white text-gray-900 placeholder-gray-400
+                          focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200",
                   id: "product_stock_field" %>
             </div>
             
@@ -147,7 +147,8 @@
               <%= f.number_field :release_year, 
                   class: "block w-full border border-gray-300 rounded-lg px-4 py-3 bg-white text-gray-900 focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200",
                   min: 1900,
-                  max: Date.current.year 
+                  max: Date.current.year,
+                  placeholder: "1900"
               %>
             </div>
           </div>
@@ -342,7 +343,11 @@
 </div>
 
 <script>
-document.addEventListener('turbo:load', () => {
+function initializeProductForm() {
+  const formRoot = document.querySelector('[data-product-form-root]');
+
+  if (!formRoot || formRoot.dataset.initialized === 'true') return;
+  formRoot.dataset.initialized = 'true';
   
   // Función Modal
   function showModal({ title, message, confirmText, confirmClass, cancelText, onConfirm, onCancel }) {
@@ -771,5 +776,9 @@ document.addEventListener('turbo:load', () => {
 
     updateCounter();
   }
-});
+}
+
+document.addEventListener('turbo:load', initializeProductForm);
+document.addEventListener('turbo:render', initializeProductForm);
+document.addEventListener('DOMContentLoaded', initializeProductForm);
 </script>
