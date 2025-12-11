@@ -43,11 +43,12 @@
                              class: "w-full px-4 py-3 rounded-lg border border-proyecto-text/20 bg-white text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
       </div>
 
-      <% if can? :manage, User %>
+      <% assignable_roles = assignable_roles_for(current_user) %>
+      <% if assignable_roles.any? %>
         <div class="space-y-1">
           <%= f.label :role, "Rol", class: "block text-sm font-medium text-proyecto-text/80" %>
           <%= f.select :role,
-                       User.roles.keys.map { |r| [translated_role(r), r] },
+                       assignable_roles.map { |r| [translated_role(r), r] },
                        {},
                        class: "w-full px-4 py-3 rounded-lg border border-proyecto-text/20 bg-white text-proyecto-primary focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
         </div>

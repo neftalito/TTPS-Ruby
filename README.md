@@ -27,6 +27,53 @@
 - También se decidió que el precio del producto, al agregarlo en una venta, se obtiene automáticamente por el precio actual del producto, debido a que no se especifica si hay descuentos o cupones
 - Otra decisión de diseño tomada es que el nombre con el que se va a identificar al usuario (es decir, la forma en la que se mostrará qué usuario está con su sesión iniciada) será tomado automáticamente del correo electrónico utilizado durante el inicio de sesión. Específicamente, se extrae la parte antes del @ en un correo. Por ejemplo, si tuvieramos el correo "ttps@ruby.com", el nombre "ttps" va a ser utilizado para ser mostrado en el navbar y en el dashboard del usuario. Para no mostrar el email completo.
 
+# Usuarios creados por defecto en el seed
+## Administrador
+- Usuario: `admin@sistema.com`
+- Contraseña: `admin123`
+## Gerente
+- Usuario: `manager@sistema.com`
+- Contraseña: `manager123`
+## Empleado
+- Usuario: `empleado@sistema.com`
+- Contraseña: `empleado123`
+
+# Requisitos previos
+- **Ruby 3.4.7**
+- **Sqlite3**
+- **Node.js** y **npm**
+
+# Cómo realizar la instalación
+1. Clonar el repositorio
+```bash
+git clone https://github.com/neftalito/TTPS-Ruby
+cd TTPS-Ruby/src
+```
+2. Configurar variables de entorno
+- Usa `.env.example` como plantilla para crear un archivo `.env` en la carpeta `/src`
+3. Instalar dependencias del Gemfile
+```bash
+bundle install
+```
+4. Instalar dependencias del package.json
+```bash
+npm install
+```
+5. Inicializar la base de datos
+```bash
+rails db:create db:migrate db:seed
+```
+Si necesitás reiniciar todo desde cero, podés usar `bin/rails db:reset` (NOTA: esto también corre los seeds)
+
+6. Ejecutar la aplicación con Foreman
+Desde la carpeta `/src` ejecutar:
+```bash
+foreman start -f Procfile.dev
+```
+7. Acceder a la aplicación
+- Frontstore: `http://localhost:3000`
+- Backstore: `http://localhost:3000/admin`
+
 # Notas para desarrolladores
 ## Instalación de dependencias del Gemfile
 ```bash
