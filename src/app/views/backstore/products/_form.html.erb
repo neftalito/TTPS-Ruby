@@ -93,7 +93,7 @@
             <%# Campo: Stock Disponible %>
             <div>
               <%= f.label :stock, "Stock Disponible", class: "block text-sm font-medium **text-proyecto-text/80** mb-1" %>
-              <%= f.number_field :stock, min: 0, value: f.object.stock || 0,
+              <%= f.number_field :stock, min: 0, value: f.object.persisted? ? f.object.stock : 0,
                   class: "block w-full border border-gray-300 rounded-lg px-4 py-3
                           bg-white text-gray-900 placeholder-gray-400
                           focus:border-proyecto-primary focus:ring-proyecto-primary transition duration-200",
@@ -459,10 +459,12 @@ function initializeProductForm() {
           stockInput.classList.add('opacity-70', 'cursor-not-allowed', 'bg-gray-100', 'text-gray-500');
           stockInput.classList.remove('bg-white', 'text-gray-900');
         } else {
-          if (stockInput.value === '1') {
-            stockInput.value = '';
-          }
-          stockInput.disabled = false;
+            if (!isEditing) {
+                if (stockInput.value === '1') {
+                    stockInput.value = '';
+                }
+            }
+            stockInput.disabled = false;
           stockInput.classList.remove('opacity-70', 'cursor-not-allowed', 'bg-gray-100', 'text-gray-500');
           stockInput.classList.add('bg-white', 'text-gray-900');
         }
