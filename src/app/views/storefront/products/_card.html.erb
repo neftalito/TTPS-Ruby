@@ -15,7 +15,7 @@
 
   <div class="p-5 flex-1 flex flex-col gap-2">
     <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-gray-500">
-      <span><%= product.category&.name || "Sin categoría" %></span>
+      <span><%= product.category&.name || "Sin género" %></span>
       
       <% if (product.stock || 0) > 0 %>
         <span class="text-green-600">Stock: <%= product.stock %></span>

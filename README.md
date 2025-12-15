@@ -49,28 +49,26 @@
 git clone https://github.com/neftalito/TTPS-Ruby
 cd TTPS-Ruby/src
 ```
-2. Configurar variables de entorno
-- Usa `.env.example` como plantilla para crear un archivo `.env` en la carpeta `/src`
-3. Instalar dependencias del Gemfile
+2. Instalar dependencias del Gemfile
 ```bash
 bundle install
 ```
-4. Instalar dependencias del package.json
+3. Instalar dependencias del package.json
 ```bash
 npm install
 ```
-5. Inicializar la base de datos
+4. Inicializar la base de datos
 ```bash
 rails db:create db:migrate db:seed
 ```
 Si necesitás reiniciar todo desde cero, podés usar `bin/rails db:reset` (NOTA: esto también corre los seeds)
 
-6. Ejecutar la aplicación con Foreman
+5. Ejecutar la aplicación con Foreman
 Desde la carpeta `/src` ejecutar:
 ```bash
 foreman start -f Procfile.dev
 ```
-7. Acceder a la aplicación
+6. Acceder a la aplicación
 - Frontstore: `http://localhost:3000`
 - Backstore: `http://localhost:3000/admin`
 

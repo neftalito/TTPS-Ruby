@@ -10,8 +10,71 @@ class Product < ApplicationRecord
   enum :condition, { new: "new", used: "used" }, prefix: true
 
   # Scopes
+  scope :published, -> { where(published: true) }
+  scope :ordered_recent, -> { order(created_at: :desc) }
+  scope :with_category, -> { includes(:category) }
+  scope :with_category_and_attachments, -> { includes(:category, images_attachments: :blob) }
 
-  scope :available_products, -> { kept.includes(:category).order(created_at: :desc) }
+  scope :available_products, lambda {
+    kept
+      .published
+      .with_category
+      .ordered_recent
+  }
+
+  scope :with_status, lambda { |status|
+    case status
+    when "deleted"
+      only_deleted
+    when "all"
+      with_deleted
+    else
+      available_products
+    end
+  }
+
+  scope :by_category, ->(category_id) { where(category_id:) if category_id.present? }
+
+  scope :search_by_name, lambda { |name_query|
+    if name_query.present?
+      query = "%#{name_query.downcase}%"
+      where("LOWER(name) LIKE ?", query)
+    end
+  }
+
+  scope :search_by_author, lambda { |author_query|
+    if author_query.present?
+      query = "%#{author_query.downcase}%"
+      where("LOWER(author) LIKE ?", query)
+    end
+  }
+
+  scope :by_condition, lambda { |condition_param|
+    if condition_param.present? && condition_param != "all"
+      where(condition: condition_param)
+    end
+  }
+
+  scope :by_product_type, lambda { |product_type_param|
+    if product_type_param.present? && product_type_param != "all"
+      where(product_type: product_type_param)
+    end
+  }
+
+  scope :released_in_year, ->(release_year) { where(release_year: release_year.to_i) if release_year.present? }
+
+  scope :low_stock_new, lambda { |limit_value = 5|
+    kept
+      .where(condition: "new")
+      .where("stock <= ?", limit_value)
+      .order(:stock)
+      .limit(limit_value)
+  }
+
+  scope :available_products_with_stock, lambda {
+    available_products
+      .where("stock > 0")
+  }
 
   validates :name, presence: true
   validates :description, presence: true
@@ -32,12 +95,13 @@ class Product < ApplicationRecord
   validate :audio_only_for_used_products
   validate :validate_images_format_and_size
   validate :validate_audio_format_and_size
+  validate :used_stock_cannot_exceed_one
 
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
   before_validation :force_stock_to_one_if_used, if: :should_force_stock_to_one?
   before_discard :reset_stock
-  validate :used_stock_cannot_exceed_one
+
 
   def label_for_select
     condicion = condition_new? ? "NUEVO" : "USADO"
@@ -61,6 +125,23 @@ class Product < ApplicationRecord
     condition_new? ? "NUEVO" : "USADO"
   end
 
+  def self.related_to(product, limit: 4)
+    available_products
+      .where(category_id: product.category_id)
+      .where.not(id: product.id)
+      .order("RANDOM()")
+      .limit(limit)
+  end
+
+  def self.search_by_term(term)
+    return none if term.blank?
+
+    sanitized = ActiveRecord::Base.sanitize_sql_like(term.downcase)
+
+    available_products
+      .where("LOWER(products.name) LIKE :term OR LOWER(products.description) LIKE :term", term: "%#{sanitized}%")
+  end
+
   def has_stock?(quantity_needed)
     stock >= quantity_needed
   end
@@ -72,6 +153,7 @@ class Product < ApplicationRecord
 
   def increment_stock!(quantity)
     self.stock += quantity
+    self.stock = 1 if condition_used? && stock > 1
     save!
   end
 

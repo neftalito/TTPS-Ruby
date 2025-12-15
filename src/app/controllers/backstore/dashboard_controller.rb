@@ -1,28 +1,16 @@
 module Backstore
   class DashboardController < BaseController
     def index
-      @sales_chart_data = Sale.where(cancelled_at: nil)
-                              .group_by_day(:created_at, range: 1.week.ago..Time.now)
-                              .sum(:total)
+      @sales_chart_data = Sale.chart_totals_by_day(range: 1.week.ago..Time.current)
 
-      @category_chart_data = SaleItem.joins(:product)
-                                     .group("products.category_id")
-                                     .sum(:quantity)
-                                     .transform_keys { |id| Category.find(id).name }
+      @category_chart_data = SaleItem.category_quantities
 
-      @low_stock_products = Product.kept
-                                   .where(condition: "new")
-                                   .where("stock <= ?", 5)
-                                   .order(:stock)
-                                   .limit(5)
+      @low_stock_products = Product.low_stock_new
 
-      @recent_sales = Sale.where(cancelled_at: nil)
-                          .includes(:user)
-                          .order(created_at: :desc)
-                          .limit(5)
+      @recent_sales = Sale.recent_confirmed
 
-      @my_sales_count = Sale.where(user: current_user, cancelled_at: nil).count
-      @my_total_revenue = Sale.where(user: current_user, cancelled_at: nil).sum(:total)
+      @my_sales_count = Sale.confirmed.for_user(current_user).count
+      @my_total_revenue = Sale.total_revenue_for_user(current_user)
     end
   end
 end
