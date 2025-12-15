@@ -3,7 +3,7 @@
   <div class="flex-1">
     <%= f.label :product_id, "Producto", class: "block text-sm font-medium text-proyecto-text/80 mb-1" %>
     <%= f.collection_select :product_id, 
-          Product.available_products, 
+          Product.available_products.where("stock > 0"),
           :id, 
           :label_for_select, 
           { prompt: "Selecciona un producto..." }, 
