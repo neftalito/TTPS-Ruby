@@ -1,9 +1,10 @@
 module Backstore
   class SalesController < BaseController
     before_action :authorize_sale_collection!, only: %i[index new create]
-    before_action :set_sale, only: %i[show cancel]
+    before_action :set_sale, only: %i[show cancel destroy]
     before_action -> { authorize! :read, @sale }, only: :show
     before_action -> { authorize! :update, @sale }, only: :cancel
+    before_action -> { authorize! :destroy, @sale }, only: :destroy
 
     def index
       per_page = params[:per_page] == "all" ? Sale.count : (params[:per_page] || 25).to_i
@@ -70,6 +71,10 @@ module Backstore
       else
         redirect_to backstore_sale_path(@sale), alert: "No se pudo cancelar la venta."
       end
+    end
+
+    def destroy
+      redirect_to backstore_sale_path(@sale), alert: "Las ventas no se pueden borrar."
     end
 
     private

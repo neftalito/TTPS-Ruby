@@ -1,6 +1,4 @@
 class Sale < ApplicationRecord
-  SALES_IMMUTABLE_MESSAGE = "Las ventas no se pueden borrar.".freeze
-
   belongs_to :user
   has_many :sale_items, dependent: :destroy
   has_many :products, through: :sale_items
@@ -11,29 +9,9 @@ class Sale < ApplicationRecord
 
   before_save :calculate_total
   after_create :decrement_stock_from_products
-  before_destroy :prevent_destruction
 
   validate :validate_stock_availability, on: :create
   validate :must_have_at_least_one_item
-
-  def discard
-    errors.add(:base, SALES_IMMUTABLE_MESSAGE)
-    false
-  end
-
-  def discard!
-    raise ActiveRecord::ReadOnlyRecord, SALES_IMMUTABLE_MESSAGE
-  end
-
-  def self.delete_all(*args)
-    raise ActiveRecord::ReadOnlyRecord, SALES_IMMUTABLE_MESSAGE unless Rails.env.development? && ENV["SKIP_SALE_PROTECTION"] == "1"
-
-    super
-  end
-
-  class << self
-    alias destroy_all delete_all
-  end
 
   def cancel!
     return if cancelled?
@@ -75,11 +53,6 @@ class Sale < ApplicationRecord
     sale_items.each do |item|
       item.product.decrement_stock!(item.quantity)
     end
-  end
-
-  def prevent_destruction
-    errors.add(:base, SALES_IMMUTABLE_MESSAGE)
-    throw(:abort)
   end
 
   def must_have_at_least_one_item
