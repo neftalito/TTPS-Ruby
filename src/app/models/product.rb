@@ -71,6 +71,11 @@ class Product < ApplicationRecord
       .limit(limit_value)
   }
 
+  scope :available_products_with_stock, lambda {
+    available_products
+      .where("stock > 0")
+  }
+
   validates :name, presence: true
   validates :description, presence: true
   validates :author, presence: true
