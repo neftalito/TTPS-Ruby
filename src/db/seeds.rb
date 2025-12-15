@@ -52,7 +52,7 @@ end
 Faker::UniqueGenerator.clear # Resetea los generadores únicos para próximos usos.
 
 
-puts "Creando categorías..."
+puts "Creando géneros..."
 category_data = [
   { name: "Rock", description: "Clásicos inmortales, riffs poderosos y guitarras distorsionadas." },
   { name: "Pop", description: "Melodías pegajosas y producciones brillantes que marcan tendencias." },

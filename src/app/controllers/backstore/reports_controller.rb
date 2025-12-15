@@ -6,25 +6,23 @@ module Backstore
       if @range == "all"
         @start_date = nil
         @end_date   = nil
-        @sales_scope = Sale.where(cancelled_at: nil)
+        @sales_scope = Sale.confirmed
       else
         @start_date = params[:start_date].presence ? Date.parse(params[:start_date]) : 1.month.ago.to_date
         @end_date   = params[:end_date].presence ? Date.parse(params[:end_date]) : Date.current
 
         @start_date, @end_date = @end_date, @start_date if @start_date && @end_date && @start_date > @end_date
 
-        @sales_scope = Sale.where(cancelled_at: nil).where(created_at: @start_date.beginning_of_day..@end_date.end_of_day)
+        @sales_scope = Sale.confirmed.between_dates(@start_date, @end_date)
       end
 
       # 2. KPIs
       @total_revenue = @sales_scope.sum(:total)
       @total_sales   = @sales_scope.count
-      @total_items   = SaleItem.where(sale: @sales_scope).sum(:quantity)
+      @total_items   = SaleItem.total_quantity_for_sales(@sales_scope)
       @average_ticket = @total_sales > 0 ? (@total_revenue / @total_sales) : 0
 
-      ranking_hash = SaleItem.where(sale: @sales_scope).group(:product_id).sum(:quantity)
-
-      sorted_ranking = ranking_hash.sort_by { |_id, qty| -qty }
+      sorted_ranking = SaleItem.ranking_for_sales(@sales_scope)
 
       per_page = params[:per_page] == "all" ? 1000 : (params[:per_page] || 25).to_i
 
@@ -34,7 +32,7 @@ module Backstore
 
       current_page_ids = @paginated_ranking.map(&:first)
       products_hash = Product.with_discarded
-                             .includes(:category, images_attachments: :blob)
+                             .with_category_and_attachments
                              .find(current_page_ids)
                              .index_by(&:id)
 
@@ -72,7 +70,7 @@ module Backstore
     def generate_csv(products)
       bom = "\uFEFF"
       csv_content = CSV.generate(headers: true, encoding: "UTF-8") do |csv|
-        csv << ["ID", "Producto", "Artista", "Categoría", "Condición", "Tipo", "Unidades Vendidas"]
+        csv << ["ID", "Producto", "Artista", "Género", "Condición", "Tipo", "Unidades Vendidas"]
         products.each do |product|
           csv << [
             product.id,

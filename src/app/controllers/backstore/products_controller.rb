@@ -7,37 +7,13 @@ module Backstore
     def index
       @products = Product.with_discarded.accessible_by(current_ability)
 
-      # Filtro por estado (activos, eliminados, todos)
-      @products = case params[:status]
-                  when "deleted"
-                    @products.only_deleted
-                  when "all"
-                    @products.with_deleted
-                  else
-                    @products.available_products
-                  end
+      @products = @products.with_status(params[:status])
+      @products = @products.by_category(params[:category_id])
+      @products = @products.search_by_name(params[:name_q])
+      @products = @products.search_by_author(params[:author_q])
+      @products = @products.by_condition(params[:condition])
+      @products = @products.by_product_type(params[:product_type])
 
-      # Filtro por categoría
-      @products = @products.where(category_id: params[:category_id]) if params[:category_id].present?
-
-      # Búsqueda por Nombre del Disco
-      if params[:name_q].present?
-        query = "%#{params[:name_q].downcase}%"
-        @products = @products.where("LOWER(name) LIKE ?", query)
-      end
-
-      # Búsqueda por Nombre del Artista
-      if params[:author_q].present?
-        query = "%#{params[:author_q].downcase}%"
-        @products = @products.where("LOWER(author) LIKE ?", query)
-      end
-
-      # Filtro por condición
-      @products = @products.where(condition: params[:condition]) if params[:condition].present? && params[:condition] != "all"
-      # Filtro por tipo de producto
-      @products = @products.where(product_type: params[:product_type]) if params[:product_type].present? && params[:product_type] != "all"
-
-      # Paginación con per_page dinámico
       per_page = params[:per_page] == "all" ? @products.count : (params[:per_page] || 25).to_i
       @products = @products.order(id: :asc).page(params[:page]).per(per_page)
     end

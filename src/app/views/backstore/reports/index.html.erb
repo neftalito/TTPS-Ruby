@@ -142,7 +142,7 @@
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-text/60 uppercase tracking-wider w-10">#</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Producto</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Categoría</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Género</th>
             <th class="px-6 py-3 text-right text-xs font-medium text-proyecto-text/60 uppercase tracking-wider">Unidades</th>
           </tr>
           </thead>
@@ -171,7 +171,7 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-proyecto-text/60">
                   <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-proyecto-secondary text-proyecto-primary">
-                    <%= product.category&.name || "Sin categoría" %>
+                    <%= product.category&.name || "Sin género" %>
                   </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-proyecto-accent">
@@ -204,9 +204,9 @@
 
             <div class="grid grid-cols-2 gap-2 text-sm text-proyecto-text/80">
               <div class="flex flex-col gap-1">
-                <span class="text-[11px] font-semibold uppercase text-proyecto-primary/70">Categoría</span>
+                <span class="text-[11px] font-semibold uppercase text-proyecto-primary/70">Género</span>
                 <span class="px-2 inline-flex w-fit text-xs leading-5 font-semibold rounded-full bg-proyecto-secondary text-proyecto-primary">
-                  <%= product.category&.name || "Sin categoría" %>
+                  <%= product.category&.name || "Sin género" %>
                 </span>
               </div>
               <div class="flex flex-col gap-1 text-right">

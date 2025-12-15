@@ -8,21 +8,9 @@ module Backstore
     def index
       @users = User.all
 
-      # Filtro por estado (activos, eliminados, todos)
-      @users = case params[:status]
-               when "deleted"
-                 @users.only_deleted
-               when "all"
-                 @users.with_deleted
-               else
-                 @users.kept
-               end
-
-      # Filtro por rol
-      @users = @users.where(role: params[:role]) if params[:role].present?
-
-      # Búsqueda por email
-      @users = @users.where("LOWER(email) LIKE ?", "%#{params[:q].downcase}%") if params[:q].present?
+      @users = @users.with_status(params[:status])
+      @users = @users.with_role(params[:role])
+      @users = @users.search_by_email(params[:q])
 
       # Paginación con per_page dinámico
       per_page = params[:per_page] == "all" ? @users.count : (params[:per_page] || 25).to_i
