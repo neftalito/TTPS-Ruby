@@ -107,7 +107,7 @@ conditions = Product.conditions.keys
     release_year: release_year,
     last_modified_at: last_modified_at,
     deactivated_at: deactivated_at,
-    published: deactivated_at.nil?,
+    published: true,
     created_at: base_time,
     updated_at: last_modified_at
   )
