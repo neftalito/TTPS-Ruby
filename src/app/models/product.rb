@@ -90,12 +90,13 @@ class Product < ApplicationRecord
   validate :audio_only_for_used_products
   validate :validate_images_format_and_size
   validate :validate_audio_format_and_size
+  validate :used_stock_cannot_exceed_one
 
   # Callback: si el producto cambia a nuevo, eliminar el audio
   before_validation :remove_audio_if_new
   before_validation :force_stock_to_one_if_used, if: :should_force_stock_to_one?
   before_discard :reset_stock
-  validate :used_stock_cannot_exceed_one
+
 
   def label_for_select
     condicion = condition_new? ? "NUEVO" : "USADO"
