@@ -8,21 +8,11 @@ module Backstore
 
     def index
       per_page = params[:per_page] == "all" ? Sale.count : (params[:per_page] || 25).to_i
-      @sales = Sale.accessible_by(current_ability).includes(:user).order(created_at: :desc)
-
-      if params[:q].present?
-        query = "%#{params[:q].downcase}%"
-        @sales = @sales.where("LOWER(buyer_name) LIKE ? OR LOWER(buyer_email) LIKE ?", query, query)
-      end
-
-      if params[:status].present?
-        case params[:status]
-        when "cancelled"
-          @sales = @sales.where.not(cancelled_at: nil)
-        when "confirmed"
-          @sales = @sales.where(cancelled_at: nil)
-        end
-      end
+      @sales = Sale.accessible_by(current_ability)
+                     .includes(:user)
+                     .ordered_recent
+                     .search_by_buyer(params[:q])
+                     .with_status(params[:status])
 
       @sales = @sales.page(params[:page]).per(per_page)
     end
