@@ -46,7 +46,7 @@
       <%= link_to "Este mes",
                   backstore_reports_path(report_quick_range_params("month")),
                   class: "#{btn_class} #{@range == 'month' ? active_class : inactive_class}" %>
-      <%= link_to "Este anio",
+      <%= link_to "Este año",
                   backstore_reports_path(report_quick_range_params("year")),
                   class: "#{btn_class} #{@range == 'year' ? active_class : inactive_class}" %>
       <%= link_to "Historico",
