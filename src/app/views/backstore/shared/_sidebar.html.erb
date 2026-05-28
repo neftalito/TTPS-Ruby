@@ -27,6 +27,14 @@
     <% end %>
   <% end %>
 
+  <% if can? :read, Sale %>
+    <%= link_to backstore_reports_path,
+                class: "block px-4 py-2 rounded flex items-center gap-3 transition-colors #{active_link?(backstore_reports_path)}" do %>
+      <i class="fa-solid fa-chart-column"></i>
+      <span>Reportes</span>
+    <% end %>
+  <% end %>
+
   <!-- Usuarios -->
   <% if can? :read, User %>
     <%= link_to backstore_users_path,

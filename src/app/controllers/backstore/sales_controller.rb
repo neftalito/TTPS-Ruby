@@ -1,15 +1,10 @@
 module Backstore
   class SalesController < BaseController
-    before_action :authorize_sale_collection!, only: %i[index new create]
-    before_action :set_sale, only: %i[show cancel destroy]
-    before_action -> { authorize! :read, @sale }, only: :show
-    before_action -> { authorize! :update, @sale }, only: :cancel
-    before_action -> { authorize! :destroy, @sale }, only: :destroy
+    load_and_authorize_resource
 
     def index
-      per_page = params[:per_page] == "all" ? Sale.count : (params[:per_page] || 25).to_i
-      @sales = Sale.accessible_by(current_ability)
-                     .includes(:user)
+      per_page = params[:per_page] == "all" ? @sales.count : (params[:per_page] || 25).to_i
+      @sales = @sales.includes(:user)
                      .ordered_recent
                      .search_by_buyer(params[:q])
                      .with_status(params[:status])
@@ -31,25 +26,16 @@ module Backstore
     end
 
     def new
-      authorize! :create, Sale
-      @sale = Sale.new
-
-      @sale.sale_items.build
-
+      @sale.sale_items.build if @sale.sale_items.empty?
       @products = Product.available_products
     end
 
     def create
-      authorize! :create, Sale
-      @sale = Sale.new(sale_params)
-
       @sale.user = current_user
 
       if @sale.save
-
         redirect_to backstore_sale_path(@sale), notice: "Venta registrada exitosamente."
       else
-
         @products = Product.available_products
         render :new, status: :unprocessable_entity
       end
@@ -68,15 +54,6 @@ module Backstore
     end
 
     private
-
-    def authorize_sale_collection!
-      required_permission = action_name.in?(%w[new create]) ? :create : :read
-      authorize! required_permission, Sale
-    end
-
-    def set_sale
-      @sale = Sale.accessible_by(current_ability).find(params[:id])
-    end
 
     def sale_params
       params.require(:sale).permit(

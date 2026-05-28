@@ -1,118 +1,201 @@
 <style>
   .header {
-    background-color: #1f2937; color: #ffffff; padding: 30px 40px; margin-bottom: 30px; overflow: hidden;
+    background-color: #1f2937;
+    color: #ffffff;
+    margin-bottom: 30px;
+    overflow: hidden;
+    padding: 30px 40px;
   }
+
   .header-left { float: left; width: 60%; }
-  .header-right { float: right; width: 40%; text-align: right; }
-  .report-title { font-size: 28px; font-weight: bold; margin: 0; letter-spacing: 1px; text-transform: uppercase; }
-  .brand-sub { font-size: 12px; opacity: 0.8; margin-top: 5px; }
-  .meta-title { font-size: 14px; font-weight: bold; color: #818cf8; margin: 0; text-transform: uppercase; }
-  .meta-value { font-size: 13px; opacity: 0.9; margin-top: 2px; }
+  .header-right { float: right; text-align: right; width: 40%; }
+  .report-title { font-size: 28px; font-weight: bold; letter-spacing: 1px; margin: 0; text-transform: uppercase; }
+  .brand-sub { font-size: 12px; margin-top: 5px; opacity: 0.8; }
+  .meta-title { color: #818cf8; font-size: 14px; font-weight: bold; margin: 0; text-transform: uppercase; }
+  .meta-value { font-size: 13px; margin-top: 2px; opacity: 0.9; }
 
-
-  table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-  table.data-table th { text-align: left; padding: 12px 10px; background-color: #f3f4f6; color: #374151; font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #e5e7eb; }
-  table.data-table td { padding: 12px 10px; border-bottom: 1px solid #e5e7eb; font-size: 12px; color: #1f2937; }
-  
-
-  .kpi-table { width: 100%; border-spacing: 10px; border-collapse: separate; margin-bottom: 40px; }
-  .kpi-card { 
-    background-color: #f9fafb; 
-    border: 1px solid #e5e7eb; 
-    padding: 15px; 
-    border-radius: 4px;
-    width: 25%;
-    vertical-align: top;
+  table.data-table { border-collapse: collapse; margin-bottom: 30px; width: 100%; }
+  table.data-table th {
+    background-color: #f3f4f6;
+    border-bottom: 2px solid #e5e7eb;
+    color: #374151;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 12px 10px;
+    text-align: left;
+    text-transform: uppercase;
   }
-  .kpi-label { font-size: 10px; font-weight: bold; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
-  .kpi-value { font-size: 20px; font-weight: bold; color: #111827; margin: 8px 0; }
-  .kpi-sub { font-size: 10px; color: #9ca3af; }
+  table.data-table td {
+    border-bottom: 1px solid #e5e7eb;
+    color: #1f2937;
+    font-size: 12px;
+    padding: 12px 10px;
+  }
 
- 
+  .kpi-table { border-collapse: separate; border-spacing: 10px; margin-bottom: 40px; width: 100%; }
+  .kpi-card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 15px;
+    vertical-align: top;
+    width: 25%;
+  }
+  .kpi-label { color: #6b7280; font-size: 10px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; }
+  .kpi-value { color: #111827; font-size: 20px; font-weight: bold; margin: 8px 0; }
+  .kpi-sub { color: #9ca3af; font-size: 10px; }
+
+  .filters-table { border-collapse: collapse; margin-bottom: 30px; width: 100%; }
+  .filters-table td { border: 1px solid #e5e7eb; font-size: 11px; padding: 8px 10px; }
+
   .border-green { border-top: 4px solid #10b981; }
   .border-blue { border-top: 4px solid #3b82f6; }
   .border-purple { border-top: 4px solid #a855f7; }
   .border-orange { border-top: 4px solid #f97316; }
 
+  .section-title {
+    border-bottom: 1px solid #eeeeee;
+    color: #374151;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+  }
+
   .text-right { text-align: right; }
-  .footer { text-align: center; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 10px; color: #9ca3af; margin-top: 40px; }
+  .footer {
+    border-top: 1px solid #e5e7eb;
+    color: #9ca3af;
+    font-size: 10px;
+    margin-top: 40px;
+    padding-top: 20px;
+    text-align: center;
+  }
 </style>
 
-<div style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-  
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; width: 100%;">
   <div class="header">
     <div class="header-left">
-      <h1 class="report-title">Reporte de Ventas</h1>
-      <p class="brand-sub">RecordAR TTPS - Sistema de Gestión</p>
+      <h1 class="report-title">Reporte de ventas</h1>
+      <p class="brand-sub">RecordAR TTPS - Sistema de gestion</p>
     </div>
     <div class="header-right">
       <div style="margin-bottom: 10px;">
-        <p class="meta-title">Fecha de Emisión</p>
+        <p class="meta-title">Fecha de emision</p>
         <p class="meta-value"><%= l(Date.current, format: :long) %></p>
       </div>
       <div>
-        <p class="meta-title">Período Analizado</p>
-        <% if @start_date && @end_date %>
-          <p class="meta-value"><%= l(@start_date) %> al <%= l(@end_date) %></p>
-        <% else %>
-          <p class="meta-value">Histórico Completo</p>
-        <% end %>
+        <p class="meta-title">Periodo analizado</p>
+        <p class="meta-value"><%= @report.date_range_label %></p>
       </div>
     </div>
   </div>
 
   <div style="padding: 0 40px;">
-    
-    <h3 style="font-size: 16px; font-weight: bold; color: #374151; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Resumen Ejecutivo</h3>
-    
+    <h3 class="section-title">Filtros aplicados</h3>
+
+    <table class="filters-table">
+      <tr>
+        <td><strong>Tipo de producto</strong></td>
+        <td><%= @report.human_product_type %></td>
+        <td><strong>Genero</strong></td>
+        <td><%= Category.find_by(id: @report.category_id)&.name || "Todos" %></td>
+      </tr>
+      <tr>
+        <td><strong>Empleado</strong></td>
+        <td><%= User.find_by(id: @report.user_id)&.email || "Todos" %></td>
+        <td><strong>Ventas consideradas</strong></td>
+        <td><%= @total_sales %></td>
+      </tr>
+    </table>
+
+    <h3 class="section-title">Resumen ejecutivo</h3>
+
     <table class="kpi-table">
       <tr>
         <td class="kpi-card border-green">
-          <div class="kpi-label">Ingresos Totales</div>
+          <div class="kpi-label">Total recaudado</div>
           <div class="kpi-value" style="color: #059669;">
-            <%= number_to_currency(@total_revenue, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
+            <%= number_to_currency(@total_revenue, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
           </div>
           <div class="kpi-sub">Facturado en el periodo</div>
         </td>
 
         <td class="kpi-card border-blue">
-          <div class="kpi-label">Ventas Confirmadas</div>
+          <div class="kpi-label">Cantidad de ventas</div>
           <div class="kpi-value" style="color: #2563eb;">
             <%= @total_sales %>
           </div>
-          <div class="kpi-sub">Transacciones exitosas</div>
+          <div class="kpi-sub">Ventas confirmadas</div>
         </td>
 
         <td class="kpi-card border-purple">
-          <div class="kpi-label">Precio Promedio</div>
+          <div class="kpi-label">Promedio por venta</div>
           <div class="kpi-value" style="color: #7c3aed;">
-            <%= number_to_currency(@average_ticket, unit: "$", separator: ",", delimiter: ".", format:"%u%n") %>
+            <%= number_to_currency(@average_ticket, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
           </div>
-          <div class="kpi-sub">Promedio por venta</div>
+          <div class="kpi-sub">Promedio del reporte filtrado</div>
         </td>
 
         <td class="kpi-card border-orange">
-          <div class="kpi-label">Discos Vendidos</div>
+          <div class="kpi-label">Productos vendidos</div>
           <div class="kpi-value" style="color: #ea580c;">
             <%= @total_items %>
           </div>
-          <div class="kpi-sub">Unidades despachadas</div>
+          <div class="kpi-sub">Unidades vendidas</div>
         </td>
       </tr>
     </table>
-    <h3 style="font-size: 16px; font-weight: bold; color: #374151; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
-      Detalle de Productos Vendidos
-    </h3>
+
+    <h3 class="section-title">Ventas por tipo de producto</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th width="70%">Tipo</th>
+          <th width="30%" class="text-right">Unidades</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @sales_by_product_type.each do |label, quantity| %>
+          <tr>
+            <td><%= label %></td>
+            <td class="text-right"><%= quantity %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <h3 class="section-title">Ventas por genero musical</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th width="70%">Genero</th>
+          <th width="30%" class="text-right">Unidades</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @sales_by_genre.each do |genre, quantity| %>
+          <tr>
+            <td><%= genre %></td>
+            <td class="text-right"><%= quantity %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <h3 class="section-title">Top 5 productos mas vendidos</h3>
 
     <table class="data-table">
       <thead>
         <tr>
           <th width="5%">#</th>
           <th width="35%">Producto / Artista</th>
-          <th width="20%">Género</th>
+          <th width="20%">Genero</th>
           <th width="15%">Tipo</th>
-          <th width="15%">Condición</th>
           <th width="10%" class="text-right">Vendidos</th>
+          <th width="15%" class="text-right">Recaudado</th>
         </tr>
       </thead>
       <tbody>
@@ -120,19 +203,13 @@
           <tr>
             <td style="color: #6b7280; font-weight: bold;"><%= index + 1 %></td>
             <td>
-              <div style="font-weight: bold; font-size: 13px; color: #111;"><%= product.name %></div>
-              <div style="font-size: 11px; color: #6b7280;"><%= product.author %></div>
+              <div style="color: #111111; font-size: 13px; font-weight: bold;"><%= product.product_name %></div>
+              <div style="color: #6b7280; font-size: 11px;"><%= product.product_author %></div>
             </td>
-            <td><%= product.category&.name || "-" %></td>
-            <td><%= product.product_type&.upcase %></td>
-            <td>
-              <%= product.condition == 'new' ? 'NUEVO' : 'USADO' %>
-            </td>
-            <td class="text-right">
-              <span style="font-size: 14px; font-weight: bold; color: #4f46e5;">
-                <%= product.total_quantity %>
-              </span>
-            </td>
+            <td><%= product.category_name || "-" %></td>
+            <td><%= @report.human_product_type(product.product_type) %></td>
+            <td class="text-right"><%= product.total_quantity %></td>
+            <td class="text-right"><%= number_to_currency(product.total_revenue, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %></td>
           </tr>
         <% end %>
       </tbody>
@@ -140,8 +217,7 @@
   </div>
 
   <div class="footer">
-    <p>Este reporte fue generado automáticamente por el sistema.</p>
+    <p>Este reporte fue generado automaticamente por el sistema.</p>
     <p>Uso interno confidencial.</p>
   </div>
-
 </div>

@@ -1,15 +1,17 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+la_plata:
+  name: Sucursal La Plata
+  address: Calle 50 1234
+  city: La Plata
+  province: Buenos Aires
+  enabled: true
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
 
-one:
-  name: MyString
-  address: MyString
-  city: MyString
-  province: MyString
-  enabled: false
-
-two:
-  name: MyString
-  address: MyString
-  city: MyString
-  province: MyString
-  enabled: false
+berisso:
+  name: Sucursal Berisso
+  address: Montevideo 456
+  city: Berisso
+  province: Buenos Aires
+  enabled: true
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

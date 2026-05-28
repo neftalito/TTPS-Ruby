@@ -1,17 +1,29 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+recent_employee:
+  user: employee
+  buyer_name: Cliente Uno
+  buyer_email: cliente1@example.com
+  buyer_dni: "12345678"
+  total: 55.0
+  cancelled_at:
+  created_at: <%= Time.zone.parse("2026-05-10 12:00:00") %>
+  updated_at: <%= Time.zone.parse("2026-05-10 12:00:00") %>
 
-one:
-  user: one
-  buyer_name: MyString
-  buyer_email: MyString
-  buyer_dni: MyString
-  total: 9.99
-  cancelled_at: 2025-11-15 15:16:28
+recent_manager:
+  user: manager
+  buyer_name: Cliente Dos
+  buyer_email: cliente2@example.com
+  buyer_dni: "23456789"
+  total: 70.0
+  cancelled_at:
+  created_at: <%= Time.zone.parse("2026-05-12 15:30:00") %>
+  updated_at: <%= Time.zone.parse("2026-05-12 15:30:00") %>
 
-two:
-  user: two
-  buyer_name: MyString
-  buyer_email: MyString
-  buyer_dni: MyString
-  total: 9.99
-  cancelled_at: 2025-11-15 15:16:28
+cancelled_employee:
+  user: employee
+  buyer_name: Cliente Tres
+  buyer_email: cliente3@example.com
+  buyer_dni: "34567890"
+  total: 45.0
+  cancelled_at: <%= Time.zone.parse("2026-05-14 10:00:00") %>
+  created_at: <%= Time.zone.parse("2026-05-13 09:00:00") %>
+  updated_at: <%= Time.zone.parse("2026-05-14 10:00:00") %>

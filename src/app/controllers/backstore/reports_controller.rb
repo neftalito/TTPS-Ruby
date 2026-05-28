@@ -1,62 +1,35 @@
 module Backstore
   class ReportsController < BaseController
+    before_action :authorize_sales_access!
+    before_action :build_report
+
     def index
-      @range = params[:range] || "month"
+      @range = @report.range
+      @start_date = @report.start_date
+      @end_date = @report.end_date
 
-      if @range == "all"
-        @start_date = nil
-        @end_date   = nil
-        @sales_scope = Sale.confirmed
-      else
-        @start_date = params[:start_date].presence ? Date.parse(params[:start_date]) : 1.month.ago.to_date
-        @end_date   = params[:end_date].presence ? Date.parse(params[:end_date]) : Date.current
+      @total_revenue = @report.total_revenue
+      @total_sales = @report.total_sales
+      @total_items = @report.total_items
+      @average_ticket = @report.average_ticket
+      @sales_by_product_type = @report.sales_by_product_type
+      @sales_by_genre = @report.sales_by_genre
+      @top_products = @report.top_products
+      @top_products_chart = @report.top_products_chart
 
-        @start_date, @end_date = @end_date, @start_date if @start_date && @end_date && @start_date > @end_date
-
-        @sales_scope = Sale.confirmed.between_dates(@start_date, @end_date)
-      end
-
-      # 2. KPIs
-      @total_revenue = @sales_scope.sum(:total)
-      @total_sales   = @sales_scope.count
-      @total_items   = SaleItem.total_quantity_for_sales(@sales_scope)
-      @average_ticket = @total_sales > 0 ? (@total_revenue / @total_sales) : 0
-
-      sorted_ranking = SaleItem.ranking_for_sales(@sales_scope)
-
-      per_page = params[:per_page] == "all" ? 1000 : (params[:per_page] || 25).to_i
-
-      @paginated_ranking = Kaminari.paginate_array(sorted_ranking)
-                                   .page(params[:page])
-                                   .per(per_page)
-
-      current_page_ids = @paginated_ranking.map(&:first)
-      products_hash = Product.with_discarded
-                             .with_category_and_attachments
-                             .find(current_page_ids)
-                             .index_by(&:id)
-
-      @products_for_view = @paginated_ranking.map do |product_id, quantity|
-        product = products_hash[product_id]
-        if product
-          product.define_singleton_method(:total_quantity) { quantity }
-          product
-        end
-      end.compact
+      @filter_categories = Category.order(:name)
+      @filter_users = User.order(:email)
+      @export_params = report_filters.to_h.compact_blank.except("page")
 
       respond_to do |format|
-        format.html do
-          # Renderiza la vista HTML por defecto
-        end
+        format.html
 
         format.csv do
-          send_data generate_csv(@products_for_view), filename: "reporte_ventas_#{Date.today}.csv"
+          send_data generate_csv, filename: "reporte_ventas_#{Date.current}.csv"
         end
 
         format.pdf do
-          @top_products = @products_for_view
-
-          render pdf: "reporte_ventas_#{Date.today}",
+          render pdf: "reporte_ventas_#{Date.current}",
                  layout: "pdf",
                  orientation: "Landscape",
                  encoding: "UTF-8",
@@ -67,23 +40,73 @@ module Backstore
 
     private
 
-    def generate_csv(products)
+    def authorize_sales_access!
+      authorize! :read, Sale
+    end
+
+    def build_report
+      @report = Backstore::SalesReport.new(report_filters)
+    end
+
+    def report_filters
+      params.permit(:range, :start_date, :end_date, :product_type, :category_id, :user_id)
+    end
+
+    def generate_csv
       bom = "\uFEFF"
       csv_content = CSV.generate(headers: true, encoding: "UTF-8") do |csv|
-        csv << ["ID", "Producto", "Artista", "Género", "Condición", "Tipo", "Unidades Vendidas"]
-        products.each do |product|
+        csv << ["Reporte de ventas"]
+        csv << ["Periodo", @report.date_range_label]
+        csv << ["Tipo de producto", @report.human_product_type]
+        csv << ["Genero", selected_category_name]
+        csv << ["Empleado", selected_user_name]
+        csv << []
+        csv << ["Metrica", "Valor"]
+        csv << ["Total recaudado", @total_revenue]
+        csv << ["Cantidad de ventas", @total_sales]
+        csv << ["Promedio por venta", @average_ticket]
+        csv << ["Cantidad de productos vendidos", @total_items]
+        csv << []
+        csv << ["Ventas por tipo de producto"]
+        csv << ["Tipo", "Cantidad"]
+        @sales_by_product_type.each do |label, quantity|
+          csv << [label, quantity]
+        end
+        csv << []
+        csv << ["Ventas por genero"]
+        csv << ["Genero", "Cantidad"]
+        @sales_by_genre.each do |genre, quantity|
+          csv << [genre, quantity]
+        end
+        csv << []
+        csv << ["Top 5 productos mas vendidos"]
+        csv << ["ID", "Producto", "Artista", "Genero", "Tipo", "Unidades Vendidas", "Recaudacion"]
+        @top_products.each do |product|
           csv << [
-            product.id,
-            product.name,
-            product.author,
-            product.category&.name,
-            product.condition,
-            product.product_type,
-            product.total_quantity
+            product.product_id,
+            product.product_name,
+            product.product_author,
+            product.category_name,
+            @report.human_product_type(product.product_type),
+            product.total_quantity,
+            product.total_revenue
           ]
         end
       end
+
       bom + csv_content
+    end
+
+    def selected_category_name
+      return "Todos" if @report.category_id.blank?
+
+      @selected_category_name ||= Category.find_by(id: @report.category_id)&.name || "Todos"
+    end
+
+    def selected_user_name
+      return "Todos" if @report.user_id.blank?
+
+      @selected_user_name ||= User.find_by(id: @report.user_id)&.email || "Todos"
     end
   end
 end

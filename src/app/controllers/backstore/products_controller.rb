@@ -1,12 +1,9 @@
 module Backstore
   class ProductsController < BaseController
-    before_action :authorize_product_collection!, only: %i[index new create]
-    before_action :set_product, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment restore]
-    before_action :authorize_product!, only: %i[show edit update destroy change_stock delete_image_attachment delete_audio_attachment restore]
+    load_and_authorize_resource
 
     def index
-      @products = Product.with_discarded.accessible_by(current_ability)
-
+      @products = @products.with_discarded
       @products = @products.with_status(params[:status])
       @products = @products.by_category(params[:category_id])
       @products = @products.search_by_name(params[:name_q])
@@ -18,28 +15,14 @@ module Backstore
       @products = @products.order(id: :asc).page(params[:page]).per(per_page)
     end
 
-    # GET /backstore/products/:id
     def show; end
 
-    # GET /backstore/products/new
-    def new
-      authorize! :create, Product
-      @product = Product.new
-    end
+    def new; end
 
-    # GET /backstore/products/:id/edit
     def edit; end
 
     def create
-      authorize! :create, Product
-      # Clonamos los parámetros para modificar el stock si es necesario
-      initial_params = product_params.to_h
-
-      initial_params["stock"] = 1 if initial_params["condition"] == "used"
-
-      @product = Product.new(initial_params)
-
-      # En el método create del controlador:
+      @product.stock = 1 if @product.condition == "used"
       @product.last_modified_at = Time.current
 
       if @product.save
@@ -49,23 +32,13 @@ module Backstore
       end
     end
 
-    # PATCH/PUT /backstore/products/:id
     def update
-      # Guardamos el estado anterior para comparar
       previous_condition = @product.condition
-
-      # Clonamos los parámetros permitidos para poder modificarlos si es necesario
       permitted_params = product_params.except(:images, :audio)
-
-      # Convertimos a hash de Ruby para poder modificar la clave 'stock'
       update_hash = permitted_params.to_h
 
-      if update_hash["condition"] == "used"
-        # Si la condición es 'used', forzamos el stock a 1, ya que el campo estaba deshabilitado
-        update_hash["stock"] = 1
-      end
+      update_hash["stock"] = 1 if update_hash["condition"] == "used"
 
-      # Validar límite de imágenes ANTES de intentar actualizar
       if params[:product][:images].present?
         new_images = params[:product][:images].reject(&:blank?)
         new_images_count = new_images.size
@@ -80,29 +53,22 @@ module Backstore
         end
       end
 
-      # Actualizar atributos básicos
       if @product.update(update_hash)
-
-        # Manejar eliminación de audio al cambiar de usado a nuevo
         @product.audio.purge if previous_condition == "used" && @product.condition == "new" && @product.audio.attached?
 
-        # Adjuntar audio si es usado y hay un nuevo archivo
         if @product.condition == "used" && params[:product][:audio].present?
           @product.audio.attach(params[:product][:audio])
 
-          # Verificar validaciones del audio
           unless @product.valid?
             render :edit, status: :unprocessable_entity
             return
           end
         end
 
-        # Adjuntar nuevas imágenes
         if params[:product][:images].present?
           new_images = params[:product][:images].reject(&:blank?)
           @product.images.attach(new_images)
 
-          # Verificar validaciones de las imágenes
           unless @product.valid?
             render :edit, status: :unprocessable_entity
             return
@@ -145,7 +111,6 @@ module Backstore
                     notice: "Imagen eliminada correctamente."
     end
 
-    # DELETE /backstore/products/:id/delete_audio_attachment
     def delete_audio_attachment
       if @product.audio.attached?
         @product.audio.purge
@@ -155,7 +120,6 @@ module Backstore
       end
     end
 
-    # PATCH /backstore/products/:id/change_stock
     def change_stock
       stock_param = params.dig(:product, :stock)
       new_stock_value = stock_param.present? ? stock_param.to_i : nil
@@ -178,19 +142,6 @@ module Backstore
     end
 
     private
-
-    def authorize_product_collection!
-      required_permission = action_name.in?(%w[new create]) ? :create : :read
-      authorize! required_permission, Product
-    end
-
-    def set_product
-      @product = Product.with_discarded.accessible_by(current_ability).find(params[:id])
-    end
-
-    def authorize_product!
-      authorize! :manage, @product
-    end
 
     def product_params
       params.require(:product).permit(

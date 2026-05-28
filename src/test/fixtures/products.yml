@@ -1,17 +1,44 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+vinyl_rock:
+  name: Vinilo Rojo
+  description: Disco de rock
+  author: Banda A
+  price: 20.0
+  stock: 10
+  category: rock
+  published: true
+  product_type: vinyl
+  condition: new
+  release_year: 2001
+  last_modified_at: <%= Time.current %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
 
-one:
-  name: MyString
-  description: MyText
-  price: 9.99
-  stock: 1
-  category: one
-  published: false
+cd_pop:
+  name: CD Azul
+  description: Disco de pop
+  author: Banda B
+  price: 15.0
+  stock: 10
+  category: pop
+  published: true
+  product_type: cd
+  condition: new
+  release_year: 2002
+  last_modified_at: <%= Time.current %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
 
-two:
-  name: MyString
-  description: MyText
-  price: 9.99
-  stock: 1
-  category: two
-  published: false
+vinyl_pop:
+  name: Vinilo Dorado
+  description: Disco de pop
+  author: Banda C
+  price: 25.0
+  stock: 10
+  category: pop
+  published: true
+  product_type: vinyl
+  condition: used
+  release_year: 2003
+  last_modified_at: <%= Time.current %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
