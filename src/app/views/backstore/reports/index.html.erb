@@ -229,7 +229,11 @@
               <tr class="transition-colors hover:bg-proyecto-secondary/10">
                 <td class="px-6 py-4 text-sm font-bold text-proyecto-text/40"><%= index + 1 %></td>
                 <td class="px-6 py-4">
-                  <div class="text-sm font-medium text-proyecto-primary"><%= product.product_name %></div>
+                  <div class="text-sm font-medium">
+                    <%= link_to product.product_name,
+                                backstore_product_path(product.product_id),
+                                class: "text-proyecto-primary transition hover:text-proyecto-accent hover:underline" %>
+                  </div>
                   <div class="text-sm text-proyecto-text/60"><%= product.product_author %></div>
                 </td>
                 <td class="px-6 py-4 text-sm text-proyecto-text/60"><%= product.category_name || "Sin genero" %></td>
