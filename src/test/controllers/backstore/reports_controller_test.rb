@@ -11,6 +11,7 @@ class Backstore::ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "Reporte de ventas"
     assert_includes response.body, "Top 5 productos mas vendidos"
+    assert_includes response.body, backstore_product_path(products(:vinyl_rock))
   end
 
   test "exports csv preserving the active filters" do
