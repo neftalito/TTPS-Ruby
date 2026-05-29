@@ -40,6 +40,10 @@
     </div>
 
     <div class="flex flex-col w-full gap-2 lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:justify-end">
+      <%= render "shared/locale_switcher",
+                 form_class: "w-full lg:w-auto",
+                 button_class: "px-3 py-1 rounded bg-white text-proyecto-primary border border-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2 w-full justify-center lg:w-auto" %>
+
       <% if user_signed_in? %>
         <span class="flex items-center gap-2 text-proyecto-text w-full justify-center text-right lg:w-auto lg:justify-start lg:text-left">
           <i class="fa-solid fa-user"></i>

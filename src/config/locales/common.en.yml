@@ -9,6 +9,7 @@ en:
       profile: "Profile"
       back_to_store: "Back to store"
       logout: "Log out"
+      change_language_to: "Switch to %{language}"
     actions:
       accept: "Accept"
       add_another_product: "Add another product"
@@ -95,6 +96,9 @@ en:
     chart:
       product: "Product"
       units: "Units"
+    locales:
+      en: "English"
+      es: "Español"
   roles:
     admin: "Administrator"
     employee: "Employee"

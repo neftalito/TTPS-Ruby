@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :users, skip: %i[registrations passwords]
 
   get "up" => "rails/health#show", as: :rails_health_check
+  patch "locale", to: "locales#update", as: :locale
 
   as :user do
     get "users/edit" => "users/registrations#edit", as: "edit_user_registration"

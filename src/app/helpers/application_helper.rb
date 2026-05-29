@@ -76,6 +76,18 @@ module ApplicationHelper
     )
   end
 
+  def locale_switch_target
+    I18n.locale.to_s == "es" ? "en" : "es"
+  end
+
+  def locale_switch_label(locale = locale_switch_target)
+    I18n.t("common.locales.#{locale}")
+  end
+
+  def locale_switch_aria_label
+    I18n.t("common.navigation.change_language_to", language: locale_switch_label)
+  end
+
   def pagination_button(label, page, collection, disabled: false)
     disabled ||= page.nil? || collection.nil?
     base_classes = "px-3 py-1 rounded-md text-sm font-medium transition"
