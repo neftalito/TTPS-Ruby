@@ -1,18 +1,19 @@
 require "test_helper"
 
 class Backstore::UsersControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    get backstore_users_index_url
+  setup do
+    sign_in users(:admin)
+  end
+
+  test "shows the users index" do
+    get backstore_users_url
+
     assert_response :success
   end
 
-  test "should get new" do
-    get backstore_users_new_url
-    assert_response :success
-  end
+  test "shows the edit page for an existing user" do
+    get edit_backstore_user_url(users(:employee))
 
-  test "should get edit" do
-    get backstore_users_edit_url
     assert_response :success
   end
 end

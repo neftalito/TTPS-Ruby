@@ -58,8 +58,8 @@ class Sale < ApplicationRecord
     ActiveRecord::Base.transaction do
       update!(cancelled_at: Time.current)
 
-      sale_items.each do |item|
-        item.product.increment_stock!(item.quantity)
+      aggregated_quantities_by_product.each do |product, quantity|
+        product.increment_stock!(quantity)
       end
     end
   end
@@ -80,17 +80,19 @@ class Sale < ApplicationRecord
   end
 
   def validate_stock_availability
-    sale_items.each do |item|
-      if item.product && !item.product.has_stock?(item.quantity)
-        errors.add(:base,
-                   "No hay suficiente stock para el producto: #{item.product.label_for_select}, solicitado: #{item.quantity}, disponible: #{item.product.stock}")
-      end
+    aggregated_quantities_by_product.each do |product, requested_quantity|
+      next if product.has_stock?(requested_quantity)
+
+      errors.add(
+        :base,
+        "No hay suficiente stock para el producto: #{product.label_for_select}, solicitado: #{requested_quantity}, disponible: #{product.stock}"
+      )
     end
   end
 
   def decrement_stock_from_products
-    sale_items.each do |item|
-      item.product.decrement_stock!(item.quantity)
+    aggregated_quantities_by_product.each do |product, quantity|
+      product.decrement_stock!(quantity)
     end
   end
 
@@ -98,5 +100,13 @@ class Sale < ApplicationRecord
     return unless sale_items.reject(&:marked_for_destruction?).empty?
 
     errors.add(:base, "Debes agregar al menos un producto a la venta.")
+  end
+
+  def aggregated_quantities_by_product
+    sale_items.reject(&:marked_for_destruction?).each_with_object(Hash.new(0)) do |item, quantities|
+      next unless item.product && item.quantity.present?
+
+      quantities[item.product] += item.quantity.to_i
+    end
   end
 end

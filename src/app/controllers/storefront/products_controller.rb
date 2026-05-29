@@ -16,8 +16,6 @@ module Storefront
     end
 
     def show
-      @product = Product.available_products.find_by(id: params[:id])
-      redirect_to storefront_products_path, alert: "Producto no disponible." unless @product
       @related_products = Product.related_to(@product)
     end
 
@@ -25,7 +23,9 @@ module Storefront
 
     def set_product
       @product = Product.available_products.find_by(id: params[:id])
-      redirect_to storefront_products_path, alert: "Producto no disponible." unless @product
+      return if @product
+
+      redirect_to storefront_products_path, alert: "Producto no disponible."
     end
   end
 end

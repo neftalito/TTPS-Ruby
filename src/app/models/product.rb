@@ -9,7 +9,11 @@ class Product < ApplicationRecord
   enum :product_type, { vinyl: "vinyl", cd: "cd" }, prefix: true
   enum :condition, { new: "new", used: "used" }, prefix: true
 
-  # Scopes
+  VALID_IMAGE_CONTENT_TYPES = %w[image/jpeg image/jpg image/png image/gif image/webp].freeze
+  MAX_IMAGE_SIZE = 10.megabytes
+  VALID_AUDIO_CONTENT_TYPES = %w[audio/mpeg audio/mp3 audio/wav audio/ogg audio/m4a audio/flac audio/x-m4a].freeze
+  MAX_AUDIO_SIZE = 15.megabytes
+
   scope :published, -> { where(published: true) }
   scope :ordered_recent, -> { order(created_at: :desc) }
   scope :with_category, -> { includes(:category) }
@@ -88,7 +92,7 @@ class Product < ApplicationRecord
               only_integer: true,
               greater_than_or_equal_to: 1900,
               less_than_or_equal_to: Date.current.year,
-              message: "debe ser un año válido entre 1900 y el año actual"
+              message: "debe ser un ano valido entre 1900 y el ano actual"
             }
 
   validate :must_have_at_least_one_image
@@ -97,11 +101,8 @@ class Product < ApplicationRecord
   validate :validate_audio_format_and_size
   validate :used_stock_cannot_exceed_one
 
-  # Callback: si el producto cambia a nuevo, eliminar el audio
-  before_validation :remove_audio_if_new
   before_validation :force_stock_to_one_if_used, if: :should_force_stock_to_one?
   before_discard :reset_stock
-
 
   def label_for_select
     condicion = condition_new? ? "NUEVO" : "USADO"
@@ -178,24 +179,15 @@ class Product < ApplicationRecord
   private
 
   def must_have_at_least_one_image
-    # En creación o edición, debe tener al menos 1 imagen
     return if images.attached? && images.any?
 
     errors.add(:images, "debe tener al menos una imagen")
   end
 
   def audio_only_for_used_products
-    # Solo productos usados pueden tener audio
     return unless audio.attached? && condition == "new"
 
     errors.add(:audio, "solo puede adjuntarse a productos usados")
-  end
-
-  def remove_audio_if_new
-    # Si el estado cambió de used a new, purgar el audio automáticamente
-    return unless condition_changed? && condition == "new" && audio.attached?
-
-    audio.purge
   end
 
   def reset_stock
@@ -207,7 +199,6 @@ class Product < ApplicationRecord
   end
 
   def force_stock_to_one_if_used
-    # Esto asegura que si la condición es 'used' al crear o cambiar el estado, el stock se normalice.
     self.stock = 1
   end
 
@@ -220,25 +211,19 @@ class Product < ApplicationRecord
   def validate_images_format_and_size
     return unless images.attached?
 
-    # Validar cantidad máxima (10 imágenes)
     if images.count > 10
-      errors.add(:images, "no puede exceder las 10 imágenes")
+      errors.add(:images, "no puede exceder las 10 imagenes")
       return
     end
 
-    valid_formats = %w[image/jpeg image/jpg image/png image/gif image/webp]
-    max_size = 10.megabytes
-
     images.each do |image|
-      # Validar formato
-      unless valid_formats.include?(image.content_type)
-        errors.add(:images, "#{image.filename} no es un formato válido. Formatos permitidos: JPEG,JPG, PNG, GIF, WebP")
+      unless VALID_IMAGE_CONTENT_TYPES.include?(image.content_type)
+        errors.add(:images, "#{image.filename} no es un formato valido. Formatos permitidos: JPEG, JPG, PNG, GIF, WebP")
       end
 
-      # Validar tamaño
-      if image.byte_size > max_size
+      if image.byte_size > MAX_IMAGE_SIZE
         size_mb = (image.byte_size.to_f / 1.megabyte).round(2)
-        errors.add(:images, "#{image.filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 10 MB por imagen")
+        errors.add(:images, "#{image.filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 10 MB por imagen")
       end
     end
   end
@@ -246,18 +231,13 @@ class Product < ApplicationRecord
   def validate_audio_format_and_size
     return unless audio.attached?
 
-    valid_formats = %w[audio/mpeg audio/mp3 audio/wav audio/ogg audio/m4a audio/flac audio/x-m4a]
-    max_size = 15.megabytes
-
-    # Validar formato
-    unless valid_formats.include?(audio.content_type)
-      errors.add(:audio, "#{audio.filename} no es un formato válido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC")
+    unless VALID_AUDIO_CONTENT_TYPES.include?(audio.content_type)
+      errors.add(:audio, "#{audio.filename} no es un formato valido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC")
     end
 
-    # Validar tamaño
-    return unless audio.byte_size > max_size
+    return unless audio.byte_size > MAX_AUDIO_SIZE
 
     size_mb = (audio.byte_size.to_f / 1.megabyte).round(2)
-    errors.add(:audio, "#{audio.filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 15 MB")
+    errors.add(:audio, "#{audio.filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 15 MB")
   end
 end

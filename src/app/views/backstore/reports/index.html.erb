@@ -226,15 +226,21 @@
           </thead>
           <tbody class="divide-y divide-proyecto-text/10 bg-transparent">
             <% @top_products.each_with_index do |product, index| %>
+              <% linked_product = @top_product_records[product.product_id] %>
               <tr class="transition-colors hover:bg-proyecto-secondary/10">
                 <td class="px-6 py-4 text-sm font-bold text-proyecto-text/40"><%= index + 1 %></td>
                 <td class="px-6 py-4">
-                  <div class="text-sm font-medium">
-                    <%= link_to product.product_name,
-                                backstore_product_path(product.product_id),
-                                class: "text-proyecto-primary transition hover:text-proyecto-accent hover:underline" %>
+                  <div class="flex items-center gap-3">
+                    <%= product_cover_thumbnail(linked_product, size: 48, wrapper_class: "shrink-0") %>
+                    <div class="min-w-0">
+                      <div class="text-sm font-medium">
+                        <%= link_to product.product_name,
+                                    backstore_product_path(product.product_id),
+                                    class: "text-proyecto-primary transition hover:text-proyecto-accent hover:underline" %>
+                      </div>
+                      <div class="text-sm text-proyecto-text/60"><%= product.product_author %></div>
+                    </div>
                   </div>
-                  <div class="text-sm text-proyecto-text/60"><%= product.product_author %></div>
                 </td>
                 <td class="px-6 py-4 text-sm text-proyecto-text/60"><%= product.category_name || "Sin genero" %></td>
                 <td class="px-6 py-4 text-sm text-proyecto-text/60"><%= @report.human_product_type(product.product_type) %></td>

@@ -32,6 +32,14 @@ class User < ApplicationRecord
     end
   }
 
+  def active_for_authentication?
+    super && !deleted?
+  end
+
+  def inactive_message
+    deleted? ? :inactive : super
+  end
+
   private
 
   def set_default_role

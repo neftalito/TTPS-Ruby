@@ -1,28 +1,36 @@
 require "test_helper"
 
 class Backstore::SalesControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    get backstore_sales_index_url
+  setup do
+    sign_in users(:employee)
+    @product = products(:vinyl_rock)
+  end
+
+  test "shows the sales index" do
+    get backstore_sales_url
+
     assert_response :success
   end
 
-  test "should get new" do
-    get backstore_sales_new_url
-    assert_response :success
-  end
+  test "rejects a sale when the combined quantity exceeds product stock" do
+    @product.update_column(:stock, 2)
 
-  test "should get create" do
-    get backstore_sales_create_url
-    assert_response :success
-  end
+    assert_no_difference("Sale.count") do
+      post backstore_sales_url, params: {
+        sale: {
+          buyer_name: "Cliente Test",
+          buyer_email: "cliente@example.com",
+          buyer_dni: "12345678",
+          sale_items_attributes: {
+            "0" => { product_id: @product.id, quantity: 1 },
+            "1" => { product_id: @product.id, quantity: 2 }
+          }
+        }
+      }
+    end
 
-  test "should get show" do
-    get backstore_sales_show_url
-    assert_response :success
-  end
-
-  test "should get cancel" do
-    get backstore_sales_cancel_url
-    assert_response :success
+    assert_response :unprocessable_entity
+    assert_includes response.body, "No hay suficiente stock"
+    assert_equal 2, @product.reload.stock
   end
 end
