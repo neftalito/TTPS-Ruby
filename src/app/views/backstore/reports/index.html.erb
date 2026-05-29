@@ -46,7 +46,7 @@
       <%= link_to "Este mes",
                   backstore_reports_path(report_quick_range_params("month")),
                   class: "#{btn_class} #{@range == 'month' ? active_class : inactive_class}" %>
-      <%= link_to "Este anio",
+      <%= link_to "Este año",
                   backstore_reports_path(report_quick_range_params("year")),
                   class: "#{btn_class} #{@range == 'year' ? active_class : inactive_class}" %>
       <%= link_to "Historico",
@@ -170,7 +170,6 @@
             <h2 class="text-lg font-bold text-proyecto-primary">Ventas por tipo</h2>
             <p class="text-sm text-proyecto-text/60">Distribucion de unidades entre CD y vinilos.</p>
           </div>
-          <span class="rounded-full bg-proyecto-accent/10 px-3 py-1 text-xs font-semibold text-proyecto-accent">Unidades</span>
         </div>
         <%= pie_chart @sales_by_product_type,
                       donut: true,
@@ -185,7 +184,6 @@
             <h2 class="text-lg font-bold text-proyecto-primary">Ventas por genero musical</h2>
             <p class="text-sm text-proyecto-text/60">Cantidad de unidades vendidas por genero.</p>
           </div>
-          <span class="rounded-full bg-proyecto-accent/10 px-3 py-1 text-xs font-semibold text-proyecto-accent">Ranking</span>
         </div>
         <%= column_chart @sales_by_genre,
                          height: "300px",
@@ -201,7 +199,6 @@
           <h2 class="text-lg font-bold text-proyecto-primary">Top 5 productos mas vendidos</h2>
           <p class="text-sm text-proyecto-text/60">Productos con mayor cantidad de unidades vendidas en el periodo.</p>
         </div>
-        <span class="rounded-full bg-proyecto-accent/10 px-3 py-1 text-xs font-semibold text-proyecto-accent">Top 5</span>
       </div>
 
       <div class="mb-6">
