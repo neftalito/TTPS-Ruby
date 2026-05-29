@@ -39,11 +39,11 @@
       <h1 class="text-xl font-semibold text-proyecto-primary"><%= t(".heading") %></h1>
     </div>
 
-    <div class="flex flex-col w-full gap-2 lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:justify-end">
-      <%= render "shared/locale_switcher",
-                 form_class: "w-full lg:w-auto",
-                 button_class: "px-3 py-1 rounded bg-white text-proyecto-primary border border-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2 w-full justify-center lg:w-auto" %>
+    <%= render "shared/locale_switcher",
+               wrapper_class: "order-2 ml-auto lg:order-3",
+               button_class: "flex items-center gap-2 rounded-lg border border-proyecto-primary bg-white px-3 py-2 text-proyecto-primary shadow-sm transition hover:bg-proyecto-primary hover:text-proyecto-bg cursor-pointer" %>
 
+    <div class="order-3 flex w-full flex-col gap-2 lg:order-2 lg:ml-auto lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:justify-end">
       <% if user_signed_in? %>
         <span class="flex items-center gap-2 text-proyecto-text w-full justify-center text-right lg:w-auto lg:justify-start lg:text-left">
           <i class="fa-solid fa-user"></i>
@@ -70,7 +70,7 @@
         <% end %>
       <% else %>
         <%= link_to new_user_session_path,
-                    class: "px-3 py-1 bg-proyecto-primary text-proyecto-bg rounded hover:bg-proyecto-accent flex items-center gap-2" do %>
+                    class: "px-3 py-1 bg-proyecto-primary text-proyecto-bg rounded hover:bg-proyecto-accent flex items-center gap-2 w-full justify-center lg:w-auto" do %>
           <i class="fa-solid fa-right-to-bracket"></i>
           <%= t(".sign_in") %>
         <% end %>

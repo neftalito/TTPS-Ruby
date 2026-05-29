@@ -1,9 +1,30 @@
-<%= button_to locale_path,
-              method: :patch,
-              params: { locale: locale_switch_target, return_to: request.fullpath },
-              form_class: local_assigns.fetch(:form_class, ""),
-              class: local_assigns.fetch(:button_class, ""),
-              "aria-label": locale_switch_aria_label do %>
-  <i class="fa-solid fa-language"></i>
-  <span><%= locale_switch_label %></span>
-<% end %>
+<details class="<%= local_assigns.fetch(:wrapper_class, "relative") %>">
+  <summary class="<%= local_assigns.fetch(:button_class, "") %>"
+           aria-label="<%= locale_switch_aria_label %>"
+           title="<%= locale_switch_aria_label %>"
+           style="list-style: none;">
+    <span class="sr-only"><%= locale_switch_aria_label %></span>
+    <i class="fa-solid fa-language"></i>
+    <i class="fa-solid fa-chevron-down text-[10px]"></i>
+  </summary>
+
+  <div class="<%= local_assigns.fetch(:menu_class, "absolute right-0 mt-2 w-44 overflow-hidden rounded-xl border border-proyecto-secondary/30 bg-white shadow-xl z-50") %>">
+    <% I18n.available_locales.map(&:to_s).each do |locale| %>
+      <% if locale == I18n.locale.to_s %>
+        <div class="flex items-center justify-between gap-3 bg-proyecto-secondary/10 px-4 py-2 text-sm font-semibold text-proyecto-primary">
+          <span><%= locale_switch_label(locale) %></span>
+          <i class="fa-solid fa-check text-xs"></i>
+        </div>
+      <% else %>
+        <%= button_to locale_path,
+                      method: :patch,
+                      params: { locale:, return_to: request.fullpath },
+                      form_class: "w-full",
+                      class: "flex w-full items-center justify-between gap-3 px-4 py-2 text-left text-sm text-proyecto-text hover:bg-proyecto-secondary/10 hover:text-proyecto-primary transition" do %>
+          <span><%= locale_switch_label(locale) %></span>
+          <span class="text-xs uppercase tracking-wider text-proyecto-text/50"><%= locale %></span>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</details>

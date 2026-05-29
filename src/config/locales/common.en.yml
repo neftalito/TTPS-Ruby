@@ -9,7 +9,7 @@ en:
       profile: "Profile"
       back_to_store: "Back to store"
       logout: "Log out"
-      change_language_to: "Switch to %{language}"
+      change_language: "Change language"
     actions:
       accept: "Accept"
       add_another_product: "Add another product"
