@@ -3,7 +3,7 @@
 - Neftalí Taiel Toledo Dicroce
 - Nicolás Tenaglia
 
-# Decisiones de diseno
+# Decisiones de diseño
 - Se eliminó la recuperación de contraseña por mail de Devise para no depender de un servidor SMTP.
 - Todo modelo eliminable también puede ser recuperado.
 - Los productos sin stock se muestran en escala de grises en el frontstore.
