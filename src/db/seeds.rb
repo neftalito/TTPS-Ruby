@@ -3,14 +3,14 @@ require "pathname"
 require "marcel"
 
 puts "Eliminando datos existentes..."
-ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
-SaleItem.delete_all
-Sale.delete_all
-ActiveStorage::Attachment.where(record_type: "Product").find_each(&:purge)
-Product.delete_all
-Category.delete_all
-User.delete_all
-ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
+ActiveRecord::Base.connection.disable_referential_integrity do
+  SaleItem.unscoped.delete_all
+  Sale.unscoped.delete_all
+  ActiveStorage::Attachment.where(record_type: "Product").find_each(&:purge)
+  Product.unscoped.delete_all
+  Category.unscoped.delete_all
+  User.unscoped.delete_all
+end
 
 puts "Creando usuarios predeterminados..."
 users = [
