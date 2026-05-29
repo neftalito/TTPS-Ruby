@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   include SoftDeletable
+  attr_accessor :remove_existing_audio
 
   belongs_to :category
   has_many :sale_items
@@ -185,6 +186,7 @@ class Product < ApplicationRecord
   end
 
   def audio_only_for_used_products
+    return if audio_marked_for_removal?
     return unless audio.attached? && condition == "new"
 
     errors.add(:audio, "solo puede adjuntarse a productos usados")
@@ -229,6 +231,7 @@ class Product < ApplicationRecord
   end
 
   def validate_audio_format_and_size
+    return if audio_marked_for_removal?
     return unless audio.attached?
 
     unless VALID_AUDIO_CONTENT_TYPES.include?(audio.content_type)
@@ -239,5 +242,9 @@ class Product < ApplicationRecord
 
     size_mb = (audio.byte_size.to_f / 1.megabyte).round(2)
     errors.add(:audio, "#{audio.filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 15 MB")
+  end
+
+  def audio_marked_for_removal?
+    ActiveModel::Type::Boolean.new.cast(remove_existing_audio)
   end
 end

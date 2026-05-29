@@ -30,6 +30,7 @@ class Backstore::ProductsControllerTest < ActionDispatch::IntegrationTest
 
   test "keeps persisted media visible when update rolls back" do
     product = products(:vinyl_pop)
+    product.update_column(:stock, 1)
     attach_fixture(product.images, "sample.jpg", "image/jpeg") unless product.images.attached?
     attach_fixture(product.audio, "sample.mp3", "audio/mpeg") unless product.audio.attached?
     persisted_image_links = product.images.attachments.count
@@ -51,6 +52,7 @@ class Backstore::ProductsControllerTest < ActionDispatch::IntegrationTest
 
   test "purges existing audio after successfully changing a product to new" do
     product = products(:vinyl_pop)
+    product.update_column(:stock, 1)
     attach_fixture(product.images, "sample.jpg", "image/jpeg") unless product.images.attached?
     attach_fixture(product.audio, "sample.mp3", "audio/mpeg") unless product.audio.attached?
     original_audio_blob_id = product.audio.blob.id

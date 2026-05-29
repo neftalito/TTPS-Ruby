@@ -33,7 +33,7 @@ vinyl_pop:
   description: Disco de pop
   author: Banda C
   price: 25.0
-  stock: 10
+  stock: 1
   category: pop
   published: true
   product_type: vinyl

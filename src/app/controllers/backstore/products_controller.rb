@@ -37,10 +37,12 @@ module Backstore
       @product.assign_attributes(product_update_params)
       @product.stock = 1 if @product.condition == "used"
       @product.last_modified_at = Time.current
+      @product.remove_existing_audio = should_remove_existing_audio?
 
       uploaded_images = new_product_images
       uploaded_audio = new_product_audio
-      removed_audio_blob = audio_blob_marked_for_removal
+      original_audio_blob = @product.audio.blob if @product.audio.attached?
+      attempted_attributes = product_update_params.to_h
 
       if invalid_uploaded_media?(uploaded_images, uploaded_audio)
         render :edit, status: :unprocessable_entity
@@ -50,7 +52,6 @@ module Backstore
       updated = false
 
       ActiveRecord::Base.transaction do
-        @product.audio.detach if should_remove_existing_audio?
         @product.images.attach(uploaded_images) if uploaded_images.any?
         @product.audio.attach(uploaded_audio) if should_attach_audio?(uploaded_audio)
 
@@ -59,10 +60,10 @@ module Backstore
       end
 
       if updated
-        purge_removed_audio_blob(removed_audio_blob)
+        remove_existing_audio_after_success(original_audio_blob)
         redirect_to backstore_product_path(@product), notice: "Producto actualizado"
       else
-        restore_persisted_media_state
+        rebuild_product_for_failed_update(attempted_attributes)
         render :edit, status: :unprocessable_entity
       end
     end
@@ -209,8 +210,12 @@ module Backstore
       @product.condition == "new" && @product.audio.attached?
     end
 
-    def audio_blob_marked_for_removal
-      @product.audio.blob if should_remove_existing_audio?
+    def remove_existing_audio_after_success(original_audio_blob)
+      return unless ActiveModel::Type::Boolean.new.cast(@product.remove_existing_audio)
+      return unless @product.audio.attached?
+
+      @product.audio.detach
+      purge_removed_audio_blob(original_audio_blob)
     end
 
     def purge_removed_audio_blob(audio_blob)
@@ -220,13 +225,19 @@ module Backstore
       audio_blob.purge
     end
 
-    def restore_persisted_media_state
-      @product.attachment_changes.delete("audio")
-      @product.attachment_changes.delete("images")
-      @product.association(:audio_attachment).reset
-      @product.association(:audio_blob).reset
-      @product.association(:images_attachments).reset
-      @product.association(:images_blobs).reset
+    def rebuild_product_for_failed_update(attempted_attributes)
+      persisted_product = Product.includes(:category, { images_attachments: :blob }, { audio_attachment: :blob })
+                                 .find(@product.id)
+      collected_errors = @product.errors.map { |error| [error.attribute, error.message] }
+
+      persisted_product.assign_attributes(attempted_attributes)
+      persisted_product.remove_existing_audio = false
+
+      collected_errors.each do |attribute, message|
+        persisted_product.errors.add(attribute, message)
+      end
+
+      @product = persisted_product
     end
 
     def should_attach_audio?(uploaded_audio)
