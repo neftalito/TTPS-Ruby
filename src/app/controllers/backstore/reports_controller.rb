@@ -16,6 +16,10 @@ module Backstore
       @sales_by_genre = @report.sales_by_genre
       @top_products = @report.top_products
       @top_products_chart = @report.top_products_chart
+      @top_product_records = Product.with_discarded
+                                    .with_category_and_attachments
+                                    .where(id: @top_products.map(&:product_id))
+                                    .index_by(&:id)
 
       @filter_categories = Category.order(:name)
       @filter_users = User.order(:email)

@@ -88,7 +88,23 @@
 
 <% product_columns = [
   { header: "ID", attribute: :id },
-  { header: "Nombre", attribute: :name },
+  {
+    header: "Producto",
+    cell_class: "px-6 py-4",
+    value: ->(product) do
+      content_tag(:div, class: "flex items-center gap-3") do
+        safe_join([
+          product_cover_thumbnail(product, size: 48, wrapper_class: "shrink-0"),
+          content_tag(:div, class: "min-w-0") do
+            safe_join([
+              content_tag(:div, product.name, class: "font-semibold text-proyecto-primary break-words"),
+              content_tag(:div, product.author, class: "text-xs text-proyecto-text/60 break-words")
+            ])
+          end
+        ])
+      end
+    end
+  },
   { header: "Tipo", attribute: :label_for_type },
   { header: "Condición", attribute: :label_for_condition },
   {

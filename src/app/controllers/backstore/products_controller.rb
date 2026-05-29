@@ -10,6 +10,7 @@ module Backstore
       @products = @products.search_by_author(params[:author_q])
       @products = @products.by_condition(params[:condition])
       @products = @products.by_product_type(params[:product_type])
+      @products = @products.with_category_and_attachments
 
       per_page = params[:per_page] == "all" ? @products.count : (params[:per_page] || 25).to_i
       @products = @products.order(id: :asc).page(params[:page]).per(per_page)
