@@ -1,21 +1,21 @@
 # Integrantes
 - Lautaro Tomas Budini
-- Neftali Taiel Toledo Dicroce
-- Nicolas Tenaglia
+- Neftalí Taiel Toledo Dicroce
+- Nicolás Tenaglia
 
 # Decisiones de diseno
-- Se elimino la recuperacion de contrasena por mail de Devise para no depender de un servidor SMTP.
-- Todo modelo eliminable tambien puede ser recuperado.
+- Se eliminó la recuperación de contraseña por mail de Devise para no depender de un servidor SMTP.
+- Todo modelo eliminable también puede ser recuperado.
 - Los productos sin stock se muestran en escala de grises en el frontstore.
-- El stock es visible desde el frontstore para facilitar la demostracion del trabajo.
-- El dashboard del backstore muestra ventas y ganancias del usuario actual, accesos rapidos, graficos de ventas, stock critico y ultimas ventas confirmadas.
-- El modulo de reportes vive en una seccion separada de la gestion de ventas y solo considera ventas confirmadas.
-- Los reportes se pueden filtrar por fecha, tipo de producto, genero musical y empleado.
-- Los reportes muestran metricas numericas y graficas, junto con exportacion en CSV y PDF.
-- Los productos admiten hasta 10 imagenes en formatos JPG, PNG, GIF y WEBP, con un máximo de 10 MB por imagen.
+- El stock es visible desde el frontstore para facilitar la demostración del trabajo.
+- El dashboard del backstore muestra ventas y ganancias del usuario actual, accesos rapidos, gráficos de ventas, stock crítico y últimas ventas confirmadas.
+- El modulo de reportes vive en una sección separada de la gestión de ventas y sólo considera ventas confirmadas.
+- Los reportes se pueden filtrar por fecha, tipo de producto, género musical y empleado.
+- Los reportes muestran métricas numéricas y gráficas, junto con exportación en CSV y PDF.
+- Los productos admiten hasta 10 imágenes en formatos JPG, PNG, GIF y WEBP, con un máximo de 10 MB por imagen.
 - Los audios para productos usados admiten formatos MP3, WAV, OGG, M4A y FLAC, con un máximo de 15 MB.
 - La portada de un producto es siempre la primera imagen cargada.
-- El precio de cada item de venta se toma automaticamente del precio actual del producto.
+- El precio de cada item de venta se toma automáticamente del precio actual del producto.
 - El nombre visible del usuario autenticado se obtiene a partir del correo, usando el fragmento anterior al `@`.
 
 # Usuarios creados por defecto en el seed
@@ -36,7 +36,7 @@
 - Sqlite3
 - Node.js y npm
 
-# Instalacion
+# Instalación
 1. Clonar el repositorio
 
 ```bash
@@ -68,7 +68,7 @@ Si necesitas reiniciar todo desde cero, podes usar:
 bin/rails db:reset
 ```
 
-5. Ejecutar la aplicacion con Foreman
+5. Ejecutar la aplicación con Foreman
 
 ```bash
 foreman start -f Procfile.dev
@@ -78,34 +78,34 @@ foreman start -f Procfile.dev
 - Frontstore: `http://localhost:3000`
 - Backstore: `http://localhost:3000/admin`
 
-# Modulo de reportes
-## Como acceder
-- Ingresar al backstore y abrir la seccion `Reportes` del sidebar.
-- Tambien se puede entrar directamente en `http://localhost:3000/admin/reports`.
+# Módulo de reportes
+## Cómo acceder
+- Ingresar al backstore y abrir la sección `Reportes` del sidebar.
+- También se puede entrar directamente en `http://localhost:3000/admin/reports`.
 
-## Metricas y analisis que se muestran
+## Métricas y análisis que se muestran
 - Total recaudado en el periodo filtrado.
 - Cantidad de ventas realizadas.
 - Promedio de importe por venta.
 - Cantidad de productos vendidos.
-- Grafico de ventas por tipo de producto (CD / Vinilo).
-- Grafico de ventas por genero musical.
-- Top 5 productos mas vendidos.
+- Gráfico de ventas por tipo de producto (CD / Vinilo).
+- Gráfico de ventas por género musical.
+- Top 5 productos más vendidos.
 
 ## Filtros disponibles
 - Fecha desde / hasta.
 - Tipo de producto.
-- Genero musical.
-- Empleado que realizo la venta.
+- Género musical.
+- Empleado que realizó la venta.
 
-## Exportacion
+## Exportación
 - El reporte actual se puede descargar en formato CSV.
-- El mismo reporte tambien se puede exportar como PDF.
+- El mismo reporte también se puede exportar como PDF.
 
-## Como generar datos de prueba
+## Cómo generar datos de prueba
 - Ejecutar `bin/rails db:seed` desde la carpeta `src`.
 - Para recrear la base completa, ejecutar `bin/rails db:reset`.
-- El seed genera productos, ventas confirmadas, ventas canceladas y un lote de ventas de demostracion pensado para visualizar correctamente las metricas y graficos.
+- El seed genera productos, ventas confirmadas, ventas canceladas y un lote de ventas de demostración pensado para visualizar correctamente las métricas y gráficos.
 
 # Notas para desarrolladores
 ## Instalar dependencias Ruby
@@ -133,7 +133,7 @@ bundle install
 npm install nombre-del-paquete
 ```
 
-## Ejecutar la aplicacion
+## Ejecutar la aplicación
 
 ```bash
 foreman start -f Procfile.dev
@@ -146,7 +146,7 @@ foreman start -f Procfile.dev
 bundle exec rubocop
 ```
 
-### Autoformatear codigo
+### Autoformatear código
 
 ```bash
 bundle exec rubocop -a

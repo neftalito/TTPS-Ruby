@@ -2,12 +2,12 @@ es:
   users:
     registrations:
       edit:
-        confirm_new_password: "Confirmar nueva contrase\u00f1a"
-        current_password: "Contrase\u00f1a actual"
-        minimum_password_length: "M\u00ednimo %{count} caracteres"
-        new_password: "Nueva contrase\u00f1a"
+        confirm_new_password: "Confirmar nueva contraseña"
+        current_password: "Contraseña actual"
+        minimum_password_length: "Mínimo %{count} caracteres"
+        new_password: "Nueva contraseña"
         optional: "opcional"
-        password_placeholder: "Dejar en blanco si no quer\u00e9s cambiarla"
-        pending_confirmation: "Esperando confirmaci\u00f3n para: %{email}"
+        password_placeholder: "Dejar en blanco si no querés cambiarla"
+        pending_confirmation: "Esperando confirmación para: %{email}"
         required_for_changes: "obligatoria para guardar cambios"
         title: "Editar mi cuenta"

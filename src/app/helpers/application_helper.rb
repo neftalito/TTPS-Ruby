@@ -56,7 +56,7 @@ module ApplicationHelper
 
   def pagination_results_range(collection)
     return I18n.t("common.pagination.empty_range") if collection.blank? || !collection.respond_to?(:total_count) ||
-                                                       collection.total_count.zero?
+                                                      collection.total_count.zero?
 
     from = collection.offset_value + 1
     to = collection.offset_value + collection.length

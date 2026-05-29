@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   include SoftDeletable
+
   attr_accessor :remove_existing_audio
 
   belongs_to :category
@@ -55,15 +56,11 @@ class Product < ApplicationRecord
   }
 
   scope :by_condition, lambda { |condition_param|
-    if condition_param.present? && condition_param != "all"
-      where(condition: condition_param)
-    end
+    where(condition: condition_param) if condition_param.present? && condition_param != "all"
   }
 
   scope :by_product_type, lambda { |product_type_param|
-    if product_type_param.present? && product_type_param != "all"
-      where(product_type: product_type_param)
-    end
+    where(product_type: product_type_param) if product_type_param.present? && product_type_param != "all"
   }
 
   scope :released_in_year, ->(release_year) { where(release_year: release_year.to_i) if release_year.present? }

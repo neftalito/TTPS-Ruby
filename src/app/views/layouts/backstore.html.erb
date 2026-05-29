@@ -29,52 +29,59 @@
 </aside>
 
 <div class="flex-1 flex flex-col">
-  <header class="w-full bg-proyecto-secondary shadow px-6 py-4 flex flex-wrap items-center justify-between gap-4 relative">
-    <div class="flex items-center gap-3">
-      <button
-        class="md:hidden bg-proyecto-primary text-proyecto-bg p-2 rounded shadow"
-        onclick="document.getElementById('mobileSidebar').classList.remove('hidden')">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <h1 class="text-xl font-semibold text-proyecto-primary"><%= t(".heading") %></h1>
-    </div>
+  <header class="w-full bg-proyecto-secondary shadow px-6 py-4 relative">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
 
-    <%= render "shared/locale_switcher",
-               wrapper_class: "order-2 ml-auto lg:order-3",
-               button_class: "flex items-center gap-2 rounded-lg border border-proyecto-primary bg-white px-3 py-2 text-proyecto-primary shadow-sm transition hover:bg-proyecto-primary hover:text-proyecto-bg cursor-pointer" %>
+      <%# Izquierda: hamburger + título %>
+      <div class="flex items-center gap-3 shrink-0">
+        <button
+          class="md:hidden bg-proyecto-primary text-proyecto-bg p-2 rounded shadow"
+          onclick="document.getElementById('mobileSidebar').classList.remove('hidden')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <h1 class="text-xl font-semibold text-proyecto-primary"><%= t(".heading") %></h1>
+      </div>
 
-    <div class="order-3 flex w-full flex-col gap-2 lg:order-2 lg:ml-auto lg:w-auto lg:flex-row lg:flex-wrap lg:items-center lg:justify-end">
-      <% if user_signed_in? %>
-        <span class="flex items-center gap-2 text-proyecto-text w-full justify-center text-right lg:w-auto lg:justify-start lg:text-left">
+      <%# Derecha: todo junto, empujado con ml-auto %>
+      <div class="ml-auto flex flex-wrap items-center justify-end gap-2">
+        <% if user_signed_in? %>
+        <span class="flex items-center gap-2 text-proyecto-text whitespace-nowrap">
           <i class="fa-solid fa-user"></i>
           <%= current_user.email.split("@").first.capitalize %>
         </span>
 
-        <%= link_to edit_backstore_user_path(current_user),
-                    class: "px-3 py-1 rounded bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg flex items-center gap-2 w-full justify-center lg:w-auto" do %>
-          <i class="fa-solid fa-id-badge"></i>
-          <span><%= t("common.navigation.profile") %></span>
+          <%= link_to edit_backstore_user_path(current_user),
+                      class: "px-3 py-1 rounded bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg flex items-center gap-2 whitespace-nowrap" do %>
+            <i class="fa-solid fa-id-badge"></i>
+            <span><%= t("common.navigation.profile") %></span>
+          <% end %>
+
+          <%= link_to root_path,
+                      class: "px-3 py-1 rounded bg-proyecto-bg text-proyecto-primary border border-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2 whitespace-nowrap" do %>
+            <i class="fa-solid fa-store"></i>
+            <span><%= t("common.navigation.back_to_store") %></span>
+          <% end %>
+
+          <%= button_to destroy_user_session_path,
+                        method: :delete,
+                        class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg rounded hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2 whitespace-nowrap" do %>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <%= t("common.navigation.logout") %>
+          <% end %>
+        <% else %>
+          <%= link_to new_user_session_path,
+                      class: "px-3 py-1 bg-proyecto-primary text-proyecto-bg rounded hover:bg-proyecto-accent flex items-center gap-2 whitespace-nowrap" do %>
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <%= t(".sign_in") %>
+          <% end %>
         <% end %>
 
-        <%= link_to root_path,
-                    class: "px-3 py-1 rounded bg-proyecto-bg text-proyecto-primary border border-proyecto-primary hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2 w-full justify-center lg:w-auto" do %>
-          <i class="fa-solid fa-store"></i>
-          <span><%= t("common.navigation.back_to_store") %></span>
-        <% end %>
+        <%# Locale va dentro del grupo derecho, relative propio para anclar el dropdown %>
+        <%= render "shared/locale_switcher",
+                   wrapper_class: "relative",
+                   button_class: "flex items-center gap-2 rounded-lg border border-proyecto-primary bg-white px-3 py-2 text-proyecto-primary shadow-sm transition hover:bg-proyecto-primary hover:text-proyecto-bg cursor-pointer" %>
+      </div>
 
-        <%= button_to destroy_user_session_path,
-                      method: :delete,
-                      class: "px-3 py-1 bg-proyecto-accent text-proyecto-bg rounded hover:bg-proyecto-primary hover:text-proyecto-bg flex items-center gap-2 w-full justify-center lg:w-auto" do %>
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <%= t("common.navigation.logout") %>
-        <% end %>
-      <% else %>
-        <%= link_to new_user_session_path,
-                    class: "px-3 py-1 bg-proyecto-primary text-proyecto-bg rounded hover:bg-proyecto-accent flex items-center gap-2 w-full justify-center lg:w-auto" do %>
-          <i class="fa-solid fa-right-to-bracket"></i>
-          <%= t(".sign_in") %>
-        <% end %>
-      <% end %>
     </div>
   </header>
 

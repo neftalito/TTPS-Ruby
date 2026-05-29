@@ -2,7 +2,7 @@ es:
   storefront:
     home:
       index:
-        paragraph_one_html: "En <strong>RecordsAR</strong> llevamos a\u00f1os conectando generaciones a trav\u00e9s de la m\u00fasica. Desde vinilos cl\u00e1sicos hasta los discos m\u00e1s modernos, nuestro cat\u00e1logo celebra cada \u00e9poca, cada artista y cada historia que la m\u00fasica tiene para contar."
+        paragraph_one_html: "En <strong>RecordsAR</strong> llevamos años conectando generaciones a trav\u00e9s de la m\u00fasica. Desde vinilos cl\u00e1sicos hasta los discos m\u00e1s modernos, nuestro cat\u00e1logo celebra cada \u00e9poca, cada artista y cada historia que la m\u00fasica tiene para contar."
         paragraph_two: "Creemos que la m\u00fasica no solo se escucha, se vive. Nuestro compromiso es preservar la experiencia \u00fanica de coleccionar y disfrutar de cada obra, haciendo que cada disco sea m\u00e1s que un producto: un viaje a la memoria y la pasi\u00f3n de quienes amamos la m\u00fasica."
         records_image_alt: "Discos cl\u00e1sicos"
         store_image_alt: "Nuestro local"
@@ -18,7 +18,7 @@ es:
           all_types: "Todos los tipos"
           author_placeholder: "Autor o banda"
           name_placeholder: "T\u00edtulo del \u00e1lbum"
-          release_year_placeholder: "A\u00f1o de lanzamiento"
+          release_year_placeholder: "Año de lanzamiento"
         subtitle: "Descubr\u00ed los nuevos ingresos y los favoritos del staff. Todo lo que busc\u00e1s est\u00e1 aqu\u00ed."
         title: "Nuestros productos destacados"
         view_detail: "Ver detalle"

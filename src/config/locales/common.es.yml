@@ -3,12 +3,12 @@ es:
     app_name: "RecordAR"
     navigation:
       home: "Inicio"
-      catalog: "Cat\u00e1logo"
-      admin_panel: "Panel de administraci\u00f3n"
-      sign_in: "Iniciar sesi\u00f3n"
+      catalog: "Catálogo"
+      admin_panel: "Panel de administración"
+      sign_in: "Iniciar sesión"
       profile: "Perfil"
       back_to_store: "Volver a la tienda"
-      logout: "Cerrar sesi\u00f3n"
+      logout: "Cerrar sesión"
       change_language: "Cambiar idioma"
     actions:
       accept: "Aceptar"
@@ -33,20 +33,20 @@ es:
       new_user: "Nuevo usuario"
       restore: "Restaurar"
       save_changes: "Guardar cambios"
-      select_images: "Seleccionar im\u00e1genes"
+      select_images: "Seleccionar imágenes"
       understood: "Entendido"
       view: "Ver"
     labels:
       date: "Fecha"
-      description: "Descripci\u00f3n"
+      description: "Descripción"
       email: "Email"
       employee: "Empleado"
-      genre: "G\u00e9nero"
+      genre: "Género"
       id: "ID"
       price: "Precio"
       product: "Producto"
       quantity: "Cantidad"
-      release_year: "A\u00f1o de lanzamiento"
+      release_year: "Año de lanzamiento"
       role: "Rol"
       search: "Buscar"
       seller: "Vendedor"
@@ -61,15 +61,15 @@ es:
       empty_range: "0 de 0"
       next: "Siguiente"
       of: "de"
-      page: "P\u00e1gina"
-      per_page: "Por p\u00e1gina:"
+      page: "Página"
+      per_page: "Por página:"
       previous: "Anterior"
       range: "%{from}-%{to} de %{total}"
       showing: "Mostrando"
     flash_titles:
       alert: "Alerta"
-      info: "Informaci\u00f3n"
-      success: "\u00c9xito"
+      info: "Información"
+      success: "Éxito"
       warning: "Advertencia"
     states:
       active: "Activo"
@@ -78,19 +78,19 @@ es:
       deleted: "Eliminado"
       low: "Bajo"
       new_badge: "Nueva"
-      no_genre: "Sin g\u00e9nero"
+      no_genre: "Sin género"
       no_image: "Sin imagen"
       no_image_short: "Sin img"
-      no_images: "Sin im\u00e1genes"
+      no_images: "Sin imágenes"
       out_of_stock: "Agotado"
       out_of_stock_upper: "SIN STOCK"
     messages:
-      all_good: "\u00a1Todo en orden!"
+      all_good: "¡Todo en orden!"
       browser_no_audio_support: "Tu navegador no soporta el elemento de audio."
       footer_rights: "Todos los derechos reservados."
-      new_sales_appear_here: "Las nuevas ventas aparecer\u00e1n aqu\u00ed."
-      no_critical_stock: "No hay stock cr\u00edtico."
-      no_products_published: "Todav\u00eda no hay productos publicados."
+      new_sales_appear_here: "Las nuevas ventas aparecerán aquí."
+      no_critical_stock: "No hay stock crítico."
+      no_products_published: "Todavía no hay productos publicados."
       no_recent_sales: "No hay ventas recientes"
       stock_with_count: "Stock: %{count}"
     chart:
@@ -114,7 +114,7 @@ es:
       vinyl: "Vinilo"
   javascript:
     custom_confirm:
-      title: "Confirmaci\u00f3n requerida"
+      title: "Confirmación requerida"
   flash:
     backstore:
       products:
@@ -123,11 +123,11 @@ es:
         deleted: "Producto dado de baja"
         delete_failed: "No se pudo eliminar el producto"
         image_deleted: "Imagen eliminada correctamente."
-        last_image: "No se puede eliminar la ultima imagen. Debe quedar al menos una."
+        last_image: "No se puede eliminar la última imagen. Debe quedar al menos una."
         no_audio: "No hay audio para eliminar."
         restored: "Producto restaurado correctamente."
         restore_failed: "No se pudo restaurar el producto."
-        stock_invalid: "El valor de stock ingresado no es valido."
+        stock_invalid: "El valor de stock ingresado no es válido."
         stock_updated: "Stock actualizado correctamente."
         stock_update_error: "Error al actualizar stock: %{errors}"
         updated: "Producto actualizado"
@@ -139,11 +139,11 @@ es:
       users:
         created: "Usuario creado correctamente."
         deleted: "Usuario eliminado correctamente."
-        delete_self: "No pod\u00e9s eliminar tu propia cuenta."
+        delete_self: "No podés eliminar tu propia cuenta."
         manager_cannot_assign_admin: "Un gerente no puede asignar el rol de administrador."
         restore_failed: "No se pudo restaurar el usuario."
         restored: "Usuario restaurado correctamente."
-        update_self_role: "No pod\u00e9s cambiar tu propio rol."
+        update_self_role: "No podés cambiar tu propio rol."
         updated: "Usuario actualizado correctamente."
     storefront:
       products:
@@ -153,14 +153,14 @@ es:
       at_least_one_image: "debe tener al menos una imagen"
       at_least_one_sale_item: "Debes agregar al menos un producto a la venta."
       audio_only_for_used_products: "solo puede adjuntarse a productos usados"
-      audio_too_large: "%{filename} es demasiado grande (%{size_mb} MB). Tama\u00f1o maximo: %{max_size_mb} MB"
-      image_too_large: "%{filename} es demasiado grande (%{size_mb} MB). Tama\u00f1o maximo: %{max_size_mb} MB por imagen"
+      audio_too_large: "%{filename} es demasiado grande (%{size_mb} MB). Tamaño máximo: %{max_size_mb} MB"
+      image_too_large: "%{filename} es demasiado grande (%{size_mb} MB). Tamaño máximo: %{max_size_mb} MB por imagen"
       insufficient_stock: "No hay suficiente stock para el producto: %{product}, solicitado: %{requested}, disponible: %{available}"
-      invalid_audio_format: "%{filename} no es un formato valido. Formatos permitidos: %{formats}"
-      invalid_image_format: "%{filename} no es un formato valido. Formatos permitidos: %{formats}"
-      invalid_release_year: "debe ser un a\u00f1o valido entre 1900 y el a\u00f1o actual"
+      invalid_audio_format: "%{filename} no es un formato válido. Formatos permitidos: %{formats}"
+      invalid_image_format: "%{filename} no es un formato válido. Formatos permitidos: %{formats}"
+      invalid_release_year: "debe ser un año válido entre 1900 y el año actual"
       required: "es obligatorio"
-      too_many_images: "no puede exceder las %{limit} imagenes"
+      too_many_images: "no puede exceder las %{limit} imágenes"
       too_many_new_uploads: "no puedes subir %{new_count} imagen(es) nueva(s). Ya tienes %{current_count} imagen(es) y el limite es %{limit}."
       used_stock_cannot_exceed_one: "no puede ser mayor a 1 para productos usados"
   activerecord:
@@ -168,13 +168,13 @@ es:
       product:
         audio: "Audio"
         author: "Autor"
-        category: "G\u00e9nero"
-        description: "Descripci\u00f3n"
-        images: "Im\u00e1genes"
-        name: "T\u00edtulo del \u00e1lbum"
+        category: "Género"
+        description: "Descripción"
+        images: "Imágenes"
+        name: "Título del álbum"
         price: "Precio"
         product_type: "Tipo"
-        release_year: "A\u00f1o de lanzamiento"
+        release_year: "Año de lanzamiento"
         stock: "Stock"
       sale:
         buyer_dni: "DNI"
@@ -186,28 +186,28 @@ es:
         quantity: "Cantidad"
       user:
         email: "Email"
-        password: "Contrase\u00f1a"
-        password_confirmation: "Confirmar contrase\u00f1a"
+        password: "Contraseña"
+        password_confirmation: "Confirmar contraseña"
         role: "Rol"
   layouts:
     application:
       title: "App"
     backstore:
-      title: "Administraci\u00f3n"
-      heading: "Panel administrativo"
+      title: "Administración"
+      heading: "Panel Administrativo"
       sign_in: "Ingresar"
     pdf:
       title: "Factura"
     storefront:
       title: "RecordAR"
       footer_contact: "Contacto"
-      footer_navigation: "Navegaci\u00f3n"
-      footer_tagline: "La mejor m\u00fasica, en vinilo y CD, nuevos y usados."
+      footer_navigation: "Navegación"
+      footer_tagline: "La mejor música, en vinilo y CD, nuevos y usados."
   shared:
     flash_modal:
       close: "Entendido"
     pagination:
-      aria_label: "Paginaci\u00f3n"
+      aria_label: "Paginación"
   backstore:
     shared:
       resource_table:
@@ -218,5 +218,5 @@ es:
         products: "Productos"
         reports: "Reportes"
         sales: "Ventas"
-        title: "Panel administrativo"
+        title: "Panel Administrativo"
         users: "Usuarios"
