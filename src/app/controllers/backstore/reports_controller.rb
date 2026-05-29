@@ -65,20 +65,20 @@ module Backstore
         csv << ["Genero", selected_category_name]
         csv << ["Empleado", selected_user_name]
         csv << []
-        csv << ["Metrica", "Valor"]
+        csv << %w[Metrica Valor]
         csv << ["Total recaudado", @total_revenue]
         csv << ["Cantidad de ventas", @total_sales]
         csv << ["Promedio por venta", @average_ticket]
         csv << ["Cantidad de productos vendidos", @total_items]
         csv << []
         csv << ["Ventas por tipo de producto"]
-        csv << ["Tipo", "Cantidad"]
+        csv << %w[Tipo Cantidad]
         @sales_by_product_type.each do |label, quantity|
           csv << [label, quantity]
         end
         csv << []
         csv << ["Ventas por genero"]
-        csv << ["Genero", "Cantidad"]
+        csv << %w[Genero Cantidad]
         @sales_by_genre.each do |genre, quantity|
           csv << [genre, quantity]
         end

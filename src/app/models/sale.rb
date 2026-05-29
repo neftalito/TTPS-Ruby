@@ -17,9 +17,7 @@ class Sale < ApplicationRecord
   scope :ordered_recent, -> { order(created_at: :desc) }
   scope :for_user, ->(user) { where(user:) if user.present? }
   scope :between_dates, lambda { |start_date, end_date|
-    if start_date && end_date
-      where(created_at: start_date.beginning_of_day..end_date.end_of_day)
-    end
+    where(created_at: start_date.beginning_of_day..end_date.end_of_day) if start_date && end_date
   }
 
   scope :search_by_buyer, lambda { |query|

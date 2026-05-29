@@ -5,12 +5,12 @@ module Storefront
     def index
       @categories = Category.all
       @products = Product.available_products
-                           .search_by_name(params[:name_q])
-                           .search_by_author(params[:author_q])
-                           .released_in_year(params[:release_year])
-                           .by_category(params[:category])
-                           .by_product_type(params[:product_type])
-                           .by_condition(params[:condition])
+                         .search_by_name(params[:name_q])
+                         .search_by_author(params[:author_q])
+                         .released_in_year(params[:release_year])
+                         .by_category(params[:category])
+                         .by_product_type(params[:product_type])
+                         .by_condition(params[:condition])
 
       @products = @products.page(params[:page]).per(params[:per_page] || 12)
     end

@@ -26,6 +26,6 @@ class Backstore::ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "text/csv", response.media_type
     assert_includes response.body, "Tipo de producto,CD"
     assert_includes response.body, "CD Azul"
-    refute_includes response.body, "Vinilo Dorado"
+    assert_not_includes response.body, "Vinilo Dorado"
   end
 end
