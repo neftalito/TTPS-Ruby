@@ -28,8 +28,6 @@ module ProductsHelper
 
   def translated_product_type(type, uppercase: false)
     normalized = type.to_s.strip.downcase
-    normalized = "vinyl" if normalized == "viniyl"
-
     label = I18n.t("products.types.#{normalized}", default: normalized.present? ? normalized.humanize : I18n.t("products.types.all"))
     uppercase ? label.upcase : label
   end

@@ -119,7 +119,7 @@ class Product < ApplicationRecord
   end
 
   def human_product_type
-    I18n.t("products.types.#{normalized_product_type_value}", default: normalized_product_type_value.humanize)
+    I18n.t("products.types.#{product_type}", default: product_type.to_s.humanize)
   end
 
   def human_condition
@@ -148,14 +148,14 @@ class Product < ApplicationRecord
   end
 
   def decrement_stock!(quantity)
-    self.stock -= quantity
-    save!
+    persist_stock!(stock - quantity)
   end
 
   def increment_stock!(quantity)
-    self.stock += quantity
-    self.stock = 1 if condition_used? && stock > 1
-    save!
+    new_stock = stock + quantity
+    new_stock = 1 if condition_used? && new_stock > 1
+
+    persist_stock!(new_stock)
   end
 
   def discard
@@ -247,8 +247,17 @@ class Product < ApplicationRecord
     ActiveModel::Type::Boolean.new.cast(remove_existing_audio)
   end
 
-  def normalized_product_type_value
-    value = product_type.to_s
-    value == "viniyl" ? "vinyl" : value
+  def persist_stock!(new_stock)
+    raise ArgumentError, "stock cannot be negative" if new_stock.negative?
+
+    timestamp = Time.current
+    update_attributes = { stock: new_stock, updated_at: timestamp }
+    update_attributes[:last_modified_at] = timestamp if has_attribute?(:last_modified_at)
+
+    update_columns(update_attributes)
+
+    self.stock = new_stock
+    self.updated_at = timestamp
+    self.last_modified_at = timestamp if has_attribute?(:last_modified_at)
   end
 end
