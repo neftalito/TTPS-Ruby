@@ -29,11 +29,11 @@ module Backstore
         format.html
 
         format.csv do
-          send_data generate_csv, filename: "reporte_ventas_#{Date.current}.csv"
+          send_data generate_csv, filename: "sales_report_#{Date.current}.csv"
         end
 
         format.pdf do
-          render pdf: "reporte_ventas_#{Date.current}",
+          render pdf: "sales_report_#{Date.current}",
                  layout: "pdf",
                  orientation: "Landscape",
                  encoding: "UTF-8",
@@ -59,32 +59,40 @@ module Backstore
     def generate_csv
       bom = "\uFEFF"
       csv_content = CSV.generate(headers: true, encoding: "UTF-8") do |csv|
-        csv << ["Reporte de ventas"]
-        csv << ["Periodo", @report.date_range_label]
-        csv << ["Tipo de producto", @report.human_product_type]
-        csv << ["Genero", selected_category_name]
-        csv << ["Empleado", selected_user_name]
+        csv << [I18n.t("backstore.reports.csv.title")]
+        csv << [I18n.t("backstore.reports.csv.period"), @report.date_range_label]
+        csv << [I18n.t("backstore.reports.csv.product_type"), @report.human_product_type]
+        csv << [I18n.t("backstore.reports.csv.genre"), selected_category_name]
+        csv << [I18n.t("backstore.reports.csv.employee"), selected_user_name]
         csv << []
-        csv << ["Metrica", "Valor"]
-        csv << ["Total recaudado", @total_revenue]
-        csv << ["Cantidad de ventas", @total_sales]
-        csv << ["Promedio por venta", @average_ticket]
-        csv << ["Cantidad de productos vendidos", @total_items]
+        csv << [I18n.t("backstore.reports.csv.metric"), I18n.t("backstore.reports.csv.value")]
+        csv << [I18n.t("backstore.reports.index.cards.total_revenue_title"), @total_revenue]
+        csv << [I18n.t("backstore.reports.index.cards.total_sales_title"), @total_sales]
+        csv << [I18n.t("backstore.reports.index.cards.average_ticket_title"), @average_ticket]
+        csv << [I18n.t("backstore.reports.csv.total_products_sold"), @total_items]
         csv << []
-        csv << ["Ventas por tipo de producto"]
-        csv << ["Tipo", "Cantidad"]
+        csv << [I18n.t("backstore.reports.csv.sales_by_product_type")]
+        csv << [I18n.t("common.labels.type"), I18n.t("backstore.reports.csv.quantity")]
         @sales_by_product_type.each do |label, quantity|
           csv << [label, quantity]
         end
         csv << []
-        csv << ["Ventas por genero"]
-        csv << ["Genero", "Cantidad"]
+        csv << [I18n.t("backstore.reports.csv.sales_by_genre")]
+        csv << [I18n.t("common.labels.genre"), I18n.t("backstore.reports.csv.quantity")]
         @sales_by_genre.each do |genre, quantity|
           csv << [genre, quantity]
         end
         csv << []
-        csv << ["Top 5 productos mas vendidos"]
-        csv << ["ID", "Producto", "Artista", "Genero", "Tipo", "Unidades Vendidas", "Recaudacion"]
+        csv << [I18n.t("backstore.reports.index.top_products.title")]
+        csv << [
+          I18n.t("common.labels.id"),
+          I18n.t("common.labels.product"),
+          I18n.t("backstore.reports.csv.artist"),
+          I18n.t("common.labels.genre"),
+          I18n.t("common.labels.type"),
+          I18n.t("backstore.reports.csv.units_sold"),
+          I18n.t("backstore.reports.csv.revenue")
+        ]
         @top_products.each do |product|
           csv << [
             product.product_id,
@@ -102,15 +110,15 @@ module Backstore
     end
 
     def selected_category_name
-      return "Todos" if @report.category_id.blank?
+      return I18n.t("common.options.all") if @report.category_id.blank?
 
-      @selected_category_name ||= Category.find_by(id: @report.category_id)&.name || "Todos"
+      @selected_category_name ||= Category.find_by(id: @report.category_id)&.name || I18n.t("common.options.all")
     end
 
     def selected_user_name
-      return "Todos" if @report.user_id.blank?
+      return I18n.t("common.options.all") if @report.user_id.blank?
 
-      @selected_user_name ||= User.find_by(id: @report.user_id)&.email || "Todos"
+      @selected_user_name ||= User.find_by(id: @report.user_id)&.email || I18n.t("common.options.all")
     end
   end
 end

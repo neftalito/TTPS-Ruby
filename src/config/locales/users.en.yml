@@ -1,0 +1,13 @@
+en:
+  users:
+    registrations:
+      edit:
+        confirm_new_password: "Confirm new password"
+        current_password: "Current password"
+        minimum_password_length: "Minimum %{count} characters"
+        new_password: "New password"
+        optional: "optional"
+        password_placeholder: "Leave blank if you do not want to change it"
+        pending_confirmation: "Waiting for confirmation for: %{email}"
+        required_for_changes: "required to save changes"
+        title: "Edit my account"

@@ -27,7 +27,7 @@ module Backstore
       @product.last_modified_at = Time.current
 
       if @product.save
-        redirect_to backstore_product_path(@product), notice: "Producto creado"
+        redirect_to backstore_product_path(@product), notice: I18n.t("flash.backstore.products.created")
       else
         render :new, status: :unprocessable_entity
       end
@@ -61,7 +61,7 @@ module Backstore
 
       if updated
         remove_existing_audio_after_success(original_audio_blob)
-        redirect_to backstore_product_path(@product), notice: "Producto actualizado"
+        redirect_to backstore_product_path(@product), notice: I18n.t("flash.backstore.products.updated")
       else
         rebuild_product_for_failed_update(attempted_attributes)
         render :edit, status: :unprocessable_entity
@@ -70,17 +70,17 @@ module Backstore
 
     def destroy
       if @product.discard
-        redirect_to backstore_products_path, notice: "Producto dado de baja"
+        redirect_to backstore_products_path, notice: I18n.t("flash.backstore.products.deleted")
       else
-        redirect_to backstore_products_path, alert: "No se pudo eliminar el producto"
+        redirect_to backstore_products_path, alert: I18n.t("flash.backstore.products.delete_failed")
       end
     end
 
     def restore
       if @product.undiscard
-        redirect_to backstore_products_path, notice: "Producto restaurado correctamente."
+        redirect_to backstore_products_path, notice: I18n.t("flash.backstore.products.restored")
       else
-        redirect_to backstore_products_path, alert: "No se pudo restaurar el producto."
+        redirect_to backstore_products_path, alert: I18n.t("flash.backstore.products.restore_failed")
       end
     end
 
@@ -89,21 +89,21 @@ module Backstore
 
       if @product.images.count <= 1
         redirect_back fallback_location: edit_backstore_product_path(@product),
-                      alert: "No se puede eliminar la ultima imagen. Debe quedar al menos una."
+                      alert: I18n.t("flash.backstore.products.last_image")
         return
       end
 
       image.purge
       redirect_back fallback_location: edit_backstore_product_path(@product),
-                    notice: "Imagen eliminada correctamente."
+                    notice: I18n.t("flash.backstore.products.image_deleted")
     end
 
     def delete_audio_attachment
       if @product.audio.attached?
         @product.audio.purge
-        redirect_to edit_backstore_product_path(@product), notice: "Audio eliminado correctamente."
+        redirect_to edit_backstore_product_path(@product), notice: I18n.t("flash.backstore.products.audio_deleted")
       else
-        redirect_to edit_backstore_product_path(@product), alert: "No hay audio para eliminar."
+        redirect_to edit_backstore_product_path(@product), alert: I18n.t("flash.backstore.products.no_audio")
       end
     end
 
@@ -119,13 +119,13 @@ module Backstore
         end
 
         if @product.update(update_attributes)
-          redirect_to backstore_product_path(@product), notice: "Stock actualizado correctamente."
+          redirect_to backstore_product_path(@product), notice: I18n.t("flash.backstore.products.stock_updated")
         else
           redirect_to backstore_product_path(@product),
-                      alert: "Error al actualizar stock: #{@product.errors.full_messages.join(', ')}"
+                      alert: I18n.t("flash.backstore.products.stock_update_error", errors: @product.errors.full_messages.join(", "))
         end
       else
-        redirect_to backstore_product_path(@product), alert: "El valor de stock ingresado no es valido."
+        redirect_to backstore_product_path(@product), alert: I18n.t("flash.backstore.products.stock_invalid")
       end
     end
 
@@ -160,7 +160,10 @@ module Backstore
 
       @product.errors.add(
         :images,
-        "no puedes subir #{new_images_count} imagen(es) nueva(s). Ya tienes #{current_images_count} imagen(es) y el limite es 10."
+        :too_many_new_uploads,
+        new_count: new_images_count,
+        current_count: current_images_count,
+        limit: 10
       )
     end
 
@@ -171,7 +174,9 @@ module Backstore
         unless Product::VALID_IMAGE_CONTENT_TYPES.include?(image.content_type)
           @product.errors.add(
             :images,
-            "#{image.original_filename} no es un formato valido. Formatos permitidos: JPEG, JPG, PNG, GIF, WebP"
+            :invalid_image_format,
+            filename: image.original_filename,
+            formats: "JPEG, JPG, PNG, GIF, WebP"
           )
         end
 
@@ -180,7 +185,10 @@ module Backstore
         size_mb = (image.size.to_f / 1.megabyte).round(2)
         @product.errors.add(
           :images,
-          "#{image.original_filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 10 MB por imagen"
+          :image_too_large,
+          filename: image.original_filename,
+          size_mb:,
+          max_size_mb: 10
         )
       end
     end
@@ -193,7 +201,9 @@ module Backstore
       unless Product::VALID_AUDIO_CONTENT_TYPES.include?(uploaded_audio.content_type)
         @product.errors.add(
           :audio,
-          "#{uploaded_audio.original_filename} no es un formato valido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC"
+          :invalid_audio_format,
+          filename: uploaded_audio.original_filename,
+          formats: "MP3, WAV, OGG, M4A, FLAC"
         )
       end
 
@@ -202,7 +212,10 @@ module Backstore
       size_mb = (uploaded_audio.size.to_f / 1.megabyte).round(2)
       @product.errors.add(
         :audio,
-        "#{uploaded_audio.original_filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 15 MB"
+        :audio_too_large,
+        filename: uploaded_audio.original_filename,
+        size_mb:,
+        max_size_mb: 15
       )
     end
 

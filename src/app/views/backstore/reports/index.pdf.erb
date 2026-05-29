@@ -76,84 +76,84 @@
 <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; width: 100%;">
   <div class="header">
     <div class="header-left">
-      <h1 class="report-title">Reporte de ventas</h1>
-      <p class="brand-sub">RecordAR TTPS - Sistema de gestion</p>
+      <h1 class="report-title"><%= t("backstore.reports.index_pdf.title") %></h1>
+      <p class="brand-sub"><%= t("backstore.reports.index_pdf.subtitle") %></p>
     </div>
     <div class="header-right">
       <div style="margin-bottom: 10px;">
-        <p class="meta-title">Fecha de emision</p>
+        <p class="meta-title"><%= t("backstore.reports.index_pdf.issue_date") %></p>
         <p class="meta-value"><%= l(Date.current, format: :long) %></p>
       </div>
       <div>
-        <p class="meta-title">Periodo analizado</p>
+        <p class="meta-title"><%= t("backstore.reports.index_pdf.analyzed_period") %></p>
         <p class="meta-value"><%= @report.date_range_label %></p>
       </div>
     </div>
   </div>
 
   <div style="padding: 0 40px;">
-    <h3 class="section-title">Filtros aplicados</h3>
+    <h3 class="section-title"><%= t("backstore.reports.index_pdf.applied_filters") %></h3>
 
     <table class="filters-table">
       <tr>
-        <td><strong>Tipo de producto</strong></td>
+        <td><strong><%= t("backstore.reports.index_pdf.filters.product_type") %></strong></td>
         <td><%= @report.human_product_type %></td>
-        <td><strong>Genero</strong></td>
-        <td><%= Category.find_by(id: @report.category_id)&.name || "Todos" %></td>
+        <td><strong><%= t("backstore.reports.index_pdf.filters.genre") %></strong></td>
+        <td><%= Category.find_by(id: @report.category_id)&.name || t("common.options.all") %></td>
       </tr>
       <tr>
-        <td><strong>Empleado</strong></td>
-        <td><%= User.find_by(id: @report.user_id)&.email || "Todos" %></td>
-        <td><strong>Ventas consideradas</strong></td>
+        <td><strong><%= t("backstore.reports.index_pdf.filters.employee") %></strong></td>
+        <td><%= User.find_by(id: @report.user_id)&.email || t("common.options.all") %></td>
+        <td><strong><%= t("backstore.reports.index_pdf.filters.considered_sales") %></strong></td>
         <td><%= @total_sales %></td>
       </tr>
     </table>
 
-    <h3 class="section-title">Resumen ejecutivo</h3>
+    <h3 class="section-title"><%= t("backstore.reports.index_pdf.executive_summary") %></h3>
 
     <table class="kpi-table">
       <tr>
         <td class="kpi-card border-green">
-          <div class="kpi-label">Total recaudado</div>
+          <div class="kpi-label"><%= t("backstore.reports.index_pdf.cards.total_revenue_title") %></div>
           <div class="kpi-value" style="color: #059669;">
             <%= number_to_currency(@total_revenue, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
           </div>
-          <div class="kpi-sub">Facturado en el periodo</div>
+          <div class="kpi-sub"><%= t("backstore.reports.index_pdf.cards.total_revenue_subtitle") %></div>
         </td>
 
         <td class="kpi-card border-blue">
-          <div class="kpi-label">Cantidad de ventas</div>
+          <div class="kpi-label"><%= t("backstore.reports.index_pdf.cards.total_sales_title") %></div>
           <div class="kpi-value" style="color: #2563eb;">
             <%= @total_sales %>
           </div>
-          <div class="kpi-sub">Ventas confirmadas</div>
+          <div class="kpi-sub"><%= t("backstore.reports.index_pdf.cards.total_sales_subtitle") %></div>
         </td>
 
         <td class="kpi-card border-purple">
-          <div class="kpi-label">Promedio por venta</div>
+          <div class="kpi-label"><%= t("backstore.reports.index_pdf.cards.average_ticket_title") %></div>
           <div class="kpi-value" style="color: #7c3aed;">
             <%= number_to_currency(@average_ticket, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
           </div>
-          <div class="kpi-sub">Promedio del reporte filtrado</div>
+          <div class="kpi-sub"><%= t("backstore.reports.index_pdf.cards.average_ticket_subtitle") %></div>
         </td>
 
         <td class="kpi-card border-orange">
-          <div class="kpi-label">Productos vendidos</div>
+          <div class="kpi-label"><%= t("backstore.reports.index_pdf.cards.total_items_title") %></div>
           <div class="kpi-value" style="color: #ea580c;">
             <%= @total_items %>
           </div>
-          <div class="kpi-sub">Unidades vendidas</div>
+          <div class="kpi-sub"><%= t("backstore.reports.index_pdf.cards.total_items_subtitle") %></div>
         </td>
       </tr>
     </table>
 
-    <h3 class="section-title">Ventas por tipo de producto</h3>
+    <h3 class="section-title"><%= t("backstore.reports.index_pdf.sales_by_type.title") %></h3>
 
     <table class="data-table">
       <thead>
         <tr>
-          <th width="70%">Tipo</th>
-          <th width="30%" class="text-right">Unidades</th>
+          <th width="70%"><%= t("backstore.reports.index_pdf.sales_by_type.headers.type") %></th>
+          <th width="30%" class="text-right"><%= t("backstore.reports.index_pdf.sales_by_type.headers.units") %></th>
         </tr>
       </thead>
       <tbody>
@@ -166,13 +166,13 @@
       </tbody>
     </table>
 
-    <h3 class="section-title">Ventas por genero musical</h3>
+    <h3 class="section-title"><%= t("backstore.reports.index_pdf.sales_by_genre.title") %></h3>
 
     <table class="data-table">
       <thead>
         <tr>
-          <th width="70%">Genero</th>
-          <th width="30%" class="text-right">Unidades</th>
+          <th width="70%"><%= t("backstore.reports.index_pdf.sales_by_genre.headers.genre") %></th>
+          <th width="30%" class="text-right"><%= t("backstore.reports.index_pdf.sales_by_genre.headers.units") %></th>
         </tr>
       </thead>
       <tbody>
@@ -185,17 +185,17 @@
       </tbody>
     </table>
 
-    <h3 class="section-title">Top 5 productos mas vendidos</h3>
+    <h3 class="section-title"><%= t("backstore.reports.index_pdf.top_products.title") %></h3>
 
     <table class="data-table">
       <thead>
         <tr>
           <th width="5%">#</th>
-          <th width="35%">Producto / Artista</th>
-          <th width="20%">Genero</th>
-          <th width="15%">Tipo</th>
-          <th width="10%" class="text-right">Vendidos</th>
-          <th width="15%" class="text-right">Recaudado</th>
+          <th width="35%"><%= t("backstore.reports.index_pdf.top_products.headers.product_artist") %></th>
+          <th width="20%"><%= t("backstore.reports.index_pdf.top_products.headers.genre") %></th>
+          <th width="15%"><%= t("backstore.reports.index_pdf.top_products.headers.type") %></th>
+          <th width="10%" class="text-right"><%= t("backstore.reports.index_pdf.top_products.headers.units") %></th>
+          <th width="15%" class="text-right"><%= t("backstore.reports.index_pdf.top_products.headers.revenue") %></th>
         </tr>
       </thead>
       <tbody>
@@ -217,7 +217,7 @@
   </div>
 
   <div class="footer">
-    <p>Este reporte fue generado automaticamente por el sistema.</p>
-    <p>Uso interno confidencial.</p>
+    <p><%= t("backstore.reports.index_pdf.footer_line_one") %></p>
+    <p><%= t("backstore.reports.index_pdf.footer_line_two") %></p>
   </div>
 </div>

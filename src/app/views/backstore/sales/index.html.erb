@@ -1,19 +1,19 @@
 <header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
   <div>
-    <p class="text-sm uppercase tracking-widest text-proyecto-text/30">Ventas</p>
-    <h1 class="text-3xl font-bold text-proyecto-primary">Historial de ventas</h1>
-    <p class="text-proyecto-text/60">Consultá las órdenes generadas en la tienda y controlá su estado.</p>
+    <p class="text-sm uppercase tracking-widest text-proyecto-text/30"><%= t(".section") %></p>
+    <h1 class="text-3xl font-bold text-proyecto-primary"><%= t(".title") %></h1>
+    <p class="text-proyecto-text/60"><%= t(".subtitle") %></p>
   </div>
 
   <div class="flex flex-wrap gap-3">
     <%= link_to backstore_reports_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors w-full sm:w-auto justify-center" do %>
       <i class="fa-solid fa-chart-line"></i>
-      <span>Reporte de Ventas</span>
+      <span><%= t(".report_button") %></span>
     <% end %>
 
     <%= link_to new_backstore_sale_path, class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-proyecto-primary text-proyecto-bg font-semibold hover:bg-proyecto-accent transition-colors w-full sm:w-auto justify-center" do %>
       <i class="fa-solid fa-cart-plus"></i>
-      <span>Nueva Venta</span>
+      <span><%= t("common.actions.new_sale") %></span>
     <% end %>
   </div>
 </header>
@@ -23,25 +23,22 @@
                 method: :get,
                 local: true,
                 class: "space-y-4" do |f| %>
-
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
       <div class="w-full">
-        <%= f.label :q, "Buscar", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.label :q, t("common.labels.search"), class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.text_field :q,
                          value: params[:q],
-                         placeholder: "Nombre o email",
+                         placeholder: t(".filters.search_placeholder"),
                          class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
 
       <div class="w-full">
-        <%= f.label :status, "Estado", class: "block text-sm font-medium text-proyecto-primary" %>
+        <%= f.label :status, t("common.labels.status"), class: "block text-sm font-medium text-proyecto-primary" %>
         <%= f.select :status,
-                     [["Todos", ""], ["Confirmadas", "confirmed"], ["Canceladas", "cancelled"]],
+                     [[t("common.options.all"), ""], [t(".filters.confirmed"), "confirmed"], [t(".filters.cancelled"), "cancelled"]],
                      { selected: params[:status] },
                      class: "mt-1 px-3 py-1 border rounded-md w-full" %>
       </div>
-
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:max-w-md">
@@ -49,46 +46,45 @@
                    name: nil,
                    class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center cursor-pointer" do %>
         <i class="fa-solid fa-filter"></i>
-        <span>Filtrar</span>
+        <span><%= t("common.actions.filter") %></span>
       <% end %>
 
       <%= link_to backstore_sales_path,
                   class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-md hover:bg-proyecto-accent w-full text-center" do %>
         <i class="fa-solid fa-eraser"></i>
-        <span>Limpiar filtros</span>
+        <span><%= t("common.actions.clear_filters") %></span>
       <% end %>
     </div>
-
   <% end %>
 </div>
 
 <% sales_columns = [
-  { header: "ID", attribute: :id },
+  { header: I18n.t("backstore.sales.index.headers.id"), attribute: :id },
   {
-    header: "Comprador",
+    header: I18n.t("backstore.sales.index.headers.buyer"),
     value: ->(sale) { sale.buyer_name.presence || sale.user&.name || sale.user&.email }
   },
   {
-    header: "Email",
+    header: I18n.t("backstore.sales.index.headers.email"),
     value: ->(sale) { sale.buyer_email.presence || sale.user&.email }
   },
   {
-    header: "Total",
+    header: I18n.t("backstore.sales.index.headers.total"),
     cell_class: "px-6 py-4 whitespace-nowrap font-semibold text-proyecto-primary",
-    value: ->(sale) { number_to_currency(sale.total || 0, unit: "$", separator: ",", delimiter: ".", format:"%u%n") }
+    value: ->(sale) { number_to_currency(sale.total || 0, unit: "$", separator: ",", delimiter: ".", format: "%u%n") }
   },
   {
-    header: "Fecha",
+    header: I18n.t("backstore.sales.index.headers.date"),
     value: ->(sale) { l(sale.created_at, format: :short) }
   },
   {
-    header: "Estado",
+    header: I18n.t("backstore.sales.index.headers.status"),
     cell_class: "px-6 py-4 whitespace-nowrap",
     value: ->(sale) do
       if sale.cancelled_at.present?
-        content_tag(:span, "Cancelada", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-error/10 text-proyecto-error")
+        content_tag(:span, I18n.t("common.states.cancelled"), class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-error/10 text-proyecto-error")
       else
-        content_tag(:span, "Confirmada", class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success")
+        content_tag(:span, I18n.t("common.states.confirmed"), class: "px-3 py-1 rounded-full text-xs font-semibold bg-proyecto-success/10 text-proyecto-success")
       end
     end
   }
@@ -99,7 +95,7 @@
 
   if can? :read, sale
     buttons << link_to(
-      "Ver",
+      I18n.t("common.actions.view"),
       backstore_sale_path(sale),
       class: "px-3 py-2 bg-proyecto-info text-proyecto-bg hover:bg-proyecto-info/90 rounded-md text-sm w-full sm:w-auto text-center"
     )
@@ -107,11 +103,11 @@
 
   if can?(:update, sale) && sale.cancelled_at.blank?
     buttons << link_to(
-      "Cancelar",
+      I18n.t("common.actions.cancel"),
       cancel_backstore_sale_path(sale),
       data: {
         turbo_method: :patch,
-        turbo_confirm: "¿Seguro que querés cancelar esta venta?"
+        turbo_confirm: I18n.t("backstore.sales.index.confirmations.cancel")
       },
       class: "px-3 py-2 bg-proyecto-error text-proyecto-bg hover:bg-proyecto-error/90 rounded-md text-sm w-full sm:w-auto text-center"
     )
@@ -125,7 +121,7 @@ end %>
              collection: @sales,
              columns: sales_columns,
              row_class: ->(sale) { sale.cancelled_at.present? ? "bg-proyecto-secondary/30" : nil },
-             empty_message: "No hay ventas registradas.",
+             empty_message: t(".empty_message"),
              actions: sales_actions %>
 </div>
 

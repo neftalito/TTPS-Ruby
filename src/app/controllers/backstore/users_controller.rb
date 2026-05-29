@@ -20,7 +20,7 @@ module Backstore
 
     def create
       if @user.save
-        redirect_to backstore_users_path, notice: "Usuario creado correctamente."
+        redirect_to backstore_users_path, notice: I18n.t("flash.backstore.users.created")
       else
         render :new, status: :unprocessable_entity
       end
@@ -35,7 +35,7 @@ module Backstore
       end
 
       if @user.update(sanitized_params)
-        redirect_to backstore_users_path, notice: "Usuario actualizado correctamente."
+        redirect_to backstore_users_path, notice: I18n.t("flash.backstore.users.updated")
       else
         render :edit, status: :unprocessable_entity
       end
@@ -43,19 +43,19 @@ module Backstore
 
     def destroy
       if @user == current_user
-        redirect_to backstore_users_path, alert: "No podés eliminar tu propia cuenta."
+        redirect_to backstore_users_path, alert: I18n.t("flash.backstore.users.delete_self")
         return
       end
 
       @user.destroy
-      redirect_to backstore_users_path, notice: "Usuario eliminado correctamente."
+      redirect_to backstore_users_path, notice: I18n.t("flash.backstore.users.deleted")
     end
 
     def restore
       if @user.restore
-        redirect_to backstore_users_path, notice: "Usuario restaurado correctamente."
+        redirect_to backstore_users_path, notice: I18n.t("flash.backstore.users.restored")
       else
-        redirect_to backstore_users_path, alert: "No se pudo restaurar el usuario."
+        redirect_to backstore_users_path, alert: I18n.t("flash.backstore.users.restore_failed")
       end
     end
 
@@ -66,7 +66,7 @@ module Backstore
       return unless params[:user][:role] && params[:user][:role] != @user.role
 
       redirect_to backstore_users_path,
-                  alert: "No podés cambiar tu propio rol."
+                  alert: I18n.t("flash.backstore.users.update_self_role")
     end
 
     def prevent_manager_assign_admin
@@ -74,7 +74,7 @@ module Backstore
       return unless params[:user][:role] == "admin"
 
       redirect_to backstore_users_path,
-                  alert: "Un gerente no puede asignar el rol de administrador."
+                  alert: I18n.t("flash.backstore.users.manager_cannot_assign_admin")
     end
 
     def user_params

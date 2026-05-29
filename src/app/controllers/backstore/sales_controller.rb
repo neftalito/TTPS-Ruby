@@ -16,7 +16,7 @@ module Backstore
       respond_to do |format|
         format.html
         format.pdf do
-          render pdf: "factura_#{@sale.id}",
+          render pdf: "invoice_#{@sale.id}",
                  template: "backstore/sales/invoice",
                  layout: "pdf",
                  formats: [:html],
@@ -34,7 +34,7 @@ module Backstore
       @sale.user = current_user
 
       if @sale.save
-        redirect_to backstore_sale_path(@sale), notice: "Venta registrada exitosamente."
+        redirect_to backstore_sale_path(@sale), notice: I18n.t("flash.backstore.sales.created")
       else
         @products = Product.available_products
         render :new, status: :unprocessable_entity
@@ -43,14 +43,14 @@ module Backstore
 
     def cancel
       if @sale.cancel!
-        redirect_to backstore_sales_path, notice: "Venta cancelada y stock restaurado."
+        redirect_to backstore_sales_path, notice: I18n.t("flash.backstore.sales.cancelled")
       else
-        redirect_to backstore_sale_path(@sale), alert: "No se pudo cancelar la venta."
+        redirect_to backstore_sale_path(@sale), alert: I18n.t("flash.backstore.sales.cancel_failed")
       end
     end
 
     def destroy
-      redirect_to backstore_sale_path(@sale), alert: "Las ventas no se pueden borrar."
+      redirect_to backstore_sale_path(@sale), alert: I18n.t("flash.backstore.sales.destroy_forbidden")
     end
 
     private

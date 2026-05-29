@@ -1,5 +1,5 @@
 module ApplicationHelper
-  # Devuelve la clase de color de fondo adecuada según el flash
+  # Devuelve la clase de color de fondo adecuada segun el flash
   def flash_color(type)
     case type.to_sym
     when :notice, :success
@@ -13,7 +13,7 @@ module ApplicationHelper
     end
   end
 
-  # Devuelve el ícono correspondiente según el flash
+  # Devuelve el icono correspondiente segun el flash
   def flash_icon(type)
     case type.to_sym
     when :notice, :success
@@ -27,21 +27,23 @@ module ApplicationHelper
     end
   end
 
-  # Devuelve el título traducido según el tipo de flash
+  # Devuelve el titulo traducido segun el tipo de flash
   def flash_title(type)
-    case type.to_sym
-    when :notice, :success
-      "Éxito"
-    when :alert, :error
-      "Alerta"
-    when :warning
-      "Advertencia"
-    else
-      "Información"
-    end
+    key = case type.to_sym
+          when :notice, :success
+            :success
+          when :alert, :error
+            :alert
+          when :warning
+            :warning
+          else
+            :info
+          end
+
+    I18n.t("common.flash_titles.#{key}")
   end
 
-  # Helper: genera modal automáticamente
+  # Helper: genera modal automaticamente
   def flash_modal
     return unless flash.any?
 
@@ -53,12 +55,25 @@ module ApplicationHelper
   end
 
   def pagination_results_range(collection)
-    return "0 de 0" if collection.blank? || !collection.respond_to?(:total_count) || collection.total_count.zero?
+    return I18n.t("common.pagination.empty_range") if collection.blank? || !collection.respond_to?(:total_count) ||
+                                                       collection.total_count.zero?
 
     from = collection.offset_value + 1
     to = collection.offset_value + collection.length
 
-    "#{from}-#{to} de #{collection.total_count}"
+    I18n.t("common.pagination.range", from:, to:, total: collection.total_count)
+  end
+
+  def frontend_translations_json
+    json_escape(
+      {
+        customConfirm: {
+          title: I18n.t("javascript.custom_confirm.title"),
+          cancel: I18n.t("common.actions.cancel"),
+          accept: I18n.t("common.actions.accept")
+        }
+      }.to_json
+    )
   end
 
   def pagination_button(label, page, collection, disabled: false)
@@ -89,7 +104,7 @@ module ApplicationHelper
       request
         .path_parameters
         .merge(request.query_parameters)
-        .merge(page: page, only_path: true)
+        .merge(page:, only_path: true)
     )
   end
 end

@@ -1,0 +1,218 @@
+es:
+  common:
+    app_name: "RecordAR"
+    navigation:
+      home: "Inicio"
+      catalog: "Cat\u00e1logo"
+      admin_panel: "Panel de administraci\u00f3n"
+      sign_in: "Iniciar sesi\u00f3n"
+      profile: "Perfil"
+      back_to_store: "Volver a la tienda"
+      logout: "Cerrar sesi\u00f3n"
+    actions:
+      accept: "Aceptar"
+      add_another_product: "Agregar otro producto"
+      apply_filters: "Aplicar filtros"
+      back: "Volver"
+      back_to_list: "Volver al listado"
+      cancel: "Cancelar"
+      clear_filters: "Limpiar filtros"
+      continue: "Continuar"
+      create_product: "Crear producto"
+      create_user: "Crear usuario"
+      delete: "Eliminar"
+      download_pdf: "Descargar PDF"
+      edit: "Editar"
+      export_csv: "CSV"
+      export_pdf: "PDF"
+      filter: "Filtrar"
+      finalize_sale: "Finalizar venta"
+      new_product: "Nuevo producto"
+      new_sale: "Nueva venta"
+      new_user: "Nuevo usuario"
+      restore: "Restaurar"
+      save_changes: "Guardar cambios"
+      select_images: "Seleccionar im\u00e1genes"
+      understood: "Entendido"
+      view: "Ver"
+    labels:
+      date: "Fecha"
+      description: "Descripci\u00f3n"
+      email: "Email"
+      employee: "Empleado"
+      genre: "G\u00e9nero"
+      id: "ID"
+      price: "Precio"
+      product: "Producto"
+      quantity: "Cantidad"
+      release_year: "A\u00f1o de lanzamiento"
+      role: "Rol"
+      search: "Buscar"
+      seller: "Vendedor"
+      status: "Estado"
+      total: "Total"
+      type: "Tipo"
+    options:
+      all: "Todos"
+      select: "Seleccionar"
+    pagination:
+      all: "Todos"
+      empty_range: "0 de 0"
+      next: "Siguiente"
+      of: "de"
+      page: "P\u00e1gina"
+      per_page: "Por p\u00e1gina:"
+      previous: "Anterior"
+      range: "%{from}-%{to} de %{total}"
+      showing: "Mostrando"
+    flash_titles:
+      alert: "Alerta"
+      info: "Informaci\u00f3n"
+      success: "\u00c9xito"
+      warning: "Advertencia"
+    states:
+      active: "Activo"
+      cancelled: "Cancelada"
+      confirmed: "Confirmada"
+      deleted: "Eliminado"
+      low: "Bajo"
+      new_badge: "Nueva"
+      no_genre: "Sin g\u00e9nero"
+      no_image: "Sin imagen"
+      no_image_short: "Sin img"
+      no_images: "Sin im\u00e1genes"
+      out_of_stock: "Agotado"
+      out_of_stock_upper: "SIN STOCK"
+    messages:
+      all_good: "\u00a1Todo en orden!"
+      browser_no_audio_support: "Tu navegador no soporta el elemento de audio."
+      footer_rights: "Todos los derechos reservados."
+      new_sales_appear_here: "Las nuevas ventas aparecer\u00e1n aqu\u00ed."
+      no_critical_stock: "No hay stock cr\u00edtico."
+      no_products_published: "Todav\u00eda no hay productos publicados."
+      no_recent_sales: "No hay ventas recientes"
+      stock_with_count: "Stock: %{count}"
+    chart:
+      product: "Producto"
+      units: "Unidades"
+  roles:
+    admin: "Administrador"
+    employee: "Empleado"
+    manager: "Gerente"
+  products:
+    conditions:
+      all: "Todas las condiciones"
+      new: "Nuevo"
+      used: "Usado"
+    types:
+      all: "Todos los tipos"
+      cd: "CD"
+      vinyl: "Vinilo"
+  javascript:
+    custom_confirm:
+      title: "Confirmaci\u00f3n requerida"
+  flash:
+    backstore:
+      products:
+        audio_deleted: "Audio eliminado correctamente."
+        created: "Producto creado"
+        deleted: "Producto dado de baja"
+        delete_failed: "No se pudo eliminar el producto"
+        image_deleted: "Imagen eliminada correctamente."
+        last_image: "No se puede eliminar la ultima imagen. Debe quedar al menos una."
+        no_audio: "No hay audio para eliminar."
+        restored: "Producto restaurado correctamente."
+        restore_failed: "No se pudo restaurar el producto."
+        stock_invalid: "El valor de stock ingresado no es valido."
+        stock_updated: "Stock actualizado correctamente."
+        stock_update_error: "Error al actualizar stock: %{errors}"
+        updated: "Producto actualizado"
+      sales:
+        cancel_failed: "No se pudo cancelar la venta."
+        cancelled: "Venta cancelada y stock restaurado."
+        created: "Venta registrada exitosamente."
+        destroy_forbidden: "Las ventas no se pueden borrar."
+      users:
+        created: "Usuario creado correctamente."
+        deleted: "Usuario eliminado correctamente."
+        delete_self: "No pod\u00e9s eliminar tu propia cuenta."
+        manager_cannot_assign_admin: "Un gerente no puede asignar el rol de administrador."
+        restore_failed: "No se pudo restaurar el usuario."
+        restored: "Usuario restaurado correctamente."
+        update_self_role: "No pod\u00e9s cambiar tu propio rol."
+        updated: "Usuario actualizado correctamente."
+    storefront:
+      products:
+        unavailable: "Producto no disponible."
+  errors:
+    messages:
+      at_least_one_image: "debe tener al menos una imagen"
+      at_least_one_sale_item: "Debes agregar al menos un producto a la venta."
+      audio_only_for_used_products: "solo puede adjuntarse a productos usados"
+      audio_too_large: "%{filename} es demasiado grande (%{size_mb} MB). Tama\u00f1o maximo: %{max_size_mb} MB"
+      image_too_large: "%{filename} es demasiado grande (%{size_mb} MB). Tama\u00f1o maximo: %{max_size_mb} MB por imagen"
+      insufficient_stock: "No hay suficiente stock para el producto: %{product}, solicitado: %{requested}, disponible: %{available}"
+      invalid_audio_format: "%{filename} no es un formato valido. Formatos permitidos: %{formats}"
+      invalid_image_format: "%{filename} no es un formato valido. Formatos permitidos: %{formats}"
+      invalid_release_year: "debe ser un a\u00f1o valido entre 1900 y el a\u00f1o actual"
+      required: "es obligatorio"
+      too_many_images: "no puede exceder las %{limit} imagenes"
+      too_many_new_uploads: "no puedes subir %{new_count} imagen(es) nueva(s). Ya tienes %{current_count} imagen(es) y el limite es %{limit}."
+      used_stock_cannot_exceed_one: "no puede ser mayor a 1 para productos usados"
+  activerecord:
+    attributes:
+      product:
+        audio: "Audio"
+        author: "Autor"
+        category: "G\u00e9nero"
+        description: "Descripci\u00f3n"
+        images: "Im\u00e1genes"
+        name: "T\u00edtulo del \u00e1lbum"
+        price: "Precio"
+        product_type: "Tipo"
+        release_year: "A\u00f1o de lanzamiento"
+        stock: "Stock"
+      sale:
+        buyer_dni: "DNI"
+        buyer_email: "Email"
+        buyer_name: "Nombre"
+        sale_items: "Productos"
+      sale_item:
+        product: "Producto"
+        quantity: "Cantidad"
+      user:
+        email: "Email"
+        password: "Contrase\u00f1a"
+        password_confirmation: "Confirmar contrase\u00f1a"
+        role: "Rol"
+  layouts:
+    application:
+      title: "App"
+    backstore:
+      title: "Administraci\u00f3n"
+      heading: "Panel administrativo"
+      sign_in: "Ingresar"
+    pdf:
+      title: "Factura"
+    storefront:
+      title: "RecordAR"
+      footer_contact: "Contacto"
+      footer_navigation: "Navegaci\u00f3n"
+      footer_tagline: "La mejor m\u00fasica, en vinilo y CD, nuevos y usados."
+  shared:
+    flash_modal:
+      close: "Entendido"
+    pagination:
+      aria_label: "Paginaci\u00f3n"
+  backstore:
+    shared:
+      resource_table:
+        actions_header: "Acciones"
+        empty_message: "No hay registros para mostrar."
+      sidebar:
+        dashboard: "Dashboard"
+        products: "Productos"
+        reports: "Reportes"
+        sales: "Ventas"
+        title: "Panel administrativo"
+        users: "Usuarios"

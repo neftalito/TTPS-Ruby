@@ -93,7 +93,7 @@ class Product < ApplicationRecord
               only_integer: true,
               greater_than_or_equal_to: 1900,
               less_than_or_equal_to: Date.current.year,
-              message: "debe ser un ano valido entre 1900 y el ano actual"
+              message: :invalid_release_year
             }
 
   validate :must_have_at_least_one_image
@@ -106,25 +106,27 @@ class Product < ApplicationRecord
   before_discard :reset_stock
 
   def label_for_select
-    condicion = condition_new? ? "NUEVO" : "USADO"
-    tipo = product_type_vinyl? ? "VINILO" : "CD"
-
-    "#{name} - #{author} (#{tipo}, #{condicion})"
+    "#{name} - #{author} (#{human_product_type.upcase}, #{human_condition.upcase})"
   end
 
   def label_for_sale
-    condicion = condition_new? ? "NUEVO" : "USADO"
-    tipo = product_type_vinyl? ? "VINILO" : "CD"
-
-    "#{name} (#{tipo}, #{condicion})"
+    "#{name} (#{human_product_type.upcase}, #{human_condition.upcase})"
   end
 
   def label_for_type
-    product_type_vinyl? ? "VINILO" : "CD"
+    human_product_type.upcase
   end
 
   def label_for_condition
-    condition_new? ? "NUEVO" : "USADO"
+    human_condition.upcase
+  end
+
+  def human_product_type
+    I18n.t("products.types.#{normalized_product_type_value}", default: normalized_product_type_value.humanize)
+  end
+
+  def human_condition
+    I18n.t("products.conditions.#{condition}", default: condition.to_s.humanize)
   end
 
   def self.related_to(product, limit: 4)
@@ -182,14 +184,14 @@ class Product < ApplicationRecord
   def must_have_at_least_one_image
     return if images.attached? && images.any?
 
-    errors.add(:images, "debe tener al menos una imagen")
+    errors.add(:images, :at_least_one_image)
   end
 
   def audio_only_for_used_products
     return if audio_marked_for_removal?
     return unless audio.attached? && condition == "new"
 
-    errors.add(:audio, "solo puede adjuntarse a productos usados")
+    errors.add(:audio, :audio_only_for_used_products)
   end
 
   def reset_stock
@@ -207,25 +209,25 @@ class Product < ApplicationRecord
   def used_stock_cannot_exceed_one
     return unless condition_used? && stock.present? && stock > 1
 
-    errors.add(:stock, "no puede ser mayor a 1 para productos usados")
+    errors.add(:stock, :used_stock_cannot_exceed_one)
   end
 
   def validate_images_format_and_size
     return unless images.attached?
 
     if images.count > 10
-      errors.add(:images, "no puede exceder las 10 imagenes")
+      errors.add(:images, :too_many_images, limit: 10)
       return
     end
 
     images.each do |image|
       unless VALID_IMAGE_CONTENT_TYPES.include?(image.content_type)
-        errors.add(:images, "#{image.filename} no es un formato valido. Formatos permitidos: JPEG, JPG, PNG, GIF, WebP")
+        errors.add(:images, :invalid_image_format, filename: image.filename.to_s, formats: "JPEG, JPG, PNG, GIF, WebP")
       end
 
       if image.byte_size > MAX_IMAGE_SIZE
         size_mb = (image.byte_size.to_f / 1.megabyte).round(2)
-        errors.add(:images, "#{image.filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 10 MB por imagen")
+        errors.add(:images, :image_too_large, filename: image.filename.to_s, size_mb:, max_size_mb: 10)
       end
     end
   end
@@ -235,16 +237,21 @@ class Product < ApplicationRecord
     return unless audio.attached?
 
     unless VALID_AUDIO_CONTENT_TYPES.include?(audio.content_type)
-      errors.add(:audio, "#{audio.filename} no es un formato valido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC")
+      errors.add(:audio, :invalid_audio_format, filename: audio.filename.to_s, formats: "MP3, WAV, OGG, M4A, FLAC")
     end
 
     return unless audio.byte_size > MAX_AUDIO_SIZE
 
     size_mb = (audio.byte_size.to_f / 1.megabyte).round(2)
-    errors.add(:audio, "#{audio.filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 15 MB")
+    errors.add(:audio, :audio_too_large, filename: audio.filename.to_s, size_mb:, max_size_mb: 15)
   end
 
   def audio_marked_for_removal?
     ActiveModel::Type::Boolean.new.cast(remove_existing_audio)
+  end
+
+  def normalized_product_type_value
+    value = product_type.to_s
+    value == "viniyl" ? "vinyl" : value
   end
 end

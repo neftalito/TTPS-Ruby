@@ -3,7 +3,7 @@ class Sale < ApplicationRecord
   has_many :sale_items, dependent: :destroy
   has_many :products, through: :sale_items
 
-  validates :buyer_name, :buyer_dni, :buyer_email, presence: { message: "es obligatorio" }
+  validates :buyer_name, :buyer_dni, :buyer_email, presence: { message: :required }
 
   accepts_nested_attributes_for :sale_items, allow_destroy: true
 
@@ -85,7 +85,10 @@ class Sale < ApplicationRecord
 
       errors.add(
         :base,
-        "No hay suficiente stock para el producto: #{product.label_for_select}, solicitado: #{requested_quantity}, disponible: #{product.stock}"
+        :insufficient_stock,
+        product: product.label_for_select,
+        requested: requested_quantity,
+        available: product.stock
       )
     end
   end
@@ -99,7 +102,7 @@ class Sale < ApplicationRecord
   def must_have_at_least_one_item
     return unless sale_items.reject(&:marked_for_destruction?).empty?
 
-    errors.add(:base, "Debes agregar al menos un producto a la venta.")
+    errors.add(:base, :at_least_one_sale_item)
   end
 
   def aggregated_quantities_by_product

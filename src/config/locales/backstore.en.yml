@@ -1,0 +1,341 @@
+en:
+  backstore:
+    dashboard:
+      index:
+        critical_stock: "Critical stock"
+        generated_revenue: "You generated %{amount} in sales."
+        greeting: "Hello, %{name}"
+        inventory: "Inventory"
+        latest_sales: "Latest sales"
+        reports: "Reports"
+        sales_by_genre: "Sales by genre"
+        sales_last_seven_days: "Sales: last 7 days"
+        subtitle: "Here is a summary of your business activity."
+        total_sales_title: "Your total sales"
+        transactions: "transactions"
+        units: "%{count} units"
+    products:
+      new:
+        title: "New product"
+      index:
+        confirmations:
+          delete: "Are you sure you want to delete this product?"
+          restore: "Are you sure you want to restore this product?"
+        empty_message: "There are no products to display."
+        filters:
+          active: "Active"
+          all_conditions: "All conditions"
+          all_genres: "All genres"
+          all_types: "All types"
+          author_label: "Artist name"
+          author_placeholder: "Author or band"
+          deleted: "Deleted"
+          name_label: "Album name"
+          name_placeholder: "Album title"
+        headers:
+          condition: "Condition"
+          genre: "Genre"
+          id: "ID"
+          price: "Price"
+          product: "Product"
+          status: "Status"
+          stock: "Stock"
+          type: "Type"
+        section: "Products"
+        subtitle: "Manage inventory, stock, and product publishing."
+        title: "Product catalog"
+      show:
+        audio_sample: "Audio sample"
+        deactivate: "Deactivate"
+        deactivate_confirmation: "Confirm logical deactivation?"
+        edit_aria_label: "Edit product"
+        entry_date: "Entry date"
+        next: "Next"
+        previous: "Previous"
+        product_label: "Product"
+        slide: "Slide %{number}"
+        stock_available: "Available stock"
+      form:
+        audio:
+          delete_button: "Delete audio"
+          delete_confirmation: "Are you sure you want to delete this audio file? This action is permanent."
+          dropzone_subtitle: "We accept high-quality files so the buyer can listen to them."
+          dropzone_title: "Drag or select your audio"
+          hint: "Formats: MP3, WAV, OGG, M4A, FLAC. Maximum size: 15 MB."
+          label: "Audio sample (optional, used records only)"
+          loaded_label: "Uploaded audio:"
+          preview_title: "Preview (note: remember to save changes)"
+        errors_title:
+          one: "1 error was found:"
+          other: "%{count} errors were found:"
+        fields:
+          author:
+            label: "Author / main entity"
+            placeholder: "Enter the author or main entity"
+          category:
+            label: "Music genre"
+          condition:
+            label: "Product condition"
+          description:
+            placeholder: "Enter a description"
+          name:
+            label: "Album title"
+            placeholder: "Enter the title"
+          price:
+            label: "Sale price (ARS)"
+          product_type:
+            label: "Format"
+          stock:
+            label: "Available stock"
+        images:
+          current_assets_title: "Current assets preview:"
+          current_count: "Current images:"
+          delete_confirmation: "Delete image permanently?"
+          hint: "Maximum 10 images per product. Formats: JPEG, PNG, GIF, WebP. Maximum size: 10 MB per image."
+          label: "High-resolution images"
+          new_images_title: "New images to upload:"
+          remaining_count: "You can add:"
+          remaining_suffix: "more"
+        modals:
+          audio_too_large_message: "The file \"%{name}\" weighs %{size_mb} MB. The maximum allowed size is 15 MB."
+          audio_too_large_title: "File too large"
+          audio_warning_cancel: "Cancel and keep used"
+          audio_warning_confirm: "Accept and delete audio"
+          audio_warning_message: "This product has an associated audio file. If you change the condition to \"New\", the audio will be permanently deleted when you save.\n\nDo you want to continue?"
+          audio_warning_title: "Audio warning"
+          confirm_action_title: "Confirm action"
+          image_limit_exceeded_message: "You can only add %{available} more image(s).\n\nCurrently on server: %{current_images}\nAlready selected: %{selected_images}\nTrying to add: %{attempted_images}\n\nPlease select fewer files."
+          image_limit_exceeded_title: "Image limit exceeded"
+          image_too_large_message: "The image \"%{name}\" is too large (%{size_mb} MB).\n\nMaximum size: 10 MB per image."
+          image_too_large_title: "File too large"
+          invalid_audio_message: "Please select an audio file (MP3, WAV, OGG, M4A, or FLAC)."
+          invalid_audio_title: "Invalid file"
+          invalid_image_format_message: "The image \"%{name}\" is not a valid format.\n\nAllowed formats: JPEG, PNG, GIF, WebP"
+          invalid_image_format_title: "Invalid format"
+          inventory_warning_confirm: "Yes, confirm"
+          inventory_warning_message: "You are changing the condition to \"Used\". This will set stock to 1 unit and disable the stock field.\n\nDo you confirm the change?"
+          inventory_warning_title: "Inventory warning"
+          limit_reached_message: "You already have the maximum of 10 allowed images.\n\nCurrent: %{current_images}\nNewly selected: %{selected_images}\n\nYou must remove some images before adding more."
+          limit_reached_title: "Limit reached"
+        sections:
+          basic_details: "Essential asset details"
+          inventory: "Financial and inventory management"
+          media: "Mastering media files"
+          product_details: "Product details"
+        subtitle_edit: "Make the necessary changes to the product."
+        subtitle_new: "Do not forget to provide all the required information."
+        title_edit: "Edit product"
+        title_new: "New product"
+    reports:
+      badges:
+        employee: "Employee: %{label}"
+        genre: "Genre: %{label}"
+        period: "Period: %{label}"
+        type: "Type: %{label}"
+      csv:
+        artist: "Artist"
+        employee: "Employee"
+        genre: "Genre"
+        metric: "Metric"
+        period: "Period"
+        product_type: "Product type"
+        quantity: "Quantity"
+        revenue: "Revenue"
+        sales_by_genre: "Sales by genre"
+        sales_by_product_type: "Sales by product type"
+        title: "Sales report"
+        total_products_sold: "Number of products sold"
+        units_sold: "Units sold"
+        value: "Value"
+      labels:
+        full_history: "Full history"
+        range: "%{start_date} to %{end_date}"
+        undefined_range: "No defined range"
+      index:
+        cards:
+          average_ticket_subtitle: "Average amount within the filtered report."
+          average_ticket_title: "Average per sale"
+          total_items_subtitle: "Total number of units sold."
+          total_items_title: "Products sold"
+          total_revenue_subtitle: "Only confirmed sales are considered."
+          total_revenue_title: "Total revenue"
+          total_sales_subtitle: "Sales matching the active filters."
+          total_sales_title: "Number of sales"
+        empty_state:
+          subtitle: "Try another date range, genre, type, or employee."
+          title: "There are no sales for those filters"
+        filters:
+          end_date: "To"
+          start_date: "From"
+        ranges:
+          all: "Historical"
+          custom: "Custom"
+          month: "This month"
+          today: "Today"
+          week: "This week"
+          year: "This year"
+        sales_by_genre:
+          subtitle: "Number of units sold by genre."
+          title: "Sales by music genre"
+        sales_by_type:
+          subtitle: "Unit distribution between CDs and vinyl records."
+          title: "Sales by type"
+        section: "Analytics"
+        subtitle: "Numeric and graphical view of confirmed system sales."
+        title: "Sales report"
+        top_products:
+          headers:
+            genre: "Genre"
+            product: "Product"
+            revenue: "Revenue"
+            type: "Type"
+            units: "Units"
+          no_genre: "No genre"
+          subtitle: "Products with the highest number of units sold in the period."
+          title: "Top 5 best-selling products"
+      index_pdf:
+        analyzed_period: "Analyzed period"
+        applied_filters: "Applied filters"
+        cards:
+          average_ticket_subtitle: "Average of the filtered report"
+          average_ticket_title: "Average per sale"
+          total_items_subtitle: "Units sold"
+          total_items_title: "Products sold"
+          total_revenue_subtitle: "Billed during the period"
+          total_revenue_title: "Total revenue"
+          total_sales_subtitle: "Confirmed sales"
+          total_sales_title: "Number of sales"
+        executive_summary: "Executive summary"
+        filters:
+          considered_sales: "Sales considered"
+          employee: "Employee"
+          genre: "Genre"
+          product_type: "Product type"
+        footer_line_one: "This report was automatically generated by the system."
+        footer_line_two: "Confidential internal use."
+        issue_date: "Issue date"
+        sales_by_genre:
+          headers:
+            genre: "Genre"
+            units: "Units"
+          title: "Sales by music genre"
+        sales_by_type:
+          headers:
+            type: "Type"
+            units: "Units"
+          title: "Sales by product type"
+        subtitle: "RecordAR TTPS - Management system"
+        title: "Sales report"
+        top_products:
+          headers:
+            genre: "Genre"
+            product_artist: "Product / Artist"
+            revenue: "Revenue"
+            type: "Type"
+            units: "Sold"
+          title: "Top 5 best-selling products"
+    sales:
+      sale_item_fields:
+        product_prompt: "Select a product..."
+      index:
+        confirmations:
+          cancel: "Are you sure you want to cancel this sale?"
+        empty_message: "There are no recorded sales."
+        filters:
+          cancelled: "Canceled"
+          confirmed: "Confirmed"
+          search_placeholder: "Name or email"
+        headers:
+          buyer: "Buyer"
+          date: "Date"
+          email: "Email"
+          id: "ID"
+          status: "Status"
+          total: "Total"
+        report_button: "Sales report"
+        section: "Sales"
+        subtitle: "Review the orders generated in the store and track their status."
+        title: "Sales history"
+      new:
+        buyer_dni: "ID number *"
+        buyer_email: "Email *"
+        buyer_name: "Full name *"
+        client_section: "Customer data"
+        errors_title: "The sale could not be saved:"
+        products_section: "Products"
+        subtitle: "Enter the customer data and add products to the transaction."
+        title: "Register new sale"
+      show:
+        buyer_data_title: "Buyer data"
+        buyer_labels:
+          dni: "ID number"
+          email: "Email"
+          name: "Name"
+        cancel_confirmation: "Are you sure you want to cancel this sale? Stock will be returned."
+        cancel_sale: "Cancel sale"
+        cancelled_on: "Canceled on %{date}"
+        confirmed: "Confirmed"
+        deleted_product: "Deleted product"
+        headers:
+          product: "Product"
+          quantity: "Qty."
+          subtotal: "Subtotal"
+          unit_price: "Unit price"
+        internal_info_title: "Internal information"
+        internal_labels:
+          seller: "Seller (employee)"
+          transaction_id: "Transaction ID"
+        items_title: "Sale items"
+        registered_on: "Recorded on %{date}"
+        title: "Sale #%{id}"
+      invoice:
+        bill_to: "Bill to"
+        brand_subtitle: "Music, vinyl, and passion."
+        buyer_dni: "ID number: %{dni}"
+        company_address: "7th Ave and 50th St, La Plata"
+        company_name: "RecordAR TTPS S.A."
+        footer_line_one: "Thank you for trusting us. This document serves as a non-fiscal proof of sale for educational purposes."
+        footer_line_two: "www.ttps-disqueria.com | info@ttps-disqueria.com"
+        headers:
+          product_artist: "Product / Artist"
+          quantity: "Qty."
+          subtotal: "Subtotal"
+          unit_price: "Unit price"
+        issued_by: "Issued by"
+        number: "No. %{id}"
+        seller: "Seller: %{seller}"
+        title: "Invoice"
+        total_due: "TOTAL DUE"
+        total_items: "Total items:"
+    users:
+      new:
+        subtitle: "Fill out the information to add a new team member."
+        title: "Create user"
+      edit:
+        subtitle: "Update the collaborator credentials and role."
+        title: "Edit user"
+      form:
+        credentials_subtitle: "Enter the collaborator sign-in information."
+        credentials_title: "Access credentials"
+        errors_title: "The user could not be saved:"
+        password_confirmation_label: "Confirm password"
+        password_hint: "Leave it blank to keep the current password."
+        password_label: "Password"
+      index:
+        confirmations:
+          delete: "Are you sure you want to delete this user?"
+          restore: "Are you sure you want to restore this user?"
+        empty_message: "There are no users to display."
+        filters:
+          active: "Active"
+          deleted: "Deleted"
+          search_label: "Search email"
+          search_placeholder: "Enter email"
+        headers:
+          email: "Email"
+          id: "ID"
+          role: "Role"
+          status: "Status"
+        section: "Users"
+        subtitle: "Manage system users, their roles, and access permissions."
+        title: "User management"
