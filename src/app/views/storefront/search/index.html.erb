@@ -1,13 +1,13 @@
 <section class="space-y-8">
   <header class="text-center space-y-3 py-10">
     <p class="text-3xl md:text-4xl font-extrabold text-black drop-shadow-sm">
-      Busqueda
+      <%= t(".title") %>
     </p>
     <h1 class="text-2xl md:text-3xl font-semibold text-proyecto-primary drop-shadow-sm">
-      Resultados para "<%= @query.presence || "sin termino" %>"
+      <%= t(".results_for", query: @query.presence || t(".no_term")) %>
     </h1>
     <p class="text-black text-base md:text-lg max-w-3xl mx-auto drop-shadow-none">
-      Encontramos <%= pluralize(@products.total_count, "producto") %> que coinciden con tu busqueda.
+      <%= t(".results_count", count: @products.total_count) %>
     </p>
   </header>
 
@@ -23,8 +23,8 @@
     </div>
   <% else %>
     <div class="bg-white border border-dashed border-proyecto-secondary/60 rounded-xl p-10 text-center space-y-3">
-      <p class="text-lg text-proyecto-secondary">No encontramos productos para esa busqueda.</p>
-      <%= link_to "Ver catalogo completo",
+      <p class="text-lg text-proyecto-secondary"><%= t(".no_results") %></p>
+      <%= link_to t(".view_full_catalog"),
                   storefront_products_path,
                   class: "inline-flex items-center justify-center gap-2 px-4 py-2 bg-proyecto-primary text-proyecto-bg rounded-lg hover:bg-proyecto-accent transition duration-200" %>
     </div>

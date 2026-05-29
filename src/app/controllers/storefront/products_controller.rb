@@ -25,7 +25,7 @@ module Storefront
       @product = Product.available_products.find_by(id: params[:id])
       return if @product
 
-      redirect_to storefront_products_path, alert: "Producto no disponible."
+      redirect_to storefront_products_path, alert: I18n.t("flash.storefront.products.unavailable")
     end
   end
 end

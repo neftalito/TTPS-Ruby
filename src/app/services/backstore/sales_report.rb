@@ -95,21 +95,25 @@ module Backstore
     end
 
     def date_range_label
-      return "Historico completo" if range == "all"
-      return "Sin rango definido" unless start_date && end_date
-      return start_date.strftime("%d/%m/%Y") if start_date == end_date
+      return I18n.t("backstore.reports.labels.full_history") if range == "all"
+      return I18n.t("backstore.reports.labels.undefined_range") unless start_date && end_date
+      return I18n.l(start_date, format: :default) if start_date == end_date
 
-      "#{start_date.strftime('%d/%m/%Y')} al #{end_date.strftime('%d/%m/%Y')}"
+      I18n.t(
+        "backstore.reports.labels.range",
+        start_date: I18n.l(start_date, format: :default),
+        end_date: I18n.l(end_date, format: :default)
+      )
     end
 
     def human_product_type(type_name = product_type)
       case type_name
       when "vinyl"
-        "Vinilo"
+        I18n.t("products.types.vinyl")
       when "cd"
-        "CD"
+        I18n.t("products.types.cd")
       else
-        "Todos"
+        I18n.t("common.options.all")
       end
     end
 

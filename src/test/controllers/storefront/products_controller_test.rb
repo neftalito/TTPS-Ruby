@@ -5,6 +5,6 @@ class Storefront::ProductsControllerTest < ActionDispatch::IntegrationTest
     get storefront_product_url("999999")
 
     assert_redirected_to storefront_products_url
-    assert_equal "Producto no disponible.", flash[:alert]
+    assert_equal I18n.t("flash.storefront.products.unavailable"), flash[:alert]
   end
 end

@@ -1,6 +1,7 @@
 employee:
   email: employee@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
+  locale: es
   role: <%= User.roles[:employee] %>
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
@@ -8,6 +9,7 @@ employee:
 manager:
   email: manager@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
+  locale: es
   role: <%= User.roles[:manager] %>
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
@@ -15,6 +17,7 @@ manager:
 admin:
   email: admin@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
+  locale: es
   role: <%= User.roles[:admin] %>
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
@@ -22,6 +25,7 @@ admin:
 deleted_employee:
   email: deleted_employee@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password123") %>
+  locale: es
   role: <%= User.roles[:employee] %>
   deleted_at: <%= Time.current %>
   created_at: <%= Time.current %>

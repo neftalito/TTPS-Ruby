@@ -1,0 +1,9 @@
+<%= button_to locale_path,
+              method: :patch,
+              params: { locale: locale_switch_target, return_to: request.fullpath },
+              form_class: local_assigns.fetch(:form_class, ""),
+              class: local_assigns.fetch(:button_class, ""),
+              "aria-label": locale_switch_aria_label do %>
+  <i class="fa-solid fa-language"></i>
+  <span><%= locale_switch_label %></span>
+<% end %>

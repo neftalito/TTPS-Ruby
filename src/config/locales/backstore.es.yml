@@ -1,0 +1,346 @@
+es:
+  backstore:
+    dashboard:
+      index:
+        critical_stock: "Stock cr\u00edtico"
+        generated_revenue: "Generaste %{amount} en ventas."
+        greeting: "Hola, %{name}"
+        inventory: "Inventario"
+        latest_sales: "\u00daltimas ventas"
+        reports: "Reportes"
+        sales_by_genre: "Ventas por g\u00e9nero"
+        sales_last_seven_days: "Ventas: \u00daltimos 7 d\u00edas"
+        subtitle: "Aqu\u00ed tienes un resumen de la actividad del negocio."
+        total_sales_title: "Tus ventas totales"
+        transactions: "transacciones"
+        units: "%{count} u."
+    products:
+      new:
+        title: "Nuevo producto"
+      index:
+        confirmations:
+          delete: "\u00bfSeguro que quer\u00e9s eliminar este producto?"
+          restore: "\u00bfSeguro que quer\u00e9s restaurar este producto?"
+        empty_message: "No hay productos para mostrar."
+        filters:
+          active: "Activos"
+          all_conditions: "Todas las condiciones"
+          all_genres: "Todos los g\u00e9neros"
+          all_types: "Todos los tipos"
+          author_label: "Nombre del artista"
+          author_placeholder: "Autor o banda"
+          deleted: "Eliminados"
+          name_label: "Nombre del disco"
+          name_placeholder: "T\u00edtulo del \u00e1lbum"
+        headers:
+          condition: "Condici\u00f3n"
+          genre: "G\u00e9nero"
+          id: "ID"
+          price: "Precio"
+          product: "Producto"
+          status: "Estado"
+          stock: "Stock"
+          type: "Tipo"
+        section: "Productos"
+        subtitle: "Gestion\u00e1 el inventario, el stock y la publicaci\u00f3n de tus productos."
+        title: "Cat\u00e1logo de productos"
+      show:
+        activate: "Activar"
+        audio_sample: "Muestra de audio"
+        deactivate: "Dar de baja"
+        deactivate_confirmation: "Confirmar baja l\u00f3gica?"
+        edit_aria_label: "Editar producto"
+        entry_date: "Fecha de ingreso"
+        next: "Siguiente"
+        previous: "Anterior"
+        product_label: "Producto"
+        slide: "Diapositiva %{number}"
+        stock_available: "Stock disponible"
+      form:
+        audio:
+          delete_button: "Eliminar audio"
+          delete_confirmation: "\u00bfSeguro que deseas eliminar este archivo de audio? Esta acci\u00f3n es permanente."
+          dropzone_subtitle: "Aceptamos archivos en alta calidad para que el comprador pueda escucharlos."
+          dropzone_title: "Arrastra o selecciona tu audio"
+          hint: "Formatos: MP3, WAV, OGG, M4A, FLAC. Tama\u00f1o m\u00e1ximo: 15 MB."
+          label: "Muestra de audio (opcional, solo para discos usados)"
+          loaded_label: "Audio cargado:"
+          preview_title: "Previsualizaci\u00f3n (nota: recuerda guardar los cambios)"
+        errors_title:
+          one: "Se encontr\u00f3 1 error:"
+          other: "Se encontraron %{count} errores:"
+        fields:
+          author:
+            label: "Autor / entidad principal"
+            placeholder: "Ingresa el autor o entidad principal"
+          category:
+            label: "G\u00e9nero musical"
+          condition:
+            label: "Condici\u00f3n del producto"
+          description:
+            placeholder: "Ingresa una descripci\u00f3n"
+          name:
+            label: "T\u00edtulo del \u00e1lbum"
+            placeholder: "Ingresa el t\u00edtulo"
+          price:
+            label: "Precio de venta (AR$)"
+          product_type:
+            label: "Formato"
+          stock:
+            label: "Stock disponible"
+        images:
+          current_assets_title: "Visualizaci\u00f3n de activos actuales:"
+          current_count: "Im\u00e1genes actuales:"
+          delete_confirmation: "\u00bfBorrar imagen permanentemente?"
+          hint: "M\u00e1ximo 10 im\u00e1genes por producto. Formatos: JPEG, PNG, GIF, WebP. Tama\u00f1o m\u00e1ximo: 10 MB por imagen."
+          label: "Im\u00e1genes de alta resoluci\u00f3n"
+          new_images_title: "Nuevas im\u00e1genes a subir:"
+          remaining_count: "Puedes agregar:"
+          remaining_suffix: "m\u00e1s"
+        modals:
+          audio_too_large_message: "El archivo \"%{name}\" pesa %{size_mb} MB. El m\u00e1ximo permitido es 15 MB."
+          audio_too_large_title: "Archivo demasiado grande"
+          audio_warning_cancel: "Cancelar y mantener usado"
+          audio_warning_confirm: "Aceptar y eliminar audio"
+          audio_warning_message: "Este producto tiene un audio asociado. Si cambias la condici\u00f3n a \"Nuevo\", el audio se eliminar\u00e1 permanentemente al guardar.\n\n\u00bfDeseas continuar?"
+          audio_warning_title: "Advertencia de audio"
+          confirm_action_title: "Confirmar acci\u00f3n"
+          image_limit_exceeded_message: "Solo puedes agregar %{available} imagen(es) m\u00e1s.\n\nActuales en servidor: %{current_images}\nYa seleccionadas: %{selected_images}\nIntentando agregar: %{attempted_images}\n\nPor favor, selecciona menos archivos."
+          image_limit_exceeded_title: "L\u00edmite de im\u00e1genes excedido"
+          image_too_large_message: "La imagen \"%{name}\" es demasiado grande (%{size_mb} MB).\n\nTama\u00f1o m\u00e1ximo: 10 MB por imagen."
+          image_too_large_title: "Archivo demasiado grande"
+          invalid_audio_message: "Por favor selecciona un archivo de audio (MP3, WAV, OGG, M4A o FLAC)."
+          invalid_audio_title: "Archivo no v\u00e1lido"
+          invalid_image_format_message: "La imagen \"%{name}\" no es un formato v\u00e1lido.\n\nFormatos permitidos: JPEG, PNG, GIF, WebP"
+          invalid_image_format_title: "Formato no v\u00e1lido"
+          inventory_warning_confirm: "S\u00ed, confirmar"
+          inventory_warning_message: "Est\u00e1s cambiando la condici\u00f3n a \"Usado\". Esto har\u00e1 que el stock se fije en 1 unidad y deshabilitar\u00e1 el campo de stock.\n\n\u00bfConfirmas el cambio?"
+          inventory_warning_title: "Advertencia de inventario"
+          limit_reached_message: "Ya tienes el m\u00e1ximo de 10 im\u00e1genes permitidas.\n\nActuales: %{current_images}\nNuevas seleccionadas: %{selected_images}\n\nDebes eliminar algunas im\u00e1genes antes de agregar m\u00e1s."
+          limit_reached_title: "L\u00edmite alcanzado"
+        sections:
+          basic_details: "Detalles esenciales del activo"
+          inventory: "Gesti\u00f3n financiera e inventario"
+          media: "Archivos multimedia de masterizaci\u00f3n"
+          product_details: "Detalles del producto"
+        subtitle_edit: "Realiza las modificaciones necesarias al producto."
+        subtitle_new: "No te olvides de proporcionar toda la informaci\u00f3n necesaria."
+        title_edit: "Editar producto"
+        title_new: "Nuevo producto"
+    reports:
+      badges:
+        employee: "Empleado: %{label}"
+        genre: "G\u00e9nero: %{label}"
+        period: "Periodo: %{label}"
+        type: "Tipo: %{label}"
+      csv:
+        artist: "Artista"
+        employee: "Empleado"
+        genre: "G\u00e9nero"
+        metric: "M\u00e9trica"
+        period: "Periodo"
+        product_type: "Tipo de producto"
+        quantity: "Cantidad"
+        revenue: "Recaudaci\u00f3n"
+        sales_by_genre: "Ventas por g\u00e9nero"
+        sales_by_product_type: "Ventas por tipo de producto"
+        title: "Reporte de ventas"
+        total_products_sold: "Cantidad de productos vendidos"
+        units_sold: "Unidades vendidas"
+        value: "Valor"
+      labels:
+        full_history: "Hist\u00f3rico completo"
+        range: "%{start_date} al %{end_date}"
+        undefined_range: "Sin rango definido"
+      index:
+        cards:
+          average_ticket_subtitle: "Importe promedio dentro del reporte filtrado."
+          average_ticket_title: "Promedio por venta"
+          total_items_subtitle: "Cantidad total de unidades vendidas."
+          total_items_title: "Productos vendidos"
+          total_revenue_subtitle: "Solo se consideran ventas confirmadas."
+          total_revenue_title: "Total recaudado"
+          total_sales_subtitle: "Ventas que cumplen los filtros activos."
+          total_sales_title: "Cantidad de ventas"
+        empty_state:
+          subtitle: "Prob\u00e1 otro rango de fechas, g\u00e9nero, tipo o empleado."
+          title: "No hay ventas para esos filtros"
+        filters:
+          end_date: "Hasta"
+          start_date: "Desde"
+        ranges:
+          all: "Hist\u00f3rico"
+          custom: "Personalizado"
+          month: "Este mes"
+          today: "Hoy"
+          week: "Esta semana"
+          year: "Este a\u00f1o"
+        sales_by_genre:
+          subtitle: "Cantidad de unidades vendidas por g\u00e9nero."
+          title: "Ventas por g\u00e9nero musical"
+        sales_by_type:
+          subtitle: "Distribuci\u00f3n de unidades entre CD y vinilos."
+          title: "Ventas por tipo"
+        section: "Anal\u00edtica"
+        subtitle: "Visualizaci\u00f3n num\u00e9rica y gr\u00e1fica de las ventas confirmadas del sistema."
+        title: "Reporte de ventas"
+        top_products:
+          headers:
+            genre: "G\u00e9nero"
+            product: "Producto"
+            revenue: "Recaudado"
+            type: "Tipo"
+            units: "Unidades"
+          no_genre: "Sin g\u00e9nero"
+          subtitle: "Productos con mayor cantidad de unidades vendidas en el periodo."
+          title: "Top 5 productos m\u00e1s vendidos"
+      index_pdf:
+        analyzed_period: "Periodo analizado"
+        applied_filters: "Filtros aplicados"
+        cards:
+          average_ticket_subtitle: "Promedio del reporte filtrado"
+          average_ticket_title: "Promedio por venta"
+          total_items_subtitle: "Unidades vendidas"
+          total_items_title: "Productos vendidos"
+          total_revenue_subtitle: "Facturado en el periodo"
+          total_revenue_title: "Total recaudado"
+          total_sales_subtitle: "Ventas confirmadas"
+          total_sales_title: "Cantidad de ventas"
+        executive_summary: "Resumen ejecutivo"
+        filters:
+          considered_sales: "Ventas consideradas"
+          employee: "Empleado"
+          genre: "G\u00e9nero"
+          product_type: "Tipo de producto"
+        footer_line_one: "Este reporte fue generado autom\u00e1ticamente por el sistema."
+        footer_line_two: "Uso interno confidencial."
+        issue_date: "Fecha de emisi\u00f3n"
+        sales_by_genre:
+          headers:
+            genre: "G\u00e9nero"
+            units: "Unidades"
+          title: "Ventas por g\u00e9nero musical"
+        sales_by_type:
+          headers:
+            type: "Tipo"
+            units: "Unidades"
+          title: "Ventas por tipo de producto"
+        subtitle: "RecordAR TTPS - Sistema de gesti\u00f3n"
+        title: "Reporte de ventas"
+        top_products:
+          headers:
+            genre: "G\u00e9nero"
+            product_artist: "Producto / Artista"
+            revenue: "Recaudado"
+            type: "Tipo"
+            units: "Vendidos"
+          title: "Top 5 productos m\u00e1s vendidos"
+    sales:
+      sale_item_fields:
+        product_prompt: "Selecciona un producto..."
+      index:
+        confirmations:
+          cancel: "\u00bfSeguro que quer\u00e9s cancelar esta venta?"
+        empty_message: "No hay ventas registradas."
+        filters:
+          cancelled: "Canceladas"
+          confirmed: "Confirmadas"
+          search_placeholder: "Nombre o email"
+        headers:
+          buyer: "Comprador"
+          date: "Fecha"
+          email: "Email"
+          id: "ID"
+          status: "Estado"
+          total: "Total"
+        report_button: "Reporte de ventas"
+        section: "Ventas"
+        subtitle: "Consult\u00e1 las \u00f3rdenes generadas en la tienda y control\u00e1 su estado."
+        title: "Historial de ventas"
+      new:
+        actions: "Acciones"
+        buyer_dni: "DNI *"
+        buyer_email: "Email *"
+        buyer_name: "Nombre completo *"
+        client_section: "Datos del cliente"
+        errors_title: "No se pudo guardar la venta:"
+        products_section: "Productos"
+        subtitle: "Ingresa los datos del cliente y agrega los productos a la transacci\u00f3n."
+        title: "Registrar nueva venta"
+      show:
+        audio_sample: "Muestra de audio"
+        buyer_data_title: "Datos del comprador"
+        buyer_labels:
+          dni: "DNI"
+          email: "Email"
+          name: "Nombre"
+        cancel_confirmation: "\u00bfEst\u00e1s seguro de cancelar esta venta? Se devolver\u00e1 el stock."
+        cancel_sale: "Cancelar venta"
+        cancelled_on: "Cancelada el %{date}"
+        confirmed: "Confirmada"
+        deleted_product: "Producto eliminado"
+        headers:
+          product: "Producto"
+          quantity: "Cant."
+          subtotal: "Subtotal"
+          unit_price: "Precio unit."
+        internal_info_title: "Informaci\u00f3n interna"
+        internal_labels:
+          seller: "Vendedor (empleado)"
+          transaction_id: "ID de transacci\u00f3n"
+        items_title: "Items de la venta"
+        product_label: "Venta"
+        registered_on: "Registrada el %{date}"
+        stock_available: "Stock disponible"
+        title: "Venta #%{id}"
+      invoice:
+        bill_to: "Facturar a"
+        brand_subtitle: "M\u00fasica, vinilos y pasi\u00f3n."
+        buyer_dni: "DNI: %{dni}"
+        company_address: "Av. 7 y 50, La Plata"
+        company_name: "RecordAR TTPS S.A."
+        footer_line_one: "Gracias por confiar en nosotros. Este documento sirve como comprobante de venta no fiscal para fines educativos."
+        footer_line_two: "www.ttps-disqueria.com | info@ttps-disqueria.com"
+        headers:
+          product_artist: "Producto / Artista"
+          quantity: "Cant."
+          subtotal: "Subtotal"
+          unit_price: "Precio unit."
+        issued_by: "Emitido por"
+        number: "N\u00ba %{id}"
+        seller: "Vendedor: %{seller}"
+        title: "Factura"
+        total_due: "TOTAL A PAGAR"
+        total_items: "Total items:"
+    users:
+      new:
+        subtitle: "Completa los datos para agregar un nuevo integrante del equipo."
+        title: "Crear usuario"
+      edit:
+        subtitle: "Actualiza las credenciales y el rol del colaborador."
+        title: "Editar usuario"
+      form:
+        credentials_subtitle: "Ingresa la informaci\u00f3n de inicio de sesi\u00f3n del colaborador."
+        credentials_title: "Credenciales de acceso"
+        errors_title: "No se pudo guardar el usuario:"
+        password_confirmation_label: "Confirmar contrase\u00f1a"
+        password_hint: "D\u00e9jalo vac\u00edo para mantener la contrase\u00f1a actual."
+        password_label: "Contrase\u00f1a"
+      index:
+        confirmations:
+          delete: "\u00bfSeguro que quer\u00e9s eliminar este usuario?"
+          restore: "\u00bfSeguro que quer\u00e9s restaurar este usuario?"
+        empty_message: "No hay usuarios para mostrar."
+        filters:
+          active: "Activos"
+          deleted: "Eliminados"
+          search_label: "Buscar email"
+          search_placeholder: "Ingresa email"
+        headers:
+          email: "Email"
+          id: "ID"
+          role: "Rol"
+          status: "Estado"
+        section: "Usuarios"
+        subtitle: "Administr\u00e1 los usuarios del sistema, sus roles y permisos de acceso."
+        title: "Gesti\u00f3n de usuarios"

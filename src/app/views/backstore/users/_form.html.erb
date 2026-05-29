@@ -5,7 +5,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
         </svg>
-        No se pudo guardar el usuario:
+        <%= t(".errors_title") %>
       </h4>
       <ul class="list-disc list-inside text-sm ml-5">
         <% @user.errors.full_messages.each do |msg| %>
@@ -17,28 +17,28 @@
 
   <div class="p-8 border border-proyecto-text/10 rounded-xl bg-proyecto-bg/50 shadow-sm space-y-6">
     <div class="space-y-2">
-      <p class="text-sm uppercase tracking-widest text-proyecto-primary font-semibold">Credenciales de acceso</p>
-      <p class="text-sm text-proyecto-text/70">Ingresa la información de inicio de sesión del colaborador.</p>
+      <p class="text-sm uppercase tracking-widest text-proyecto-primary font-semibold"><%= t(".credentials_title") %></p>
+      <p class="text-sm text-proyecto-text/70"><%= t(".credentials_subtitle") %></p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="space-y-1">
-        <%= f.label :email, "Email", class: "block text-sm font-medium text-proyecto-text/80" %>
+        <%= f.label :email, t("common.labels.email"), class: "block text-sm font-medium text-proyecto-text/80" %>
         <%= f.email_field :email,
                           class: "w-full px-4 py-3 rounded-lg border border-proyecto-text/20 bg-white text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
       </div>
 
       <div class="space-y-1">
-        <%= f.label :password, "Contraseña", class: "block text-sm font-medium text-proyecto-text/80" %>
+        <%= f.label :password, t(".password_label"), class: "block text-sm font-medium text-proyecto-text/80" %>
         <%= f.password_field :password,
                              class: "w-full px-4 py-3 rounded-lg border border-proyecto-text/20 bg-white text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
         <% if @user.persisted? %>
-          <p class="text-xs text-proyecto-text/60">Déjalo vacío para mantener la contraseña actual.</p>
+          <p class="text-xs text-proyecto-text/60"><%= t(".password_hint") %></p>
         <% end %>
       </div>
 
       <div class="space-y-1">
-        <%= f.label :password_confirmation, "Confirmar Contraseña", class: "block text-sm font-medium text-proyecto-text/80" %>
+        <%= f.label :password_confirmation, t(".password_confirmation_label"), class: "block text-sm font-medium text-proyecto-text/80" %>
         <%= f.password_field :password_confirmation,
                              class: "w-full px-4 py-3 rounded-lg border border-proyecto-text/20 bg-white text-proyecto-primary placeholder-proyecto-text/40 focus:border-proyecto-accent focus:ring-proyecto-accent transition duration-200" %>
       </div>
@@ -46,7 +46,7 @@
       <% assignable_roles = assignable_roles_for(current_user) %>
       <% if assignable_roles.any? %>
         <div class="space-y-1">
-          <%= f.label :role, "Rol", class: "block text-sm font-medium text-proyecto-text/80" %>
+          <%= f.label :role, t("common.labels.role"), class: "block text-sm font-medium text-proyecto-text/80" %>
           <%= f.select :role,
                        assignable_roles.map { |r| [translated_role(r), r] },
                        {},
@@ -57,13 +57,13 @@
   </div>
 
   <div class="pt-6 border-t border-proyecto-text/10 flex flex-col sm:flex-row justify-end gap-4">
-    <% submit_label = @user.new_record? ? "Crear Usuario" : "Guardar Cambios" %>
+    <% submit_label = @user.new_record? ? t("common.actions.create_user") : t("common.actions.save_changes") %>
     <% submit_icon = @user.new_record? ? "fa-user-plus" : "fa-floppy-disk" %>
 
     <%= link_to backstore_users_path,
                 class: "inline-flex items-center justify-center gap-2 px-8 py-3 border border-proyecto-text/20 rounded-lg text-proyecto-text hover:bg-proyecto-secondary/20 transition duration-200 font-medium text-center" do %>
       <i class="fa-solid fa-arrow-left"></i>
-      <span>Cancelar</span>
+      <span><%= t("common.actions.cancel") %></span>
     <% end %>
 
     <%= f.button type: :submit,

@@ -1,0 +1,222 @@
+en:
+  common:
+    app_name: "RecordAR"
+    navigation:
+      home: "Home"
+      catalog: "Catalog"
+      admin_panel: "Admin panel"
+      sign_in: "Sign in"
+      profile: "Profile"
+      back_to_store: "Back to store"
+      logout: "Log out"
+      change_language_to: "Switch to %{language}"
+    actions:
+      accept: "Accept"
+      add_another_product: "Add another product"
+      apply_filters: "Apply filters"
+      back: "Back"
+      back_to_list: "Back to list"
+      cancel: "Cancel"
+      clear_filters: "Clear filters"
+      continue: "Continue"
+      create_product: "Create product"
+      create_user: "Create user"
+      delete: "Delete"
+      download_pdf: "Download PDF"
+      edit: "Edit"
+      export_csv: "CSV"
+      export_pdf: "PDF"
+      filter: "Filter"
+      finalize_sale: "Complete sale"
+      new_product: "New product"
+      new_sale: "New sale"
+      new_user: "New user"
+      restore: "Restore"
+      save_changes: "Save changes"
+      select_images: "Select images"
+      understood: "Got it"
+      view: "View"
+    labels:
+      date: "Date"
+      description: "Description"
+      email: "Email"
+      employee: "Employee"
+      genre: "Genre"
+      id: "ID"
+      price: "Price"
+      product: "Product"
+      quantity: "Quantity"
+      release_year: "Release year"
+      role: "Role"
+      search: "Search"
+      seller: "Seller"
+      status: "Status"
+      total: "Total"
+      type: "Type"
+    options:
+      all: "All"
+      select: "Select"
+    pagination:
+      all: "All"
+      empty_range: "0 of 0"
+      next: "Next"
+      of: "of"
+      page: "Page"
+      per_page: "Per page:"
+      previous: "Previous"
+      range: "%{from}-%{to} of %{total}"
+      showing: "Showing"
+    flash_titles:
+      alert: "Alert"
+      info: "Information"
+      success: "Success"
+      warning: "Warning"
+    states:
+      active: "Active"
+      cancelled: "Canceled"
+      confirmed: "Confirmed"
+      deleted: "Deleted"
+      low: "Low"
+      new_badge: "New"
+      no_genre: "No genre"
+      no_image: "No image"
+      no_image_short: "No img"
+      no_images: "No images"
+      out_of_stock: "Out of stock"
+      out_of_stock_upper: "OUT OF STOCK"
+    messages:
+      all_good: "Everything looks good!"
+      browser_no_audio_support: "Your browser does not support the audio element."
+      footer_rights: "All rights reserved."
+      new_sales_appear_here: "New sales will appear here."
+      no_critical_stock: "There is no critical stock."
+      no_products_published: "There are no published products yet."
+      no_recent_sales: "There are no recent sales"
+      stock_with_count: "Stock: %{count}"
+    chart:
+      product: "Product"
+      units: "Units"
+    locales:
+      en: "English"
+      es: "Español"
+  roles:
+    admin: "Administrator"
+    employee: "Employee"
+    manager: "Manager"
+  products:
+    conditions:
+      all: "All conditions"
+      new: "New"
+      used: "Used"
+    types:
+      all: "All types"
+      cd: "CD"
+      vinyl: "Vinyl"
+  javascript:
+    custom_confirm:
+      title: "Confirmation required"
+  flash:
+    backstore:
+      products:
+        audio_deleted: "Audio deleted successfully."
+        created: "Product created"
+        deleted: "Product deactivated"
+        delete_failed: "The product could not be deleted"
+        image_deleted: "Image deleted successfully."
+        last_image: "You cannot delete the last image. At least one image must remain."
+        no_audio: "There is no audio to delete."
+        restored: "Product restored successfully."
+        restore_failed: "The product could not be restored."
+        stock_invalid: "The entered stock value is invalid."
+        stock_updated: "Stock updated successfully."
+        stock_update_error: "Error updating stock: %{errors}"
+        updated: "Product updated"
+      sales:
+        cancel_failed: "The sale could not be canceled."
+        cancelled: "Sale canceled and stock restored."
+        created: "Sale recorded successfully."
+        destroy_forbidden: "Sales cannot be deleted."
+      users:
+        created: "User created successfully."
+        deleted: "User deleted successfully."
+        delete_self: "You cannot delete your own account."
+        manager_cannot_assign_admin: "A manager cannot assign the administrator role."
+        restore_failed: "The user could not be restored."
+        restored: "User restored successfully."
+        update_self_role: "You cannot change your own role."
+        updated: "User updated successfully."
+    storefront:
+      products:
+        unavailable: "Product unavailable."
+  errors:
+    messages:
+      at_least_one_image: "must have at least one image"
+      at_least_one_sale_item: "You must add at least one product to the sale."
+      audio_only_for_used_products: "can only be attached to used products"
+      audio_too_large: "%{filename} is too large (%{size_mb} MB). Maximum size: %{max_size_mb} MB"
+      image_too_large: "%{filename} is too large (%{size_mb} MB). Maximum size: %{max_size_mb} MB per image"
+      insufficient_stock: "There is not enough stock for the product: %{product}, requested: %{requested}, available: %{available}"
+      invalid_audio_format: "%{filename} is not a valid format. Allowed formats: %{formats}"
+      invalid_image_format: "%{filename} is not a valid format. Allowed formats: %{formats}"
+      invalid_release_year: "must be a valid year between 1900 and the current year"
+      required: "is required"
+      too_many_images: "cannot exceed %{limit} images"
+      too_many_new_uploads: "you cannot upload %{new_count} new image(s). You already have %{current_count} image(s) and the limit is %{limit}."
+      used_stock_cannot_exceed_one: "cannot be greater than 1 for used products"
+  activerecord:
+    attributes:
+      product:
+        audio: "Audio"
+        author: "Author"
+        category: "Genre"
+        description: "Description"
+        images: "Images"
+        name: "Album title"
+        price: "Price"
+        product_type: "Type"
+        release_year: "Release year"
+        stock: "Stock"
+      sale:
+        buyer_dni: "ID number"
+        buyer_email: "Email"
+        buyer_name: "Name"
+        sale_items: "Products"
+      sale_item:
+        product: "Product"
+        quantity: "Quantity"
+      user:
+        email: "Email"
+        password: "Password"
+        password_confirmation: "Password confirmation"
+        role: "Role"
+  layouts:
+    application:
+      title: "App"
+    backstore:
+      title: "Administration"
+      heading: "Admin panel"
+      sign_in: "Sign in"
+    pdf:
+      title: "Invoice"
+    storefront:
+      title: "RecordAR"
+      footer_contact: "Contact"
+      footer_navigation: "Navigation"
+      footer_tagline: "The best music on vinyl and CD, both new and used."
+  shared:
+    flash_modal:
+      close: "Got it"
+    pagination:
+      aria_label: "Pagination"
+  backstore:
+    shared:
+      resource_table:
+        actions_header: "Actions"
+        empty_message: "There are no records to display."
+      sidebar:
+        dashboard: "Dashboard"
+        products: "Products"
+        reports: "Reports"
+        sales: "Sales"
+        title: "Admin panel"
+        users: "Users"

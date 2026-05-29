@@ -14,15 +14,30 @@ module ProductsHelper
         :div,
         image_tag(image, class: "h-full w-full object-cover", alt: product.name),
         class: classes,
-        style: style
+        style:
       )
     else
       content_tag(
         :div,
-        content_tag(:span, "Sin img", class: "text-[10px] text-proyecto-text/40"),
+        content_tag(:span, I18n.t("common.states.no_image_short"), class: "text-[10px] text-proyecto-text/40"),
         class: classes,
-        style: style
+        style:
       )
     end
+  end
+
+  def translated_product_type(type, uppercase: false)
+    normalized = type.to_s.strip.downcase
+    normalized = "vinyl" if normalized == "viniyl"
+
+    label = I18n.t("products.types.#{normalized}", default: normalized.present? ? normalized.humanize : I18n.t("products.types.all"))
+    uppercase ? label.upcase : label
+  end
+
+  def translated_product_condition(condition, uppercase: false)
+    normalized = condition.to_s.strip.downcase
+    label = I18n.t("products.conditions.#{normalized}", default: normalized.humanize)
+
+    uppercase ? label.upcase : label
   end
 end

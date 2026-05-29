@@ -20,25 +20,25 @@ module Backstore::ReportsHelper
 
   def report_product_type_options
     [
-      ["Todos", nil],
-      %w[Vinilo vinyl],
-      %w[CD cd]
+      [I18n.t("common.options.all"), nil],
+      [I18n.t("products.types.vinyl"), "vinyl"],
+      [I18n.t("products.types.cd"), "cd"]
     ]
   end
 
   def report_filter_badges(report)
     badges = []
-    badges << "Periodo: #{report.date_range_label}"
-    badges << "Tipo: #{report.human_product_type}"
+    badges << I18n.t("backstore.reports.badges.period", label: report.date_range_label)
+    badges << I18n.t("backstore.reports.badges.type", label: report.human_product_type)
 
     if report.category_id.present?
       category_name = Category.find_by(id: report.category_id)&.name
-      badges << "Genero: #{category_name}" if category_name.present?
+      badges << I18n.t("backstore.reports.badges.genre", label: category_name) if category_name.present?
     end
 
     if report.user_id.present?
       user_name = User.find_by(id: report.user_id)&.email
-      badges << "Empleado: #{user_name}" if user_name.present?
+      badges << I18n.t("backstore.reports.badges.employee", label: user_name) if user_name.present?
     end
 
     badges
