@@ -93,7 +93,7 @@ class Product < ApplicationRecord
               only_integer: true,
               greater_than_or_equal_to: 1900,
               less_than_or_equal_to: Date.current.year,
-              message: "debe ser un ano valido entre 1900 y el ano actual"
+              message: "debe ser un año válido entre 1900 y el año actual"
             }
 
   validate :must_have_at_least_one_image
@@ -220,12 +220,12 @@ class Product < ApplicationRecord
 
     images.each do |image|
       unless VALID_IMAGE_CONTENT_TYPES.include?(image.content_type)
-        errors.add(:images, "#{image.filename} no es un formato valido. Formatos permitidos: JPEG, JPG, PNG, GIF, WebP")
+        errors.add(:images, "#{image.filename} no es un formato válido. Formatos permitidos: JPEG, JPG, PNG, GIF, WebP")
       end
 
       if image.byte_size > MAX_IMAGE_SIZE
         size_mb = (image.byte_size.to_f / 1.megabyte).round(2)
-        errors.add(:images, "#{image.filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 10 MB por imagen")
+        errors.add(:images, "#{image.filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 10 MB por imagen")
       end
     end
   end
@@ -235,13 +235,13 @@ class Product < ApplicationRecord
     return unless audio.attached?
 
     unless VALID_AUDIO_CONTENT_TYPES.include?(audio.content_type)
-      errors.add(:audio, "#{audio.filename} no es un formato valido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC")
+      errors.add(:audio, "#{audio.filename} no es un formato válido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC")
     end
 
     return unless audio.byte_size > MAX_AUDIO_SIZE
 
     size_mb = (audio.byte_size.to_f / 1.megabyte).round(2)
-    errors.add(:audio, "#{audio.filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 15 MB")
+    errors.add(:audio, "#{audio.filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 15 MB")
   end
 
   def audio_marked_for_removal?

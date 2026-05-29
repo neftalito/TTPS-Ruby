@@ -12,8 +12,8 @@
 - El modulo de reportes vive en una seccion separada de la gestion de ventas y solo considera ventas confirmadas.
 - Los reportes se pueden filtrar por fecha, tipo de producto, genero musical y empleado.
 - Los reportes muestran metricas numericas y graficas, junto con exportacion en CSV y PDF.
-- Los productos admiten hasta 10 imagenes en formatos JPG, PNG, GIF y WEBP, con un maximo de 10 MB por imagen.
-- Los audios para productos usados admiten formatos MP3, WAV, OGG, M4A y FLAC, con un maximo de 15 MB.
+- Los productos admiten hasta 10 imagenes en formatos JPG, PNG, GIF y WEBP, con un máximo de 10 MB por imagen.
+- Los audios para productos usados admiten formatos MP3, WAV, OGG, M4A y FLAC, con un máximo de 15 MB.
 - La portada de un producto es siempre la primera imagen cargada.
 - El precio de cada item de venta se toma automaticamente del precio actual del producto.
 - El nombre visible del usuario autenticado se obtiene a partir del correo, usando el fragmento anterior al `@`.

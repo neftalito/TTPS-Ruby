@@ -89,7 +89,7 @@ module Backstore
 
       if @product.images.count <= 1
         redirect_back fallback_location: edit_backstore_product_path(@product),
-                      alert: "No se puede eliminar la ultima imagen. Debe quedar al menos una."
+                      alert: "No se puede eliminar la última imagen. Debe quedar al menos una."
         return
       end
 
@@ -125,7 +125,7 @@ module Backstore
                       alert: "Error al actualizar stock: #{@product.errors.full_messages.join(', ')}"
         end
       else
-        redirect_to backstore_product_path(@product), alert: "El valor de stock ingresado no es valido."
+        redirect_to backstore_product_path(@product), alert: "El valor de stock ingresado no es válido."
       end
     end
 
@@ -171,7 +171,7 @@ module Backstore
         unless Product::VALID_IMAGE_CONTENT_TYPES.include?(image.content_type)
           @product.errors.add(
             :images,
-            "#{image.original_filename} no es un formato valido. Formatos permitidos: JPEG, JPG, PNG, GIF, WebP"
+            "#{image.original_filename} no es un formato válido. Formatos permitidos: JPEG, JPG, PNG, GIF, WebP"
           )
         end
 
@@ -180,7 +180,7 @@ module Backstore
         size_mb = (image.size.to_f / 1.megabyte).round(2)
         @product.errors.add(
           :images,
-          "#{image.original_filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 10 MB por imagen"
+          "#{image.original_filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 10 MB por imagen"
         )
       end
     end
@@ -193,7 +193,7 @@ module Backstore
       unless Product::VALID_AUDIO_CONTENT_TYPES.include?(uploaded_audio.content_type)
         @product.errors.add(
           :audio,
-          "#{uploaded_audio.original_filename} no es un formato valido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC"
+          "#{uploaded_audio.original_filename} no es un formato válido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC"
         )
       end
 
@@ -202,7 +202,7 @@ module Backstore
       size_mb = (uploaded_audio.size.to_f / 1.megabyte).round(2)
       @product.errors.add(
         :audio,
-        "#{uploaded_audio.original_filename} es demasiado grande (#{size_mb} MB). Tamano maximo: 15 MB"
+        "#{uploaded_audio.original_filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 15 MB"
       )
     end
 
