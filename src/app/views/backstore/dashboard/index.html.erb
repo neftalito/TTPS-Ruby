@@ -1,21 +1,20 @@
 <div class="max-w-[95%] mx-auto mb-10">
-
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-proyecto-primary">
-      Hola, <%= current_user.email.split('@').first.capitalize %>
+      <%= t(".greeting", name: current_user.email.split("@").first.capitalize) %>
     </h1>
-    <p class="text-proyecto-text/60">Aquí tienes un resumen de la actividad del negocio.</p>
+    <p class="text-proyecto-text/60"><%= t(".subtitle") %></p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
     <div class="bg-gradient-to-br from-proyecto-primary to-proyecto-accent p-6 rounded-xl shadow-lg text-white">
-      <h3 class="text-sm font-bold opacity-80 uppercase tracking-wider">Tus Ventas Totales</h3>
+      <h3 class="text-sm font-bold opacity-80 uppercase tracking-wider"><%= t(".total_sales_title") %></h3>
       <div class="mt-2 flex items-baseline gap-2">
         <span class="text-4xl font-bold"><%= @my_sales_count %></span>
-        <span class="text-sm opacity-80">transacciones</span>
+        <span class="text-sm opacity-80"><%= t(".transactions") %></span>
       </div>
       <p class="mt-4 text-xs opacity-70 bg-white/20 inline-block px-2 py-1 rounded">
-        Generaste <%= number_to_currency(@my_total_revenue, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %> en ventas.
+        <%= t(".generated_revenue", amount: number_to_currency(@my_total_revenue, unit: "$", separator: ",", delimiter: ".", format: "%u%n")) %>
       </p>
     </div>
 
@@ -24,7 +23,7 @@
         <div class="p-4 rounded-full bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
         </div>
-        <span class="text-sm font-medium text-proyecto-text group-hover:text-proyecto-primary">Nueva Venta</span>
+        <span class="text-sm font-medium text-proyecto-text group-hover:text-proyecto-primary"><%= t("common.actions.new_sale") %></span>
       <% end %>
 
       <%= link_to backstore_products_path, class: "flex flex-col items-center gap-2 group" do %>
@@ -33,39 +32,38 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
           </svg>
         </div>
-        <span class="text-sm font-medium text-proyecto-text group-hover:text-proyecto-primary">Inventario</span>
+        <span class="text-sm font-medium text-proyecto-text group-hover:text-proyecto-primary"><%= t(".inventory") %></span>
       <% end %>
 
       <%= link_to backstore_reports_path, class: "flex flex-col items-center gap-2 group" do %>
         <div class="p-4 rounded-full bg-orange-100 text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
         </div>
-        <span class="text-sm font-medium text-proyecto-text group-hover:text-proyecto-primary">Reportes</span>
+        <span class="text-sm font-medium text-proyecto-text group-hover:text-proyecto-primary"><%= t(".reports") %></span>
       <% end %>
     </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <div class="bg-white p-6 rounded-xl shadow-sm border border-proyecto-secondary/20">
-      <h3 class="text-lg font-bold text-proyecto-primary mb-4">Ventas: Últimos 7 días</h3>
+      <h3 class="text-lg font-bold text-proyecto-primary mb-4"><%= t(".sales_last_seven_days") %></h3>
       <%= line_chart @sales_chart_data, prefix: "$", colors: ["#4f46e5"], height: "300px" %>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow-sm border border-proyecto-secondary/20">
-      <h3 class="text-lg font-bold text-proyecto-primary mb-4">Ventas por Género</h3>
+      <h3 class="text-lg font-bold text-proyecto-primary mb-4"><%= t(".sales_by_genre") %></h3>
       <%= pie_chart @category_chart_data, donut: true, height: "300px", colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#3b82f6"] %>
     </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
     <div class="bg-white rounded-xl shadow-sm border border-red-200 overflow-hidden flex flex-col h-full">
       <div class="px-6 py-4 bg-red-50 border-b border-red-100 flex items-center justify-between">
         <h3 class="font-bold text-red-800 flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-          Stock Crítico
+          <%= t(".critical_stock") %>
         </h3>
-        <span class="text-xs font-bold bg-red-200 text-red-800 px-2 py-1 rounded-full">Bajo</span>
+        <span class="text-xs font-bold bg-red-200 text-red-800 px-2 py-1 rounded-full"><%= t("common.states.low") %></span>
       </div>
       <div class="p-4 flex-1 flex flex-col justify-center">
         <% if @low_stock_products.any? %>
@@ -73,8 +71,7 @@
             <% @low_stock_products.each do |product| %>
               <li class="flex justify-between items-center text-sm border-b border-red-50 last:border-0 pb-2 last:pb-0">
                 <%= link_to product.name, backstore_product_path(product), class: "text-gray-700 truncate max-w-[180px] hover:text-red-700 hover:underline transition-colors", title: product.name %>
-
-                <span class="font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100"><%= product.stock %> u.</span>
+                <span class="font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100"><%= t(".units", count: product.stock) %></span>
               </li>
             <% end %>
           </ul>
@@ -85,8 +82,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p class="text-lg font-medium text-green-700">¡Todo en orden!</p>
-            <p class="text-sm text-green-600 mt-1">No hay stock crítico.</p>
+            <p class="text-lg font-medium text-green-700"><%= t("common.messages.all_good") %></p>
+            <p class="text-sm text-green-600 mt-1"><%= t("common.messages.no_critical_stock") %></p>
           </div>
         <% end %>
       </div>
@@ -94,37 +91,35 @@
 
     <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-proyecto-secondary/20 overflow-hidden flex flex-col h-full">
       <div class="px-6 py-4 bg-proyecto-secondary/5 border-b border-proyecto-secondary/20">
-        <h3 class="font-bold text-proyecto-primary">Últimas Ventas</h3>
+        <h3 class="font-bold text-proyecto-primary"><%= t(".latest_sales") %></h3>
       </div>
 
       <% if @recent_sales.any? %>
         <div class="space-y-4 p-4 sm:hidden">
           <% @recent_sales.each do |sale| %>
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-
               <div class="flex justify-between mb-2">
-                <p class="text-xs text-gray-500 font-semibold">ID</p>
+                <p class="text-xs text-gray-500 font-semibold"><%= t("common.labels.id") %></p>
                 <%= link_to "##{sale.id}", backstore_sale_path(sale),
                             class: "text-proyecto-accent font-bold hover:text-proyecto-primary hover:underline transition-colors" %>
               </div>
 
               <div class="flex flex-col justify-between mb-2">
-                <p class="text-xs text-gray-500 font-semibold">Vendedor</p>
+                <p class="text-xs text-gray-500 font-semibold"><%= t("common.labels.seller") %></p>
                 <p class="text-gray-700 text-left"><%= sale.user.email %></p>
               </div>
 
               <div class="flex flex-col justify-between mb-2">
-                <p class="text-xs text-gray-500 font-semibold">Fecha</p>
+                <p class="text-xs text-gray-500 font-semibold"><%= t("common.labels.date") %></p>
                 <p class="text-gray-600 text-left"><%= time_ago_in_words(sale.created_at) %></p>
               </div>
 
               <div class="flex flex-col justify-between">
-                <p class="text-xs text-gray-500 font-semibold">Total</p>
+                <p class="text-xs text-gray-500 font-semibold"><%= t("common.labels.total") %></p>
                 <p class="font-bold text-proyecto-primary">
                   <%= number_to_currency(sale.total, unit: "$", separator: ",", delimiter: ".", format: "%u%n") %>
                 </p>
               </div>
-
             </div>
           <% end %>
         </div>
@@ -133,10 +128,10 @@
           <table class="w-full text-sm text-left">
             <thead class="bg-gray-50 text-gray-500 uppercase font-bold text-xs">
             <tr>
-              <th class="px-6 py-3">ID</th>
-              <th class="px-6 py-3">Vendedor</th>
-              <th class="px-6 py-3 text-left">Fecha</th>
-              <th class="px-6 py-3 text-right">Total</th>
+              <th class="px-6 py-3"><%= t("common.labels.id") %></th>
+              <th class="px-6 py-3"><%= t("common.labels.seller") %></th>
+              <th class="px-6 py-3 text-left"><%= t("common.labels.date") %></th>
+              <th class="px-6 py-3 text-right"><%= t("common.labels.total") %></th>
             </tr>
             </thead>
 
@@ -171,12 +166,10 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           </div>
-          <p class="text-gray-500 font-medium">No hay ventas recientes</p>
-          <p class="text-xs text-gray-400 mt-1">Las nuevas ventas aparecerán aquí.</p>
+          <p class="text-gray-500 font-medium"><%= t("common.messages.no_recent_sales") %></p>
+          <p class="text-xs text-gray-400 mt-1"><%= t("common.messages.new_sales_appear_here") %></p>
         </div>
       <% end %>
-
     </div>
   </div>
-
 </div>

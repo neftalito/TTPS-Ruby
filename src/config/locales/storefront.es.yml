@@ -1,0 +1,42 @@
+es:
+  storefront:
+    home:
+      index:
+        paragraph_one_html: "En <strong>RecordsAR</strong> llevamos años conectando generaciones a trav\u00e9s de la m\u00fasica. Desde vinilos cl\u00e1sicos hasta los discos m\u00e1s modernos, nuestro cat\u00e1logo celebra cada \u00e9poca, cada artista y cada historia que la m\u00fasica tiene para contar."
+        paragraph_two: "Creemos que la m\u00fasica no solo se escucha, se vive. Nuestro compromiso es preservar la experiencia \u00fanica de coleccionar y disfrutar de cada obra, haciendo que cada disco sea m\u00e1s que un producto: un viaje a la memoria y la pasi\u00f3n de quienes amamos la m\u00fasica."
+        records_image_alt: "Discos cl\u00e1sicos"
+        store_image_alt: "Nuestro local"
+        title: "D\u00e9cadas conectando generaciones a trav\u00e9s de la m\u00fasica"
+    products:
+      card:
+        view_detail: "Ver detalle"
+      index:
+        eyebrow: "Cat\u00e1logo"
+        filters:
+          all_conditions: "Todas las condiciones"
+          all_genres: "Todos los g\u00e9neros"
+          all_types: "Todos los tipos"
+          author_placeholder: "Autor o banda"
+          name_placeholder: "T\u00edtulo del \u00e1lbum"
+          release_year_placeholder: "Año de lanzamiento"
+        subtitle: "Descubr\u00ed los nuevos ingresos y los favoritos del staff. Todo lo que busc\u00e1s est\u00e1 aqu\u00ed."
+        title: "Nuestros productos destacados"
+        view_detail: "Ver detalle"
+      show:
+        audio_sample: "Muestra de audio"
+        next: "Siguiente"
+        previous: "Anterior"
+        product_label: "Producto"
+        related_products: "Tal vez tambi\u00e9n te interese..."
+        slide: "Diapositiva %{number}"
+        stock_available: "Stock disponible"
+      search:
+        index:
+          no_results: "No encontramos productos para esa b\u00fasqueda."
+          no_term: "sin t\u00e9rmino"
+          results_count:
+            one: "Encontramos 1 producto que coincide con tu b\u00fasqueda."
+            other: "Encontramos %{count} productos que coinciden con tu b\u00fasqueda."
+          results_for: "Resultados para \"%{query}\""
+          title: "B\u00fasqueda"
+          view_full_catalog: "Ver cat\u00e1logo completo"

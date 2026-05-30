@@ -1,9 +1,11 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+rock:
+  name: Rock
+  description: Catalogo rock
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
 
-one:
-  name: MyString
-  description: MyText
-
-two:
-  name: MyString
-  description: MyText
+pop:
+  name: Pop
+  description: Catalogo pop
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

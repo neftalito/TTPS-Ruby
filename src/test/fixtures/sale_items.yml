@@ -1,13 +1,39 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+employee_vinyl:
+  sale: recent_employee
+  product: vinyl_rock
+  quantity: 2
+  unit_price: 20.0
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
 
-one:
-  sale: one
-  product: one
+employee_cd:
+  sale: recent_employee
+  product: cd_pop
   quantity: 1
-  unit_price: 9.99
+  unit_price: 15.0
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
 
-two:
-  sale: two
-  product: two
+manager_vinyl:
+  sale: recent_manager
+  product: vinyl_rock
   quantity: 1
-  unit_price: 9.99
+  unit_price: 20.0
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+manager_vinyl_pop:
+  sale: recent_manager
+  product: vinyl_pop
+  quantity: 2
+  unit_price: 25.0
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+cancelled_cd:
+  sale: cancelled_employee
+  product: cd_pop
+  quantity: 3
+  unit_price: 15.0
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
