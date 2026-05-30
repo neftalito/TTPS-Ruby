@@ -1,6 +1,11 @@
 class ApplicationController < ActionController::Base
   include CanCan::ControllerAdditions
 
+  DEFAULT_BACKSTORE_PER_PAGE = 25
+  MAX_BACKSTORE_PER_PAGE = 100
+  DEFAULT_STOREFRONT_PER_PAGE = 12
+  MAX_STOREFRONT_PER_PAGE = 48
+
   allow_browser versions: :modern
   stale_when_importmap_changes
 
@@ -51,6 +56,13 @@ class ApplicationController < ActionController::Base
     return locale.to_sym if I18n.available_locales.map(&:to_s).include?(locale)
 
     I18n.default_locale
+  end
+
+  def sanitized_per_page(raw_value, default:, max:)
+    value = Integer(raw_value, exception: false)
+    return default unless value&.positive?
+
+    [value, max].min
   end
 
   # Detecta que controladores deben ser publicos

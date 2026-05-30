@@ -41,6 +41,18 @@ class SaleTest < ActiveSupport::TestCase
     assert_equal 2, product.reload.stock
   end
 
+  test "rechecks stock against the persisted product before creating the sale" do
+    product = products(:vinyl_rock)
+    sale = build_sale
+    sale.sale_items.build(product:, quantity: 2)
+
+    product.update_column(:stock, 1)
+
+    assert_not sale.save
+    assert sale.errors.of_kind?(:base, :insufficient_stock)
+    assert_equal 1, product.reload.stock
+  end
+
   test "cancel! restores stock only once" do
     product = products(:cd_pop)
     original_stock = product.stock

@@ -12,7 +12,11 @@ module Backstore
       @products = @products.by_product_type(params[:product_type])
       @products = @products.with_category_and_attachments
 
-      per_page = params[:per_page] == "all" ? @products.count : (params[:per_page] || 25).to_i
+      per_page = sanitized_per_page(
+        params[:per_page],
+        default: DEFAULT_BACKSTORE_PER_PAGE,
+        max: MAX_BACKSTORE_PER_PAGE
+      )
       @products = @products.order(id: :asc).page(params[:page]).per(per_page)
     end
 
@@ -108,10 +112,9 @@ module Backstore
     end
 
     def change_stock
-      stock_param = params.dig(:product, :stock)
-      new_stock_value = stock_param.present? ? stock_param.to_i : nil
+      new_stock_value = Integer(params.dig(:product, :stock), exception: false)
 
-      if new_stock_value.is_a?(Integer) && new_stock_value >= 0
+      if new_stock_value&.>= 0
         update_attributes = { stock: new_stock_value }
 
         if @product.respond_to?(:last_modified_at) && @product.class.validators_on(:last_modified_at).any?

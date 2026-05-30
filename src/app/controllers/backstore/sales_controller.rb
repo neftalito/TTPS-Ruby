@@ -3,7 +3,11 @@ module Backstore
     load_and_authorize_resource
 
     def index
-      per_page = params[:per_page] == "all" ? @sales.count : (params[:per_page] || 25).to_i
+      per_page = sanitized_per_page(
+        params[:per_page],
+        default: DEFAULT_BACKSTORE_PER_PAGE,
+        max: MAX_BACKSTORE_PER_PAGE
+      )
       @sales = @sales.includes(:user)
                      .ordered_recent
                      .search_by_buyer(params[:q])

@@ -10,7 +10,11 @@ module Backstore
       @users = @users.with_role(params[:role])
       @users = @users.search_by_email(params[:q])
 
-      per_page = params[:per_page] == "all" ? @users.count : (params[:per_page] || 25).to_i
+      per_page = sanitized_per_page(
+        params[:per_page],
+        default: DEFAULT_BACKSTORE_PER_PAGE,
+        max: MAX_BACKSTORE_PER_PAGE
+      )
       @users = @users.order(id: :asc).page(params[:page]).per(per_page)
     end
 

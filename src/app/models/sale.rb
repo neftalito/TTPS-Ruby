@@ -8,7 +8,7 @@ class Sale < ApplicationRecord
   accepts_nested_attributes_for :sale_items, allow_destroy: true
 
   before_save :calculate_total
-  after_create :decrement_stock_from_products
+  before_create :reserve_product_stock!
 
   validate :validate_stock_availability, on: :create
   validate :must_have_at_least_one_item
@@ -54,10 +54,11 @@ class Sale < ApplicationRecord
     return if cancelled?
 
     ActiveRecord::Base.transaction do
+      locked_products = locked_products_by_id(aggregated_quantities_by_product.keys.map(&:id))
       update!(cancelled_at: Time.current)
 
       aggregated_quantities_by_product.each do |product, quantity|
-        product.increment_stock!(quantity)
+        locked_products.fetch(product.id).increment_stock!(quantity)
       end
     end
   end
@@ -91,9 +92,26 @@ class Sale < ApplicationRecord
     end
   end
 
-  def decrement_stock_from_products
-    aggregated_quantities_by_product.each do |product, quantity|
-      product.decrement_stock!(quantity)
+  def reserve_product_stock!
+    quantities_by_product_id = aggregated_quantities_by_product.transform_keys(&:id)
+    locked_products = locked_products_by_id(quantities_by_product_id.keys)
+
+    quantities_by_product_id.each do |product_id, requested_quantity|
+      product = locked_products.fetch(product_id)
+      next if product.has_stock?(requested_quantity)
+
+      errors.add(
+        :base,
+        :insufficient_stock,
+        product: product.label_for_select,
+        requested: requested_quantity,
+        available: product.stock
+      )
+      throw(:abort)
+    end
+
+    quantities_by_product_id.each do |product_id, quantity|
+      locked_products.fetch(product_id).decrement_stock!(quantity)
     end
   end
 
@@ -109,5 +127,9 @@ class Sale < ApplicationRecord
 
       quantities[item.product] += item.quantity.to_i
     end
+  end
+
+  def locked_products_by_id(product_ids)
+    Product.where(id: product_ids.uniq).order(:id).lock.index_by(&:id)
   end
 end

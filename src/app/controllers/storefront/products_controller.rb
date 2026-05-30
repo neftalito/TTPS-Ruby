@@ -12,7 +12,12 @@ module Storefront
                          .by_product_type(params[:product_type])
                          .by_condition(params[:condition])
 
-      @products = @products.page(params[:page]).per(params[:per_page] || 12)
+      per_page = sanitized_per_page(
+        params[:per_page],
+        default: DEFAULT_STOREFRONT_PER_PAGE,
+        max: MAX_STOREFRONT_PER_PAGE
+      )
+      @products = @products.page(params[:page]).per(per_page)
     end
 
     def show

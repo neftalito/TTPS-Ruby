@@ -164,6 +164,15 @@ class Backstore::ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 4, @product.reload.stock
   end
 
+  test "rejects non numeric stock changes" do
+    patch change_stock_backstore_product_url(@product), params: {
+      product: { stock: "abc" }
+    }
+
+    assert_redirected_to backstore_product_url(@product)
+    assert_equal 10, @product.reload.stock
+  end
+
   test "rejects invalid stock changes for used products" do
     product = products(:vinyl_pop)
     attach_fixture(product.images, "sample.jpg", "image/jpeg") unless product.images.attached?
