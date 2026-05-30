@@ -2,6 +2,8 @@ module Backstore
   class UsersController < BaseController
     load_and_authorize_resource
 
+    before_action :redirect_self_edit_to_account_settings, only: :edit
+    before_action :redirect_self_update_to_account_settings, only: :update
     before_action :prevent_self_role_change, only: :update
     before_action :prevent_manager_assign_admin, only: %i[create update]
 
@@ -64,6 +66,18 @@ module Backstore
     end
 
     private
+
+    def redirect_self_edit_to_account_settings
+      return unless @user == current_user
+
+      redirect_to edit_user_registration_path
+    end
+
+    def redirect_self_update_to_account_settings
+      return unless @user == current_user
+
+      redirect_to edit_user_registration_path, alert: I18n.t("flash.backstore.users.edit_self_via_profile")
+    end
 
     def prevent_self_role_change
       return unless @user == current_user

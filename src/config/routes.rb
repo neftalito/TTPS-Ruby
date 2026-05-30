@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   as :user do
     get "users/edit" => "users/registrations#edit", as: "edit_user_registration"
-    put "users" => "users/registrations#update", as: "user_registration"
+    match "users", to: "users/registrations#update", via: %i[put patch], as: "user_registration"
   end
 
   namespace :backstore, path: "/admin" do

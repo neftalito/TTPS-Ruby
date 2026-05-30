@@ -140,6 +140,7 @@ en:
         created: "User created successfully."
         deleted: "User deleted successfully."
         delete_self: "You cannot delete your own account."
+        edit_self_via_profile: "Use the profile screen to edit your own account."
         manager_cannot_assign_admin: "A manager cannot assign the administrator role."
         restore_failed: "The user could not be restored."
         restored: "User restored successfully."

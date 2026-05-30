@@ -2,12 +2,18 @@ es:
   users:
     registrations:
       edit:
+        account_subtitle: "Actualiza el email con el que ingresas al sistema."
+        account_title: "Datos de acceso"
         confirm_new_password: "Confirmar nueva contraseña"
         current_password: "Contraseña actual"
+        errors_title: "No se pudo actualizar tu cuenta:"
         minimum_password_length: "Mínimo %{count} caracteres"
         new_password: "Nueva contraseña"
-        optional: "opcional"
+        optional: "Opcional si no quieres cambiarla"
         password_placeholder: "Dejar en blanco si no querés cambiarla"
         pending_confirmation: "Esperando confirmación para: %{email}"
-        required_for_changes: "obligatoria para guardar cambios"
+        required_for_changes: "Obligatoria para cambiar el email o la contraseña."
+        security_subtitle: "Sólo completá una nueva contraseña si realmente quieres reemplazar la actual."
+        security_title: "Seguridad"
+        subtitle: "Gestioná tus credenciales personales sin salir del panel administrativo."
         title: "Editar mi cuenta"

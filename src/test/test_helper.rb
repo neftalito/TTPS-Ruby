@@ -26,6 +26,14 @@ module ActiveSupport
 
     # Add more helper methods to be used by all tests here...
     include TestFileUploads
+
+    setup do
+      I18n.locale = I18n.default_locale
+    end
+
+    teardown do
+      I18n.locale = I18n.default_locale
+    end
   end
 end
 

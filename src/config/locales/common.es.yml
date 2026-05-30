@@ -140,6 +140,7 @@ es:
         created: "Usuario creado correctamente."
         deleted: "Usuario eliminado correctamente."
         delete_self: "No podés eliminar tu propia cuenta."
+        edit_self_via_profile: "Para modificar tu propia cuenta usá la pantalla de perfil."
         manager_cannot_assign_admin: "Un gerente no puede asignar el rol de administrador."
         restore_failed: "No se pudo restaurar el usuario."
         restored: "Usuario restaurado correctamente."

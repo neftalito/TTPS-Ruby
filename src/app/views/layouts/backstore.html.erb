@@ -48,7 +48,7 @@
           <%= current_user.email.split("@").first.capitalize %>
         </span>
 
-          <%= link_to edit_backstore_user_path(current_user),
+          <%= link_to edit_user_registration_path,
                       class: "px-3 py-1 rounded bg-proyecto-secondary text-proyecto-primary hover:bg-proyecto-accent hover:text-proyecto-bg flex items-center gap-2 whitespace-nowrap" do %>
             <i class="fa-solid fa-id-badge"></i>
             <span><%= t("common.navigation.profile") %></span>

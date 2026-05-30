@@ -17,6 +17,12 @@ class Backstore::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "redirects the current user edit page to account settings" do
+    get edit_backstore_user_url(users(:admin))
+
+    assert_redirected_to edit_user_registration_url
+  end
+
   test "creates a user" do
     assert_difference("User.count", 1) do
       post backstore_users_url, params: {
@@ -101,8 +107,21 @@ class Backstore::UsersControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to backstore_users_url
+    assert_redirected_to edit_user_registration_url
     assert user.reload.admin?
+  end
+
+  test "does not allow changing the current user email from backstore user management" do
+    user = users(:admin)
+
+    patch backstore_user_url(user), params: {
+      user: {
+        email: "admin_actualizado@example.com"
+      }
+    }
+
+    assert_redirected_to edit_user_registration_url
+    assert_equal "admin@example.com", user.reload.email
   end
 
   test "manager cannot create admin users" do
