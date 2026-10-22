@@ -3,7 +3,7 @@ module Backstore
     def index
       @sales_chart_data = Sale.chart_totals_by_day(range: 1.week.ago..Time.current)
 
-      @category_chart_data = SaleItem.category_quantities
+      @category_chart_data = SaleItem.category_quantities(Sale.confirmed)
 
       @low_stock_products = Product.low_stock_new
 

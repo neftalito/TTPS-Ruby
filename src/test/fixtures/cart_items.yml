@@ -1,11 +1,13 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  cart: one
-  product: one
+employee_cart_item:
+  cart: employee_cart
+  product: vinyl_rock
   quantity: 1
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
 
-two:
-  cart: two
-  product: two
+manager_cart_item:
+  cart: manager_cart
+  product: cd_pop
   quantity: 1
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

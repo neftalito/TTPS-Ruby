@@ -10,14 +10,13 @@
 
 <% collection ||= [] %>
 <% columns ||= [] %>
-<% empty_message ||= "No hay registros para mostrar." %>
-<% actions_header ||= "Acciones" %>
+<% empty_message ||= t(".empty_message") %>
+<% actions_header ||= t(".actions_header") %>
 <% row_class ||= nil %>
 <% default_header_class = "px-6 py-3 text-left text-xs font-medium text-proyecto-primary uppercase tracking-wider" %>
 <% default_cell_class = "px-6 py-4 whitespace-normal break-words text-proyecto-text text-sm" %>
 
 <div class="space-y-4">
-  <!-- Tabla para pantallas medianas y grandes -->
   <div class="hidden sm:block w-full overflow-x-auto">
     <div class="min-w-full">
       <table class="w-full table-auto divide-y divide-proyecto-secondary">
@@ -29,7 +28,7 @@
             <th class="<%= header_class %>"><%= header_title %></th>
           <% end %>
           <% if actions.present? %>
-            <th class="<%= default_header_class.gsub('text-left', 'text-center') %>"><%= actions_header %></th>
+            <th class="<%= default_header_class.gsub("text-left", "text-center") %>"><%= actions_header %></th>
           <% end %>
         </tr>
         </thead>
@@ -70,7 +69,6 @@
     </div>
   </div>
 
-  <!-- Vista tipo tarjetas para mobile -->
   <div class="sm:hidden space-y-3">
     <% if collection.any? %>
       <% collection.each do |record| %>

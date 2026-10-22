@@ -1,0 +1,19 @@
+en:
+  users:
+    registrations:
+      edit:
+        account_subtitle: "Update the email you use to sign in to the system."
+        account_title: "Access details"
+        confirm_new_password: "Confirm new password"
+        current_password: "Current password"
+        errors_title: "Your account could not be updated:"
+        minimum_password_length: "Minimum %{count} characters"
+        new_password: "New password"
+        optional: "Optional if you do not want to change it"
+        password_placeholder: "Leave blank if you do not want to change it"
+        pending_confirmation: "Waiting for confirmation for: %{email}"
+        required_for_changes: "Required to change the email or password."
+        security_subtitle: "Fill in a new password only if you really want to replace the current one."
+        security_title: "Security"
+        subtitle: "Manage your personal credentials without leaving the admin panel."
+        title: "Edit my account"

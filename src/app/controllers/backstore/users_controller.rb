@@ -2,32 +2,31 @@ module Backstore
   class UsersController < BaseController
     load_and_authorize_resource
 
+    before_action :redirect_self_edit_to_account_settings, only: :edit
+    before_action :redirect_self_update_to_account_settings, only: :update
     before_action :prevent_self_role_change, only: :update
     before_action :prevent_manager_assign_admin, only: %i[create update]
 
     def index
-      @users = User.all
-
       @users = @users.with_status(params[:status])
       @users = @users.with_role(params[:role])
       @users = @users.search_by_email(params[:q])
 
-      # Paginación con per_page dinámico
-      per_page = params[:per_page] == "all" ? @users.count : (params[:per_page] || 25).to_i
+      per_page = sanitized_per_page(
+        params[:per_page],
+        default: DEFAULT_BACKSTORE_PER_PAGE,
+        max: MAX_BACKSTORE_PER_PAGE
+      )
       @users = @users.order(id: :asc).page(params[:page]).per(per_page)
     end
 
-    def new
-      @user = User.new
-    end
+    def new; end
 
     def edit; end
 
     def create
-      @user = User.new(user_params)
-
       if @user.save
-        redirect_to backstore_users_path, notice: "Usuario creado correctamente."
+        redirect_to backstore_users_path, notice: I18n.t("flash.backstore.users.created")
       else
         render :new, status: :unprocessable_entity
       end
@@ -36,14 +35,13 @@ module Backstore
     def update
       sanitized_params = user_params.dup
 
-      # Si password viene vacío, eliminarlo para que Devise NO lo valide
       if sanitized_params[:password].blank?
         sanitized_params.delete(:password)
         sanitized_params.delete(:password_confirmation)
       end
 
       if @user.update(sanitized_params)
-        redirect_to backstore_users_path, notice: "Usuario actualizado correctamente."
+        redirect_to backstore_users_path, notice: I18n.t("flash.backstore.users.updated")
       else
         render :edit, status: :unprocessable_entity
       end
@@ -51,42 +49,50 @@ module Backstore
 
     def destroy
       if @user == current_user
-        redirect_to backstore_users_path, alert: "No podés eliminar tu propia cuenta."
+        redirect_to backstore_users_path, alert: I18n.t("flash.backstore.users.delete_self")
         return
       end
 
       @user.destroy
-      redirect_to backstore_users_path, notice: "Usuario eliminado correctamente."
+      redirect_to backstore_users_path, notice: I18n.t("flash.backstore.users.deleted")
     end
 
     def restore
       if @user.restore
-        redirect_to backstore_users_path, notice: "Usuario restaurado correctamente."
+        redirect_to backstore_users_path, notice: I18n.t("flash.backstore.users.restored")
       else
-        redirect_to backstore_users_path, alert: "No se pudo restaurar el usuario."
+        redirect_to backstore_users_path, alert: I18n.t("flash.backstore.users.restore_failed")
       end
     end
 
     private
 
-    # Nadie puede cambiar su propio rol
-    def prevent_self_role_change
+    def redirect_self_edit_to_account_settings
       return unless @user == current_user
 
+      redirect_to edit_user_registration_path
+    end
+
+    def redirect_self_update_to_account_settings
+      return unless @user == current_user
+
+      redirect_to edit_user_registration_path, alert: I18n.t("flash.backstore.users.edit_self_via_profile")
+    end
+
+    def prevent_self_role_change
+      return unless @user == current_user
       return unless params[:user][:role] && params[:user][:role] != @user.role
 
       redirect_to backstore_users_path,
-                  alert: "No podés cambiar tu propio rol."
+                  alert: I18n.t("flash.backstore.users.update_self_role")
     end
 
-    # Un gerente NO puede asignar ni cambiar un rol a administrador
     def prevent_manager_assign_admin
       return unless current_user.manager?
-
       return unless params[:user][:role] == "admin"
 
       redirect_to backstore_users_path,
-                  alert: "Un gerente no puede asignar el rol de administrador."
+                  alert: I18n.t("flash.backstore.users.manager_cannot_assign_admin")
     end
 
     def user_params

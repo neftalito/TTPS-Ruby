@@ -44,6 +44,7 @@ es:
       signed_up_but_unconfirmed: "Te hemos enviado un email con instrucciones para que confirmes tu cuenta."
       update_needs_confirmation: "Actualizaste tu cuenta correctamente, pero tenemos que revalidar tu email. Revisa tu correo para confirmar la dirección."
       updated: "Actualizaste tu cuenta correctamente."
+      updated_but_not_signed_in: "Actualizaste tu cuenta correctamente. Iniciá sesión nuevamente para continuar."
     sessions:
       signed_in: "Iniciaste sesión correctamente."
       signed_out: "Cerraste sesión correctamente."

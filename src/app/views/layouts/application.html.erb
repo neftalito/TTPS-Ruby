@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "App" %></title>
+    <title><%= content_for(:title) || t("layouts.application.title") %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <%= csrf_meta_tags %>
@@ -16,8 +16,12 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <script>
+      window.appTranslations = <%= raw frontend_translations_json %>;
+    </script>
+
     <%= vite_client_tag %>
-    <%= vite_javascript_tag 'application' %>
+    <%= vite_javascript_tag "application" %>
   </head>
 
   <body>

@@ -1,13 +1,20 @@
 class ApplicationController < ActionController::Base
   include CanCan::ControllerAdditions
 
+  DEFAULT_BACKSTORE_PER_PAGE = 25
+  MAX_BACKSTORE_PER_PAGE = 100
+  DEFAULT_STOREFRONT_PER_PAGE = 12
+  MAX_STOREFRONT_PER_PAGE = 48
+
   allow_browser versions: :modern
   stale_when_importmap_changes
+
+  before_action :set_locale
 
   # Solo pedimos login en el backstore
   before_action :authenticate_user!, unless: :public_controller?
 
-  # Necesario para permitir parámetros adicionales de Devise
+  # Necesario para permitir parametros adicionales de Devise
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -27,7 +34,7 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  # Parámetros permitidos para Devise
+  # Parametros permitidos para Devise
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [])
     devise_parameter_sanitizer.permit(:account_update, keys: [:name])
@@ -35,7 +42,30 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Detecta qué controladores deben ser públicos
+  def set_locale
+    locale = normalized_locale(params[:locale].presence || current_user&.locale.presence || session[:locale].presence)
+
+    I18n.locale = locale
+    session[:locale] = locale.to_s
+  end
+
+  def normalized_locale(locale)
+    locale = locale.to_s
+
+    return I18n.default_locale if locale.blank?
+    return locale.to_sym if I18n.available_locales.map(&:to_s).include?(locale)
+
+    I18n.default_locale
+  end
+
+  def sanitized_per_page(raw_value, default:, max:)
+    value = Integer(raw_value, exception: false)
+    return default unless value&.positive?
+
+    [value, max].min
+  end
+
+  # Detecta que controladores deben ser publicos
   def public_controller?
     is_a?(Storefront::BaseController) || devise_controller?
   end

@@ -8,8 +8,9 @@ class SaleItem < ApplicationRecord
 
   scope :for_sales, ->(sales_scope) { where(sale: sales_scope) }
 
-  def self.category_quantities
+  def self.category_quantities(sales_scope = Sale.confirmed)
     joins(product: :category)
+      .where(sale_id: sales_scope.select(:id))
       .group("categories.name")
       .sum(:quantity)
   end

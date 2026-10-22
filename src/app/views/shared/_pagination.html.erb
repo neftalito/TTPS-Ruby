@@ -2,15 +2,14 @@
 <% params_hash = local_assigns.fetch(:params, {}) %>
 <% return if collection.blank? %>
 
-<nav class="mt-8 flex w-full flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left" aria-label="Paginación">
+<nav class="mt-8 flex w-full flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left" aria-label="<%= t(".aria_label") %>">
   <div class="flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-6 md:justify-start">
-    <!-- Selector de por página -->
     <div class="flex items-center gap-2">
-      <label for="per_page" class="text-sm text-proyecto-text whitespace-nowrap">Por página:</label>
+      <label for="per_page" class="text-sm text-proyecto-text whitespace-nowrap"><%= t("common.pagination.per_page") %></label>
       <%= form_with url: request.path, method: :get, local: true, class: "inline-block" do |f| %>
         <%= f.select :per_page,
                      options_for_select(
-                       [[5, 5], [10, 10], [25, 25], [50, 50], [100, 100], ["Todos", "all"]],
+                       [[5, 5], [10, 10], [25, 25], [50, 50], [100, 100]],
                        params[:per_page] || 25
                      ),
                      {},
@@ -20,7 +19,6 @@
                        onchange: "this.form.submit()"
                      } %>
 
-        <!-- Mantener los parámetros de filtros existentes -->
         <% params_hash.except(:page, :per_page).each do |key, value| %>
           <%= f.hidden_field key, value: value %>
         <% end %>
@@ -30,22 +28,22 @@
 
   <div class="flex flex-col items-center gap-3 md:ml-auto md:flex-row md:items-center md:gap-6 md:justify-end md:text-right">
     <p class="text-sm text-proyecto-text md:leading-tight">
-      Mostrando
+      <%= t("common.pagination.showing") %>
       <span class="font-semibold text-proyecto-primary"><%= pagination_results_range(collection) %></span>
     </p>
 
     <% if collection.total_pages > 1 %>
       <div class="flex items-center justify-center gap-3 md:justify-end">
-        <%= pagination_button("Anterior", collection.prev_page, collection, disabled: collection.prev_page.nil?) %>
+        <%= pagination_button(t("common.pagination.previous"), collection.prev_page, collection, disabled: collection.prev_page.nil?) %>
 
         <span class="text-sm text-proyecto-text">
-          Página
+          <%= t("common.pagination.page") %>
           <span class="font-semibold text-proyecto-primary"><%= collection.current_page %></span>
-          de
+          <%= t("common.pagination.of") %>
           <span class="font-semibold text-proyecto-primary"><%= collection.total_pages %></span>
         </span>
 
-        <%= pagination_button("Siguiente", collection.next_page, collection, disabled: collection.next_page.nil?) %>
+        <%= pagination_button(t("common.pagination.next"), collection.next_page, collection, disabled: collection.next_page.nil?) %>
       </div>
     <% end %>
   </div>

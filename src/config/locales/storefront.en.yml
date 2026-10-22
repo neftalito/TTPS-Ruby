@@ -1,0 +1,42 @@
+en:
+  storefront:
+    home:
+      index:
+        paragraph_one_html: "At <strong>RecordsAR</strong> we have spent years connecting generations through music. From classic vinyl to the latest records, our catalog celebrates every era, every artist, and every story music has to tell."
+        paragraph_two: "We believe music is not only heard, it is lived. Our commitment is to preserve the unique experience of collecting and enjoying every work, making each record more than a product: a journey into the memory and passion of those who love music."
+        records_image_alt: "Classic records"
+        store_image_alt: "Our store"
+        title: "Decades connecting generations through music"
+    products:
+      card:
+        view_detail: "View details"
+      index:
+        eyebrow: "Catalog"
+        filters:
+          all_conditions: "All conditions"
+          all_genres: "All genres"
+          all_types: "All types"
+          author_placeholder: "Author or band"
+          name_placeholder: "Album title"
+          release_year_placeholder: "Release year"
+        subtitle: "Discover new arrivals and staff favorites. Everything you are looking for is here."
+        title: "Our featured products"
+        view_detail: "View details"
+      show:
+        audio_sample: "Audio sample"
+        next: "Next"
+        previous: "Previous"
+        product_label: "Product"
+        related_products: "You may also like..."
+        slide: "Slide %{number}"
+        stock_available: "Available stock"
+      search:
+        index:
+          no_results: "We could not find products for that search."
+          no_term: "no term"
+          results_count:
+            one: "We found 1 product matching your search."
+            other: "We found %{count} products matching your search."
+          results_for: "Results for \"%{query}\""
+          title: "Search"
+          view_full_catalog: "View full catalog"

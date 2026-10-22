@@ -1,6 +1,8 @@
 class Product < ApplicationRecord
   include SoftDeletable
 
+  attr_accessor :remove_existing_audio
+
   belongs_to :category
   has_many :sale_items
   has_many_attached :images
@@ -9,7 +11,11 @@ class Product < ApplicationRecord
   enum :product_type, { vinyl: "vinyl", cd: "cd" }, prefix: true
   enum :condition, { new: "new", used: "used" }, prefix: true
 
-  # Scopes
+  VALID_IMAGE_CONTENT_TYPES = %w[image/jpeg image/jpg image/png image/gif image/webp].freeze
+  MAX_IMAGE_SIZE = 10.megabytes
+  VALID_AUDIO_CONTENT_TYPES = %w[audio/mpeg audio/mp3 audio/wav audio/ogg audio/m4a audio/flac audio/x-m4a].freeze
+  MAX_AUDIO_SIZE = 15.megabytes
+
   scope :published, -> { where(published: true) }
   scope :ordered_recent, -> { order(created_at: :desc) }
   scope :with_category, -> { includes(:category) }
@@ -50,15 +56,11 @@ class Product < ApplicationRecord
   }
 
   scope :by_condition, lambda { |condition_param|
-    if condition_param.present? && condition_param != "all"
-      where(condition: condition_param)
-    end
+    where(condition: condition_param) if condition_param.present? && condition_param != "all"
   }
 
   scope :by_product_type, lambda { |product_type_param|
-    if product_type_param.present? && product_type_param != "all"
-      where(product_type: product_type_param)
-    end
+    where(product_type: product_type_param) if product_type_param.present? && product_type_param != "all"
   }
 
   scope :released_in_year, ->(release_year) { where(release_year: release_year.to_i) if release_year.present? }
@@ -88,7 +90,7 @@ class Product < ApplicationRecord
               only_integer: true,
               greater_than_or_equal_to: 1900,
               less_than_or_equal_to: Date.current.year,
-              message: "debe ser un año válido entre 1900 y el año actual"
+              message: :invalid_release_year
             }
 
   validate :must_have_at_least_one_image
@@ -97,32 +99,31 @@ class Product < ApplicationRecord
   validate :validate_audio_format_and_size
   validate :used_stock_cannot_exceed_one
 
-  # Callback: si el producto cambia a nuevo, eliminar el audio
-  before_validation :remove_audio_if_new
   before_validation :force_stock_to_one_if_used, if: :should_force_stock_to_one?
   before_discard :reset_stock
 
-
   def label_for_select
-    condicion = condition_new? ? "NUEVO" : "USADO"
-    tipo = product_type_vinyl? ? "VINILO" : "CD"
-
-    "#{name} - #{author} (#{tipo}, #{condicion})"
+    "#{name} - #{author} (#{human_product_type.upcase}, #{human_condition.upcase})"
   end
 
   def label_for_sale
-    condicion = condition_new? ? "NUEVO" : "USADO"
-    tipo = product_type_vinyl? ? "VINILO" : "CD"
-
-    "#{name} (#{tipo}, #{condicion})"
+    "#{name} (#{human_product_type.upcase}, #{human_condition.upcase})"
   end
 
   def label_for_type
-    product_type_vinyl? ? "VINILO" : "CD"
+    human_product_type.upcase
   end
 
   def label_for_condition
-    condition_new? ? "NUEVO" : "USADO"
+    human_condition.upcase
+  end
+
+  def human_product_type
+    I18n.t("products.types.#{product_type}", default: product_type.to_s.humanize)
+  end
+
+  def human_condition
+    I18n.t("products.conditions.#{condition}", default: condition.to_s.humanize)
   end
 
   def self.related_to(product, limit: 4)
@@ -147,14 +148,14 @@ class Product < ApplicationRecord
   end
 
   def decrement_stock!(quantity)
-    self.stock -= quantity
-    save!
+    persist_stock!(stock - quantity)
   end
 
   def increment_stock!(quantity)
-    self.stock += quantity
-    self.stock = 1 if condition_used? && stock > 1
-    save!
+    new_stock = stock + quantity
+    new_stock = 1 if condition_used? && new_stock > 1
+
+    persist_stock!(new_stock)
   end
 
   def discard
@@ -178,24 +179,16 @@ class Product < ApplicationRecord
   private
 
   def must_have_at_least_one_image
-    # En creación o edición, debe tener al menos 1 imagen
     return if images.attached? && images.any?
 
-    errors.add(:images, "debe tener al menos una imagen")
+    errors.add(:images, :at_least_one_image)
   end
 
   def audio_only_for_used_products
-    # Solo productos usados pueden tener audio
+    return if audio_marked_for_removal?
     return unless audio.attached? && condition == "new"
 
-    errors.add(:audio, "solo puede adjuntarse a productos usados")
-  end
-
-  def remove_audio_if_new
-    # Si el estado cambió de used a new, purgar el audio automáticamente
-    return unless condition_changed? && condition == "new" && audio.attached?
-
-    audio.purge
+    errors.add(:audio, :audio_only_for_used_products)
   end
 
   def reset_stock
@@ -207,57 +200,64 @@ class Product < ApplicationRecord
   end
 
   def force_stock_to_one_if_used
-    # Esto asegura que si la condición es 'used' al crear o cambiar el estado, el stock se normalice.
     self.stock = 1
   end
 
   def used_stock_cannot_exceed_one
     return unless condition_used? && stock.present? && stock > 1
 
-    errors.add(:stock, "no puede ser mayor a 1 para productos usados")
+    errors.add(:stock, :used_stock_cannot_exceed_one)
   end
 
   def validate_images_format_and_size
     return unless images.attached?
 
-    # Validar cantidad máxima (10 imágenes)
     if images.count > 10
-      errors.add(:images, "no puede exceder las 10 imágenes")
+      errors.add(:images, :too_many_images, limit: 10)
       return
     end
 
-    valid_formats = %w[image/jpeg image/jpg image/png image/gif image/webp]
-    max_size = 10.megabytes
-
     images.each do |image|
-      # Validar formato
-      unless valid_formats.include?(image.content_type)
-        errors.add(:images, "#{image.filename} no es un formato válido. Formatos permitidos: JPEG,JPG, PNG, GIF, WebP")
+      unless VALID_IMAGE_CONTENT_TYPES.include?(image.content_type)
+        errors.add(:images, :invalid_image_format, filename: image.filename.to_s, formats: "JPEG, JPG, PNG, GIF, WebP")
       end
 
-      # Validar tamaño
-      if image.byte_size > max_size
+      if image.byte_size > MAX_IMAGE_SIZE
         size_mb = (image.byte_size.to_f / 1.megabyte).round(2)
-        errors.add(:images, "#{image.filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 10 MB por imagen")
+        errors.add(:images, :image_too_large, filename: image.filename.to_s, size_mb:, max_size_mb: 10)
       end
     end
   end
 
   def validate_audio_format_and_size
+    return if audio_marked_for_removal?
     return unless audio.attached?
 
-    valid_formats = %w[audio/mpeg audio/mp3 audio/wav audio/ogg audio/m4a audio/flac audio/x-m4a]
-    max_size = 15.megabytes
-
-    # Validar formato
-    unless valid_formats.include?(audio.content_type)
-      errors.add(:audio, "#{audio.filename} no es un formato válido. Formatos permitidos: MP3, WAV, OGG, M4A, FLAC")
+    unless VALID_AUDIO_CONTENT_TYPES.include?(audio.content_type)
+      errors.add(:audio, :invalid_audio_format, filename: audio.filename.to_s, formats: "MP3, WAV, OGG, M4A, FLAC")
     end
 
-    # Validar tamaño
-    return unless audio.byte_size > max_size
+    return unless audio.byte_size > MAX_AUDIO_SIZE
 
     size_mb = (audio.byte_size.to_f / 1.megabyte).round(2)
-    errors.add(:audio, "#{audio.filename} es demasiado grande (#{size_mb} MB). Tamaño máximo: 15 MB")
+    errors.add(:audio, :audio_too_large, filename: audio.filename.to_s, size_mb:, max_size_mb: 15)
+  end
+
+  def audio_marked_for_removal?
+    ActiveModel::Type::Boolean.new.cast(remove_existing_audio)
+  end
+
+  def persist_stock!(new_stock)
+    raise ArgumentError, "stock cannot be negative" if new_stock.negative?
+
+    timestamp = Time.current
+    update_attributes = { stock: new_stock, updated_at: timestamp }
+    update_attributes[:last_modified_at] = timestamp if has_attribute?(:last_modified_at)
+
+    update_columns(update_attributes)
+
+    self.stock = new_stock
+    self.updated_at = timestamp
+    self.last_modified_at = timestamp if has_attribute?(:last_modified_at)
   end
 end
